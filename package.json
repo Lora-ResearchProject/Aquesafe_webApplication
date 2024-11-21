@@ -1,0 +1,18 @@
+{
+  "name": "aquesafe_webapplication",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "cd Frontend && npm run dev",
+    "start:backend": "cd Backend && npm start",
+    "install-all": "npm install && cd Frontend && npm install && cd ../Backend && npm install && cd ../",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
