@@ -58,7 +58,7 @@ Handles incoming location updates.
 ```json
 {
     "id": "123-0000",
-    "l": "80.123213-13.324324"
+    "l": "80.12321-13.32432"
 }
 ```
 
@@ -82,7 +82,7 @@ Indicates an SOS alert from a vessel.
 ```json
 {
     "id": "123-0000",
-    "l": "80.123213-13.324324",
+    "l": "80.12321-13.32432",
     "s": "y"
 }
 ```
@@ -189,7 +189,7 @@ Manages requests and responses related to fishing hotspots.
 ```json
 {
     "id": "123-0000",
-    "l": "80.123213-13.324324",
+    "l": "80.12321-13.32432",
     "f": "1"
 }
 ```
@@ -198,7 +198,7 @@ Manages requests and responses related to fishing hotspots.
 ```json
 {
     "id": "123-0000",
-    "l": "80.123213-13.324324",
+    "l": "80.12321-13.32432",
     "f": "2"
 }
 ```
@@ -207,7 +207,7 @@ Manages requests and responses related to fishing hotspots.
 ```json
 {
     "id": "123-0000",
-    "l": "80.123213-13.324324",
+    "l": "80.12321-13.32432",
     "f": "2"
 }
 ```
@@ -218,7 +218,7 @@ Manages requests and responses related to fishing hotspots.
 | Field  | Description                                                                 | Example                      |
 |--------|-----------------------------------------------------------------------------|------------------------------|
 | `id`   | Unique identifier combining vessel ID and message ID (e.g., `123-0000`).    | `"123-0000"`                |
-| `l`    | Location in latitude-longitude format.                                      | `"80.123213-13.324324"`     |
+| `l`    | Location in latitude-longitude format.                                      | `"80.12321-13.32432"`       |
 | `s`    | SOS alert flag (`"y"` for yes).                                             | `"y"`                       |
 | `m`    | Message payload as a number.                                               | `"3"`                       |
 | `w`    | Weather information as a percentage between 0 and 100.                     | `"60"`                      |
