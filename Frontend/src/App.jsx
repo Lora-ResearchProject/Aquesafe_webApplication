@@ -1,8 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './Pages/Login';
-import Signup from './Pages/SignupPage';
-import Dashboard from './Pages/Dashboard';
-import ProtectedRoute from './Components/ProtectedRoute';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./Pages/Login";
+import Signup from "./Pages/SignupPage";
+import Dashboard from "./Pages/Dashboard";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import { Tracker } from "./Pages/Tracker";
+import DashboardLayout from "./Components/DashboardLayout";
 
 function App() {
   return (
@@ -15,6 +17,16 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tracker"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Tracker />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
