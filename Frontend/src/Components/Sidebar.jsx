@@ -1,42 +1,63 @@
-import { HomeIcon, ChatAltIcon, LogoutIcon, MapIcon, BellIcon } from '@heroicons/react/outline';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import {
+  HomeIcon,
+  ChatAltIcon,
+  LogoutIcon,
+  MapIcon,
+  BellIcon,
+} from "@heroicons/react/outline";
 
 const Sidebar = ({ isOpen }) => {
   return (
     <div
-      className={`bg-white h-full shadow-lg transition-transform duration-300 ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      } fixed md:relative md:translate-x-0`}
+      className={`bg-white h-full shadow-lg transition-transform duration-300 fixed md:relative md:translate-x-0 w-48`}
     >
-      <div className="py-4 px-4">
+      {/* Logo */}
+      <div className="py-3 px-4 border-none border-gray-200 flex justify-center items-center">
         <h2 className="text-blue-600 text-2xl font-bold">AquaSafe</h2>
       </div>
-      <ul className="space-y-4">
-        <li className="flex items-center px-4 py-2 hover:bg-gray-100">
-          <HomeIcon className="h-5 w-5 mr-3 text-blue-600" />
-          Dashboard
-        </li>
-        <li className="flex items-center px-4 py-2 hover:bg-gray-100">
-          <BellIcon className="h-5 w-5 mr-3 text-blue-600" />
-          SOS Alerts
-        </li>
-        <li className="flex items-center px-4 py-2 hover:bg-gray-100">
-          <ChatAltIcon className="h-5 w-5 mr-3 text-blue-600" />
-          Chat
-        </li>
-        <li className="flex items-center px-4 py-2 hover:bg-gray-100">
-          <MapIcon className="h-5 w-5 mr-3 text-blue-600" />
-          Tracker
-        </li>
-        <li className="flex items-center px-4 py-2 hover:bg-gray-100">
-          <MapIcon className="h-5 w-5 mr-3 text-blue-600" />
-          Route Log
-        </li>
-        <li className="flex items-center px-4 py-2 hover:bg-gray-100 text-red-600">
+
+      {/* Navigation Links */}
+      <ul className="space-y-4 mt-6">
+        <NavItem to="/dashboard" icon={HomeIcon} label="Dashboard" />
+        <NavItem to="/sos-alerts" icon={BellIcon} label="SOS Alerts" />
+        <NavItem to="/chat" icon={ChatAltIcon} label="Chat" />
+        <NavItem to="/tracker" icon={MapIcon} label="Tracker" />
+        <NavItem to="/route-log" icon={MapIcon} label="Route Log" />
+      </ul>
+
+      {/* Logout Button */}
+      <div className="absolute bottom-4 w-full flex justify-center">
+        <button className="w-5/6 flex items-center px-4 py-2 text-red-600 hover:bg-gray-100 rounded-lg">
           <LogoutIcon className="h-5 w-5 mr-3" />
           Logout
-        </li>
-      </ul>
+        </button>
+      </div>
     </div>
+  );
+};
+
+/**
+ * Navigation Item Component
+ */
+const NavItem = ({ to, icon: Icon, label }) => {
+  return (
+    <li>
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          `flex items-center px-4 py-2 mx-3 transition-colors duration-200 rounded-lg ${
+            isActive
+              ? "bg-blue-100 text-blue-600 "
+              : "text-gray-600 hover:bg-gray-100 hover:text-blue-600"
+          }`
+        }
+      >
+        <Icon className="h-5 w-5 mr-3" />
+        {label}
+      </NavLink>
+    </li>
   );
 };
 
