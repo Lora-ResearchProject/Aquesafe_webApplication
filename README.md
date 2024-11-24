@@ -225,3 +225,55 @@ Manages requests and responses related to fishing hotspots.
 | `f`    | Fishing hotspot actions (`1`, `2`, or `3`).                                 | `"2"`                       |
 
 ---
+
+# Vessel Authentication API Documentation
+
+## 1. Vessel Registration
+
+### Endpoint  
+```
+POST http://localhost:3001/api/vessel-auth/vessel-register  
+``` 
+
+### Request Body  
+``` 
+{
+  "vesselName": "vessel 001",
+  "email": "ss002@gmail.com",
+  "password": "1234"
+}  
+``` 
+
+### Response  
+```
+{
+  "message": "Vessel registered successfully"
+}  
+``` 
+
+---
+
+## 2. Vessel Login
+
+### Endpoint  
+``` 
+POST http://localhost:3001/api/vessel-auth/vessel-login  
+``` 
+
+### Request Body  
+``` 
+{
+  "email": "ss002@gmail.com",
+  "password": "1234"
+}  
+```
+
+### Response  
+```
+{
+  "vesselId": "002",
+  "message": "Login successful"
+}  
+```
+
+---
