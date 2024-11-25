@@ -6,6 +6,7 @@ import {
   LogoutIcon,
   MapIcon,
   BellIcon,
+  DatabaseIcon
 } from "@heroicons/react/outline";
 
 const Sidebar = ({ isOpen }) => {
@@ -25,6 +26,8 @@ const Sidebar = ({ isOpen }) => {
         <NavItem to="/chat" icon={ChatAltIcon} label="Chat" />
         <NavItem to="/tracker" icon={MapIcon} label="Tracker" />
         <NavItem to="/route-log" icon={MapIcon} label="Route Log" />
+        <NavItem to="/messageData" icon={DatabaseIcon} label="Message DB" />
+        
       </ul>
 
       {/* Logout Button */}
