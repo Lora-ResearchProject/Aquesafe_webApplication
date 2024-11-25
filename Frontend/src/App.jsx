@@ -5,6 +5,7 @@ import Dashboard from "./Pages/Dashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { Tracker } from "./Pages/Tracker";
 import DashboardLayout from "./Components/DashboardLayout";
+import MessageDataPage from "./Pages/MessageData/MessageDataPage";
 
 function App() {
   return (
@@ -26,6 +27,16 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <Tracker />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/messageData"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <MessageDataPage />
               </DashboardLayout>
             </ProtectedRoute>
           }
