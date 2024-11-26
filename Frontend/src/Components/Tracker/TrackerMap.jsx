@@ -1,5 +1,5 @@
 import React from "react";
-import MapContainer from "../../Components/Map/MapContainer";
+import MapContainer from "../Map/MapContainer";
 
 const TrackerMap = ({ locations, selectedLocation, setSelectedLocation }) => {
   return (

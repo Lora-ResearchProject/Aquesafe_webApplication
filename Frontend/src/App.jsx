@@ -3,9 +3,10 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/SignupPage";
 import Dashboard from "./Pages/Dashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import { Tracker } from "./Pages/Tracker";
+import Tracker from "./Pages/Tracker";
 import DashboardLayout from "./Components/DashboardLayout";
-import MessageDataPage from "./Pages/MessageData/MessageDataPage";
+import MessageDataPage from "./Pages/MessageDataPage";
+import SOSPage from "./Pages/SosPage";
 
 function App() {
   return (
@@ -37,6 +38,16 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <MessageDataPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/sos"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <SOSPage />
               </DashboardLayout>
             </ProtectedRoute>
           }

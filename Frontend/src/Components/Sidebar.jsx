@@ -22,7 +22,7 @@ const Sidebar = ({ isOpen }) => {
       {/* Navigation Links */}
       <ul className="space-y-4 mt-6">
         <NavItem to="/dashboard" icon={HomeIcon} label="Dashboard" />
-        <NavItem to="/sos-alerts" icon={BellIcon} label="SOS Alerts" />
+        <NavItem to="/sos" icon={BellIcon} label="SOS Alerts" />
         <NavItem to="/chat" icon={ChatAltIcon} label="Chat" />
         <NavItem to="/tracker" icon={MapIcon} label="Tracker" />
         <NavItem to="/route-log" icon={MapIcon} label="Route Log" />
