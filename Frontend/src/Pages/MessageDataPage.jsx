@@ -4,9 +4,9 @@ import {
   addMessage,
   deleteMessage,
   updateMessage,
-} from "../../services/messageDataService";
-import MessageDataTable from "../../Components/MessageData/MessageDataTable";
-import AddMessagePopup from "../../Components/MessageData/AddMessagePopup";
+} from "../services/messageDataService";
+import MessageDataTable from "../Components/MessageData/MessageDataTable";
+import AddMessagePopup from "../Components/MessageData/AddMessagePopup";
 
 const MessageDataPage = () => {
   const [messages, setMessages] = useState([]);
