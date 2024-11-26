@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "./Sidebar";
-import TrackerMap from "./TrackerMap";
-import { fetchLatestVesselLocations } from "../../services/locationService";
+import Sidebar from "../Components/Tracker/Sidebar";
+import TrackerMap from "../Components/Tracker/TrackerMap";
+import { fetchLatestVesselLocations } from "../services/locationService";
 import "leaflet/dist/leaflet.css";
 
 const Tracker = () => {

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { baseURL } from '../config/config';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +21,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/users/login', { email, password });
+      const response = await axios.post(`${baseURL}/api/users/login`, { email, password });
       const { token } = response.data;
 
       // Store the token in localStorage
