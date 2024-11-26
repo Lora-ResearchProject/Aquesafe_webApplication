@@ -1,6 +1,7 @@
 import axios from "axios";
+import { baseURL } from "../config/config";
 
-const API_URL = "http://localhost:3001/api/sos";
+const API_URL = baseURL + "/api/sos";
 
 // Fetch all SOS data from the backend
 export const fetchSOSData = async () => {

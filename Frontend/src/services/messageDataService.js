@@ -1,6 +1,8 @@
 import axios from "axios";
+import { baseURL } from "../config/config";
 
-const API_BASE_URL = "http://localhost:3001/api/messageData";
+
+const API_BASE_URL = baseURL + "/api/messageData";
 
 // Fetch all messages
 export const fetchMessages = async () => {

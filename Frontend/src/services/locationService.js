@@ -1,6 +1,7 @@
 import axios from "axios";
+import { baseURL } from "../config/config";
 
-const API_URL = "http://localhost:3001/api/tracker";
+const API_URL = baseURL + "/api/tracker";
 
 export const fetchLatestVesselLocations = async () => {
   try {
