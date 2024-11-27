@@ -7,6 +7,9 @@ import Tracker from "./Pages/Tracker";
 import DashboardLayout from "./Components/DashboardLayout";
 import MessageDataPage from "./Pages/MessageDataPage";
 import SOSPage from "./Pages/SosPage";
+import ChatPage from "./Pages/ChatPage";
+import RouteLogPage from "./Pages/RouteLogPage";
+
 
 function App() {
   return (
@@ -48,6 +51,26 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <SOSPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <ChatPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/routelog"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <RouteLogPage />
               </DashboardLayout>
             </ProtectedRoute>
           }
