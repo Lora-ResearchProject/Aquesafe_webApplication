@@ -14,7 +14,7 @@ const SOSPage = () => {
     const getSOSData = async () => {
       try {
         const data = await fetchSOSData();
-        setSosData(data);
+        setSosData(data.reverse());
       } catch (error) {
         console.error("Error fetching SOS data:", error);
       } finally {
