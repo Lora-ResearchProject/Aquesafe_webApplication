@@ -7,13 +7,13 @@ const SOSPage = () => {
   const [sosData, setSosData] = useState([]);
   const [selectedSOS, setSelectedSOS] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("active"); // State to manage tabs
 
   // Fetch SOS data when the component mounts
   useEffect(() => {
     const getSOSData = async () => {
       try {
         const data = await fetchSOSData();
-
         setSosData(data);
       } catch (error) {
         console.error("Error fetching SOS data:", error);
@@ -38,18 +38,43 @@ const SOSPage = () => {
     }
   };
 
+  // Filter SOS data based on the active tab
+  const filteredSOS = sosData.filter((sos) => sos.sosStatus === activeTab);
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-semibold mb-4">SOS Alerts</h1>
+
+      {/* Tabs */}
+      <div className="flex space-x-4 border-b mb-4">
+        <button
+          className={`py-2 px-4 ${
+            activeTab === "active" ? "border-b-2 border-blue-500 font-bold" : ""
+          }`}
+          onClick={() => setActiveTab("active")}
+        >
+          Active
+        </button>
+        <button
+          className={`py-2 px-4 ${
+            activeTab === "resolved" ? "border-b-2 border-blue-500 font-bold" : ""
+          }`}
+          onClick={() => setActiveTab("resolved")}
+        >
+          Resolved
+        </button>
+      </div>
+
+      {/* SOS Messages */}
       {loading ? (
         <p className="text-gray-500">Loading SOS messages...</p>
-      ) : sosData.length === 0 ? (
+      ) : filteredSOS.length === 0 ? (
         <p className="text-gray-500 text-center mt-8">
-          There are no SOS messages.
+          There are no {activeTab} SOS messages.
         </p>
       ) : (
         <div className="grid gap-4">
-          {sosData.map((sos) => (
+          {filteredSOS.map((sos) => (
             <SOSMessage
               key={sos.id}
               sos={sos}
@@ -58,6 +83,8 @@ const SOSPage = () => {
           ))}
         </div>
       )}
+
+      {/* SOS Popup */}
       {selectedSOS && (
         <SOSPopup
           sos={selectedSOS}
