@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../Components/Tracker/Sidebar";
 import TrackerMap from "../Components/Tracker/TrackerMap";
-import { fetchLatestVesselLocations } from "../services/locationService";
+import {
+  fetchLatestVesselLocations,
+  fetchLatestGateWayLocations,
+} from "../services/locationService";
 import "leaflet/dist/leaflet.css";
-
-
-const gwdata = [
-  // Colombo Gateways (on the beach)
-  { id: 1, type: "gateway", name: "Colombo Gateway 001", lat: 6.9271, lng: 79.8612 }, // Galle Face Beach
-  // Moratuwa Gateways (on the beach)
-  { id: 5, type: "gateway", name: "Moratuwa Gateway 001", lat: 6.7944, lng: 79.8824 }, // Moratuwa Beach
-  // Panadura Gateways (on the beach)
-  { id: 9, type: "gateway", name: "Panadura Gateway 001", lat: 6.7115, lng: 79.9044 }, // Panadura Beach
-];
 
 const Tracker = () => {
   const [locations, setLocations] = useState([]);
+  const [gateWayLocations, setGateWayLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [gw_SearchTerm, setgw_SearchTerm] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,21 +44,45 @@ const Tracker = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const fetchGWData = async () => {
+      try {
+        const GWdata = await fetchLatestGateWayLocations();
+
+        // Transform the data to include type and name
+        const transformedGWData = GWdata.map((loc) => ({
+          id: loc.gatewayId,
+          type: "gateway",
+          name: loc.gatewayName,
+          lat: loc.lat,
+          lng: loc.lng,
+        }));
+
+        setGateWayLocations(transformedGWData);
+      } catch (error) {
+        console.error("Failed to fetch locations:", error);
+      }
+    };
+
+    // Initial fetch
+    fetchGWData();
+  }, []);
+
   return (
     <div className="flex h-full">
       <TrackerMap
-        locations={[...locations, ...gwdata]}
+        locations={[...locations, ...gateWayLocations]}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
       />
 
       <Sidebar
         vessels={locations}
-        gateways={gwdata}
+        gateways={gateWayLocations}
         vesselSearchTerm={searchTerm}
         setVesselSearchTerm={setSearchTerm}
-        gatewaySearchTerm={searchTerm}
-        setGatewaySearchTerm={setSearchTerm}
+        gatewaySearchTerm={gw_SearchTerm}
+        setGatewaySearchTerm={setgw_SearchTerm}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
       />
