@@ -8,6 +8,7 @@ const incommingMessageRoutes = require("./routes/incommingMessageRoutes");
 const vesselAuthRoutes = require("./routes/vesselAuthRoutes");
 const messageDataRoutes = require("./routes/messageDataRoutes");
 const sosRoutes = require("./routes/sosRoutes");
+const gatewayRoutes = require("./routes/gatewayRoutes");
 
 dotenv.config();
 connectDB();
@@ -33,6 +34,7 @@ app.use("/api/server", incommingMessageRoutes);
 app.use("/api/vessel-auth", vesselAuthRoutes);
 app.use("/api/messageData", messageDataRoutes);
 app.use("/api/sos", sosRoutes);
+app.use("/api/gateway", gatewayRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
