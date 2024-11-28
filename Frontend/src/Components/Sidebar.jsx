@@ -25,7 +25,7 @@ const Sidebar = ({ isOpen }) => {
         <NavItem to="/sos" icon={BellIcon} label="SOS Alerts" />
         <NavItem to="/chat" icon={ChatAltIcon} label="Chat" />
         <NavItem to="/tracker" icon={MapIcon} label="Tracker" />
-        <NavItem to="/route-log" icon={MapIcon} label="Route Log" />
+        <NavItem to="/routelog" icon={MapIcon} label="Route Log" />
         <NavItem to="/messageData" icon={DatabaseIcon} label="Message DB" />
         
       </ul>

@@ -4,6 +4,16 @@ import TrackerMap from "../Components/Tracker/TrackerMap";
 import { fetchLatestVesselLocations } from "../services/locationService";
 import "leaflet/dist/leaflet.css";
 
+
+const gwdata = [
+  // Colombo Gateways (on the beach)
+  { id: 1, type: "gateway", name: "Colombo Gateway 001", lat: 6.9271, lng: 79.8612 }, // Galle Face Beach
+  // Moratuwa Gateways (on the beach)
+  { id: 5, type: "gateway", name: "Moratuwa Gateway 001", lat: 6.7944, lng: 79.8824 }, // Moratuwa Beach
+  // Panadura Gateways (on the beach)
+  { id: 9, type: "gateway", name: "Panadura Gateway 001", lat: 6.7115, lng: 79.9044 }, // Panadura Beach
+];
+
 const Tracker = () => {
   const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -42,15 +52,18 @@ const Tracker = () => {
   return (
     <div className="flex h-full">
       <TrackerMap
-        locations={locations}
+        locations={[...locations, ...gwdata]}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
       />
 
       <Sidebar
-        locations={locations}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
+        vessels={locations}
+        gateways={gwdata}
+        vesselSearchTerm={searchTerm}
+        setVesselSearchTerm={setSearchTerm}
+        gatewaySearchTerm={searchTerm}
+        setGatewaySearchTerm={setSearchTerm}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
       />

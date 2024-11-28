@@ -1,0 +1,18 @@
+# version: "1.0"
+
+services:
+  backend:
+    build: ./Backend
+    ports:
+      - "7001:7001"
+
+  frontend:
+    build: ./Frontend
+    ports:
+      - "7000:7000"
+    depends_on:
+      - backend
+
+volumes:
+  logs:
+  data:
