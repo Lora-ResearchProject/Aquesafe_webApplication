@@ -9,6 +9,10 @@ const vesselAuthRoutes = require("./routes/vesselAuthRoutes");
 const messageDataRoutes = require("./routes/messageDataRoutes");
 const sosRoutes = require("./routes/sosRoutes");
 const gatewayRoutes = require("./routes/gatewayRoutes");
+const chatRoutes = require("./routes/chatRoutes");
+const { generateId } = require("./utils/idGenerator");
+
+const testRoutes = require("./routes/testRoutes");
 
 dotenv.config();
 connectDB();
@@ -27,6 +31,10 @@ app.use((req, res, next) => {
 });
 //-------------------
 
+// -------- for testing ---------
+// const id = generateId()
+// console.log("🚀 ~ id:", id)
+
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/tracker", vesselTrackerRoutes);
@@ -35,6 +43,8 @@ app.use("/api/vessel-auth", vesselAuthRoutes);
 app.use("/api/messageData", messageDataRoutes);
 app.use("/api/sos", sosRoutes);
 app.use("/api/gateway", gatewayRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/test-post", testRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
