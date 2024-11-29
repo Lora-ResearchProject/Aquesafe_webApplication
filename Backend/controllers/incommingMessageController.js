@@ -4,16 +4,16 @@ const Chat = require("../models/chatModel");
 const MessageData = require("../models/messageDataModel");
 
 // POST function to handle vessel location, SOS data, and chat data
-const storeVesselLocation = async (req, res) => {
+exports.storeVesselLocation = async (req, res) => {
   try {
     const { id, l, s, m } = req.body;
 
     // Extract the vesselId and messageId
-    const [vesselId, messageId] = id.split("-"); // Split id into parts
+    const [vesselId, messageId] = id.split("|"); // Split id into parts
     let lat, lng;
 
     if (l) {
-      [lat, lng] = l.split("-").map((coord) => parseFloat(coord));
+      [lat, lng] = l.split("|").map((coord) => parseFloat(coord));
     }
 
     // Validate parsed values
@@ -40,6 +40,7 @@ const storeVesselLocation = async (req, res) => {
         dateTime: new Date(), // Use current date and time
         messageNumber,
         message: messageData.message,
+        direction: 'receive',
       });
 
       // Save the Chat document to the database
@@ -85,8 +86,4 @@ const storeVesselLocation = async (req, res) => {
     );
     res.status(500).json({ error: "Internal Server Error" });
   }
-};
-
-module.exports = {
-  storeVesselLocation,
 };
