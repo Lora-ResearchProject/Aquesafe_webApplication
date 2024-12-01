@@ -1,14 +1,11 @@
-const VesselLocation = require("../models/vesselLocationModel");
 const Sos = require("../models/sosModel");
 const Chat = require("../models/chatModel");
 const MessageData = require("../models/messageDataModel");
 
-// POST function to handle vessel location, SOS data, and chat data
+// POST function to handle SOS data, and chat data
 exports.storeVesselLocation = async (req, res) => {
   try {
     const { id, l, s, m } = req.body;
-
-    // Extract the vesselId and messageId
     const [vesselId, messageId] = id.split("|"); // Split id into parts
     let lat, lng;
 
@@ -16,7 +13,6 @@ exports.storeVesselLocation = async (req, res) => {
       [lat, lng] = l.split("|").map((coord) => parseFloat(coord));
     }
 
-    // Validate parsed values
     if (!vesselId) {
       return res.status(400).json({ error: "Invalid vessel Id" });
     }
@@ -40,7 +36,7 @@ exports.storeVesselLocation = async (req, res) => {
         dateTime: new Date(), // Use current date and time
         messageNumber,
         message: messageData.message,
-        direction: 'receive',
+        direction: "receive",
       });
 
       // Save the Chat document to the database
@@ -63,21 +59,6 @@ exports.storeVesselLocation = async (req, res) => {
       await sos.save();
 
       return res.status(201).json({ message: "SOS data saved successfully" });
-    } else {
-      // Otherwise, save to the VesselLocation model
-      const vesselLocation = new VesselLocation({
-        vesselId,
-        dateTime: new Date(), // Use current date and time
-        lat,
-        lng,
-      });
-
-      // Save the VesselLocation document to the database
-      await vesselLocation.save();
-
-      return res
-        .status(201)
-        .json({ message: "Vessel location saved successfully" });
     }
   } catch (error) {
     console.error(
@@ -87,3 +68,20 @@ exports.storeVesselLocation = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+// else {
+//   // Otherwise, save to the VesselLocation model
+//   const vesselLocation = new VesselLocation({
+//     vesselId,
+//     dateTime: new Date(), // Use current date and time
+//     lat,
+//     lng,
+//   });
+
+//   // Save the VesselLocation document to the database
+//   await vesselLocation.save();
+
+//   return res
+//     .status(201)
+//     .json({ message: "Vessel location saved successfully" });
+// }

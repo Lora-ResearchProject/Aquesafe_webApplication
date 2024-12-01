@@ -63,3 +63,21 @@ exports.loginVessel = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// Get all vessel details
+exports.getAllVessels = async (req, res) => {
+  try {
+    
+    const vessels = await Vessel.find({}, 'vesselId vesselName');
+
+    res.status(200).json({
+      success: true,
+      data: vessels,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

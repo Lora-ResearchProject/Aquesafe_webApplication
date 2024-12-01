@@ -10,7 +10,6 @@ const messageDataRoutes = require("./routes/messageDataRoutes");
 const sosRoutes = require("./routes/sosRoutes");
 const gatewayRoutes = require("./routes/gatewayRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-const { generateId } = require("./utils/idGenerator");
 
 const testRoutes = require("./routes/testRoutes");
 
@@ -30,10 +29,6 @@ app.use((req, res, next) => {
   next();
 });
 //-------------------
-
-// -------- for testing ---------
-// const id = generateId()
-// console.log("🚀 ~ id:", id)
 
 // Routes
 app.use("/api/users", userRoutes);
