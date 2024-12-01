@@ -22,7 +22,7 @@ const ChatPage = () => {
   }, []);
 
   return (
-    <div className="h-full bg-gray-100 p-4">
+    <div className="h-full bg-gray-100">
       {!selectedVessel ? (
         <VesselList vessels={vessels} onSelect={setSelectedVessel} />
       ) : (

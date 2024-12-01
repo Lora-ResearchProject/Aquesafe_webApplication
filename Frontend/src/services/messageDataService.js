@@ -1,7 +1,6 @@
 import axios from "axios";
 import { baseURL } from "../config/config";
 
-
 const API_BASE_URL = baseURL + "/api/messageData";
 
 // Fetch all messages
@@ -18,9 +17,9 @@ export const addMessage = async (message) => {
 
 // Update an existing message
 export const updateMessage = async (id, updatedData) => {
-    const response = await axios.put(`${API_BASE_URL}/${id}`, updatedData);
-    return response.data.data;
-  };  
+  const response = await axios.put(`${API_BASE_URL}/${id}`, updatedData);
+  return response.data.data;
+};
 
 // Delete a message
 export const deleteMessage = async (id) => {

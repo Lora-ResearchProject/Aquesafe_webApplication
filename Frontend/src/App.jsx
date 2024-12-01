@@ -1,27 +1,50 @@
+// src/App.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import ProtectedRoute from "./Components/auth/ProtectedRoute";
+import PublicRoute from "./Components/auth/PublicRoute";
+import DashboardLayout from "./Components/Layout/DashboardLayout";
+
 import Login from "./Pages/Login";
 import Signup from "./Pages/SignupPage";
 import Dashboard from "./Pages/Dashboard";
-import ProtectedRoute from "./Components/ProtectedRoute";
 import Tracker from "./Pages/Tracker";
-import DashboardLayout from "./Components/DashboardLayout";
 import MessageDataPage from "./Pages/MessageDataPage";
 import SOSPage from "./Pages/SosPage";
 import ChatPage from "./Pages/ChatPage";
 import RouteLogPage from "./Pages/RouteLogPage";
-
+import ProfilePage from "./Pages/ProfilePage";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* Public Routes */}
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          }
+        />
+
+        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <DashboardLayout>
+                <Dashboard />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
@@ -45,7 +68,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/sos"
           element={
             <ProtectedRoute>
@@ -71,6 +94,16 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <RouteLogPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <ProfilePage />
               </DashboardLayout>
             </ProtectedRoute>
           }

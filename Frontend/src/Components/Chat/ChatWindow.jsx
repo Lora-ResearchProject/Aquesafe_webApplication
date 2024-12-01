@@ -7,21 +7,22 @@ const ChatWindow = ({ vessel, onBack }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
 
   useEffect(() => {
-    // Fetch messages for the selected vessel
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/chat/${vessel.vesselId}`);
+        const response = await axios.get(
+          `http://localhost:3001/api/chat/${vessel.vesselId}`
+        );
         setMessages(response.data);
       } catch (error) {
         console.error("Failed to fetch messages:", error);
       }
-        
     };
 
-    // Fetch dropdown options
     const fetchDropdownOptions = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/messageData/");
+        const response = await axios.get(
+          "http://localhost:3001/api/messageData/"
+        );
         setDropdownOptions(response.data.data);
       } catch (error) {
         console.error("Failed to fetch dropdown options:", error);
@@ -45,7 +46,6 @@ const ChatWindow = ({ vessel, onBack }) => {
         message: selectedMessage.message,
       });
 
-      // Refresh messages after sending
       setMessages((prev) => [
         ...prev,
         {
@@ -54,25 +54,25 @@ const ChatWindow = ({ vessel, onBack }) => {
           message: selectedMessage.message,
         },
       ]);
-      setSelectedMessage(null); // Reset dropdown
+      setSelectedMessage(null);
     } catch (error) {
       console.error("Failed to send message:", error);
     }
   };
 
   return (
-    <div className="max-w-full h-full mx-auto bg-white shadow-lg rounded-lg flex flex-col justify-between">
+    <div className="h-full mx-auto bg-white shadow-lg rounded-lg flex flex-col">
       <div className="flex items-center justify-between p-4 border-b bg-gray-200">
-        <button
-          className="text-blue-500 hover:underline"
-          onClick={onBack}
-        >
+        <button className="text-blue-500 hover:underline" onClick={onBack}>
           Back
         </button>
         <h2 className="text-lg font-bold">{vessel.vesselName}</h2>
       </div>
-      <div className="p-4 overflow-y-auto">
-        {messages && messages.map((msg, index) => (
+      {/* Chat Messages */}
+      <div
+        className="flex-1 p-4 overflow-y-auto"
+      >
+        {messages.map((msg, index) => (
           <div
             key={index}
             className={`mb-2 p-2 max-w-xs rounded ${
@@ -85,6 +85,7 @@ const ChatWindow = ({ vessel, onBack }) => {
           </div>
         ))}
       </div>
+      {/* Input Area */}
       <div className="p-4 border-t bg-gray-100">
         <select
           className="w-full p-2 border rounded mb-2"
