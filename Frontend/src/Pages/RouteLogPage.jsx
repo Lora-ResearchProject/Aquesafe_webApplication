@@ -1,10 +1,10 @@
-const Dashboard = () => {
+import React from "react";
+
+const RouteLogPage = () => {
   return (
     <div className="flex flex-col justify-evenly items-center h-full bg-gray-100 p-8">
       <div className="text-center">
-        <h1 className="text-6xl font-bold text-gray-800">
-          Welcome to AquaSafe Dashboard
-        </h1>
+        <h1 className="text-6xl font-bold text-gray-800">Route Log Page</h1>
       </div>
 
       <div className="text-center">
@@ -21,4 +21,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default RouteLogPage;

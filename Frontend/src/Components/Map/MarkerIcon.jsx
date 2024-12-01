@@ -1,6 +1,6 @@
 import L from "leaflet";
-import Marker01 from '../../assets/markers/m1.png'
-import Marker02 from '../../assets/markers/m2.png'
+import Marker01 from '../../assets/markers/marker_gateway.png'
+import Marker02 from '../../assets/markers/marker_vessel.png'
 
 const MarkerIcon = (type) => {
   return new L.Icon({
@@ -8,8 +8,8 @@ const MarkerIcon = (type) => {
       type === "gateway"
         ? Marker01
         : Marker02,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
+    iconSize: [28, 32],
+    iconAnchor: [14, 32],
   });
 };
 
