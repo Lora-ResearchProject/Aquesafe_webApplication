@@ -6,17 +6,17 @@ const {formatoutgoingMessage} = require("../utils/outgoingMessageStructures");
 // Handle creating a new chat message
 exports.createChat = async (req, res) => {
   try {
-    const {vessleId, messageNumber, message} = req.body;
+    const {vesselId, messageNumber, message} = req.body;
 
     // Validate required fields
-    if (!vessleId || !messageNumber || !message) {
+    if (!vesselId || !messageNumber || !message) {
       return res.status(400).json({error: "Missing required fields."});
     }
 
     // Create a new chat object (but don't save it yet)
     const newChat = new Chat({
       messageId: generateId(),
-      vessleId,
+      vesselId,
       dateTime: new Date(),
       messageNumber,
       message,
@@ -26,7 +26,7 @@ exports.createChat = async (req, res) => {
     // Prepare and format the outgoing message
     const formattedMessage = formatoutgoingMessage(
       {
-        vessleId: newChat.vessleId,
+        vesselId: newChat.vesselId,
         messageId: newChat.messageId,
         messageNumber: newChat.messageNumber,
       },
@@ -55,15 +55,15 @@ exports.createChat = async (req, res) => {
 // Handle retrieving chats
 exports.getChats = async (req, res) => {
   try {
-    const {vessleId} = req.params; // Get vessel ID from route parameters
+    const {vesselId} = req.params; // Get vessel ID from route parameters
 
-    // Check if vessleId is provided
-    if (!vessleId) {
+    // Check if vesselId is provided
+    if (!vesselId) {
       return res.status(400).json({error: "Vessel ID is required."});
     }
 
-    // Fetch chats filtered by vessleId and sorted by messageId in ascending order
-    const chats = await Chat.find({vessleId}).sort({messageId: 1});
+    // Fetch chats filtered by vesselId and sorted by messageId in ascending order
+    const chats = await Chat.find({vesselId}).sort({messageId: 1});
 
     res.status(200).json(chats); // Return the chats
   } catch (error) {
