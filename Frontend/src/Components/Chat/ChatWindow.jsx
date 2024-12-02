@@ -41,7 +41,7 @@ const ChatWindow = ({ vessel, onBack }) => {
 
     try {
       await axios.post("http://localhost:3001/api/chat/", {
-        vessleId: vessel.vesselId,
+        vesselId: vessel.vesselId,
         messageNumber: selectedMessage.messageNumber,
         message: selectedMessage.message,
       });

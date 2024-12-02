@@ -32,7 +32,7 @@ exports.storeVesselLocation = async (req, res) => {
 
       const chat = new Chat({
         messageId: messageId,
-        vessleId: vesselId,
+        vesselId: vesselId,
         dateTime: new Date(), // Use current date and time
         messageNumber,
         message: messageData.message,
@@ -49,6 +49,7 @@ exports.storeVesselLocation = async (req, res) => {
       // If 's' exists and is 1, save to the SOS model
       const sos = new Sos({
         vesselId,
+        sosId: messageId,
         dateTime: new Date(), // Use current date and time
         lat,
         lng,
