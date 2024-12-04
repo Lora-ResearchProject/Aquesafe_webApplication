@@ -3,9 +3,18 @@ const MessageData = require("../models/messageDataModel");
 // Create a new message
 exports.createMessage = async (req, res) => {
   try {
-    const { messageNumber, message } = req.body;
+    const { message } = req.body;
+
+    // Find the last message to determine the highest messageNumber
+    const lastMessage = await MessageData.findOne().sort({ messageNumber: -1 });
+
+    // Determine the new messageNumber
+    const messageNumber = lastMessage ? lastMessage.messageNumber + 1 : 1;
+
+    // Create a new message with an incremented messageNumber
     const newMessage = new MessageData({ messageNumber, message });
     await newMessage.save();
+
     res.status(201).json({ success: true, data: newMessage });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
