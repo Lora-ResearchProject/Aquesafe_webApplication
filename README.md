@@ -239,8 +239,8 @@ Manages requests and responses related to fishing hotspots.
 
 | Field  | Description                                                                 | Example                   |
 |--------|-----------------------------------------------------------------------------|---------------------------|
-| `id`   | Unique identifier combining vessel ID and message ID (e.g., `123|0000`).    | `"123|0000"`              |
-| `l`    | Location in latitude-longitude format.                                      | `"80.12321|13.32432"`     |
+| `id`   | Unique identifier combining vessel ID and message ID (e.g., `123 0000`).    | `"123 0000"`              |
+| `l`    | Location in latitude-longitude format.                                      | `"80.12321 13.32432"`     |
 | `s`    | SOS alert flag (`1` for yes , `0` for no).                                  | `1`                       |
 | `m`    | Message payload as a number.                                                | `3`                       |
 | `w`    | Weather information as a percentage between 0 and 100.                      | `60`                      |
