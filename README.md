@@ -15,6 +15,13 @@
 
 ---
 
+## System Architechture Diagram
+![WebApplicationSystemDiagram](Frontend/src/assets/system_diagram.png)
+
+*Figure 1: AquaSafe Web Application System Architecture*
+
+---
+
 # Installation
 
 ## Locally setup 
