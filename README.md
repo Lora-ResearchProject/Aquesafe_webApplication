@@ -16,7 +16,7 @@
 ---
 
 # System Architechture Diagram
-![WebApplicationSystemDiagram](Frontend/src/assets/system_diagram.png)
+![WebApplicationSystemDiagram](Frontend/src/assets/system_diagram_2.png)
 
 *Figure 1: AquaSafe Web Application System Architecture*
 
