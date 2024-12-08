@@ -21,4 +21,4 @@ vesselSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model("Vessle", vesselSchema);
+module.exports = mongoose.model("Vessel", vesselSchema);

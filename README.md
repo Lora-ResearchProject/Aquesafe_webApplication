@@ -54,8 +54,8 @@ Handles incoming location updates.
 #### **Request Structure**
 ```json
 {
-    "id": "vesselid-messageid",
-    "l": "latitude-longitude"
+    "id": "vesselid|messageid",
+    "l": "latitude|longitude"
 }
 ```
 - **`id`**: A unique identifier combining the vessel ID and message ID. Use `0000` for no message ID.
@@ -64,8 +64,8 @@ Handles incoming location updates.
 #### **Example Request**
 ```json
 {
-    "id": "123-0000",
-    "l": "80.12321-13.32432"
+    "id": "123|0000",
+    "l": "80.12321|13.32432"
 }
 ```
 
@@ -76,8 +76,8 @@ Indicates an SOS alert from a vessel.
 #### **Request Structure**
 ```json
 {
-    "id": "vesselid-messageid",
-    "l": "latitude-longitude",
+    "id": "vesselid|sosid",
+    "l": "latitude|longitude",
     "s": 1
 }
 ```
@@ -88,8 +88,8 @@ Indicates an SOS alert from a vessel.
 #### **Example Request**
 ```json
 {
-    "id": "123-0000",
-    "l": "80.12321-13.32432",
+    "id": "123|1234",
+    "l": "80.12321|13.32432",
     "s": 1
 }
 ```
@@ -101,7 +101,7 @@ Handles incoming and outgoing messages between vessels.
 #### **Incoming Message Structure**
 ```json
 {
-    "id": "vesselid-messageid",
+    "id": "vesselid|messageid",
     "m": message_number
 }
 ```
@@ -111,7 +111,7 @@ Handles incoming and outgoing messages between vessels.
 #### **Outgoing Message Structure**
 ```json
 {
-    "id": "vesselid-messageid",
+    "id": "vesselid|messageid",
     "m": response_message_number
 }
 ```
@@ -120,7 +120,7 @@ Handles incoming and outgoing messages between vessels.
 **Incoming Message:**
 ```json
 {
-    "id": "123-1234",
+    "id": "123|1234",
     "m": 3
 }
 ```
@@ -128,7 +128,7 @@ Handles incoming and outgoing messages between vessels.
 **Outgoing Message:**
 ```json
 {
-    "id": "123-A234",
+    "id": "123|A234",
     "m": 4
 }
 ```
@@ -140,8 +140,8 @@ Provides weather information for a location.
 #### **Incoming Message Structure**
 ```json
 {
-    "id": "vesselid-messageid",
-    "l": "latitude-longitude",
+    "id": "vesselid|messageid",
+    "l": "latitude|longitude",
     "wr": 1
 }
 ```
@@ -152,7 +152,7 @@ Provides weather information for a location.
 #### **Outgoing Message Structure**
 ```json
 {
-    "id": "vesselid-messageid",
+    "id": "vesselid|messageid",
     "w": weather_percentage
 }
 ```
@@ -163,8 +163,8 @@ Provides weather information for a location.
 **Incoming Message:**
 ```json
 {
-    "id": "123-1234",
-    "l": "80.12321-13.32432",
+    "id": "123|1234",
+    "l": "80.12321|13.32432",
     "wr": 1
 }
 ```
@@ -172,7 +172,7 @@ Provides weather information for a location.
 **Outgoing Message:**
 ```json
 {
-    "id": "123-0000",
+    "id": "123|0000",
     "w": 60
 }
 ```
@@ -184,8 +184,8 @@ Manages requests and responses related to fishing hotspots.
 #### **Incoming Message (Get Fishing Location)**
 ```json
 {
-    "id": "vesselid-messageid",
-    "l": "latitude-longitude",
+    "id": "vesselid|messageid",
+    "l": "latitude|longitude",
     "f": 1
 }
 ```
@@ -196,8 +196,8 @@ Manages requests and responses related to fishing hotspots.
 #### **Incoming Message (Request Nearest Fishing Location)**
 ```json
 {
-    "id": "vesselid-messageid",
-    "l": "latitude-longitude",
+    "id": "vesselid|messageid",
+    "l": "latitude|longitude",
     "f": 2
 }
 ```
@@ -206,8 +206,8 @@ Manages requests and responses related to fishing hotspots.
 #### **Outgoing Message (Return Nearest Fishing Location)**
 ```json
 {
-    "id": "vesselid-messageid",
-    "l": "latitude-longitude",
+    "id": "vesselid|messageid",
+    "l": "latitude|longitude",
     "f": 3
 }
 ```
@@ -217,8 +217,8 @@ Manages requests and responses related to fishing hotspots.
 **Incoming Message (Get Fishing Location):**
 ```json
 {
-    "id": "123-0000",
-    "l": "80.12321-13.32432",
+    "id": "123|0000",
+    "l": "80.12321|13.32432",
     "f": 1
 }
 ```
@@ -226,8 +226,8 @@ Manages requests and responses related to fishing hotspots.
 **Incoming Message (Request Nearest Fishing Location):**
 ```json
 {
-    "id": "123-0000",
-    "l": "80.12321-13.32432",
+    "id": "123|0000",
+    "l": "80.12321|13.32432",
     "f": 2
 }
 ```
@@ -235,8 +235,8 @@ Manages requests and responses related to fishing hotspots.
 **Outgoing Message (Return Nearest Fishing Location):**
 ```json
 {
-    "id": "123-0000",
-    "l": "80.12321-13.32432",
+    "id": "123|0000",
+    "l": "80.12321|13.32432",
     "f": 3
 }
 ```
@@ -246,8 +246,8 @@ Manages requests and responses related to fishing hotspots.
 
 | Field  | Description                                                                 | Example                   |
 |--------|-----------------------------------------------------------------------------|---------------------------|
-| `id`   | Unique identifier combining vessel ID and message ID (e.g., `123-0000`).    | `"123-0000"`              |
-| `l`    | Location in latitude-longitude format.                                      | `"80.12321-13.32432"`     |
+| `id`   | Unique identifier combining vessel ID and message ID (e.g., `123 0000`).    | `"123 0000"`              |
+| `l`    | Location in latitude-longitude format.                                      | `"80.12321 13.32432"`     |
 | `s`    | SOS alert flag (`1` for yes , `0` for no).                                  | `1`                       |
 | `m`    | Message payload as a number.                                                | `3`                       |
 | `w`    | Weather information as a percentage between 0 and 100.                      | `60`                      |
