@@ -36,7 +36,10 @@
 
 ## Run Docker file
 
- - pending
+ - Make the fundamental of the Docker container (Install all the dependencies that needed to run project)
+ - Get a git clone using `https://github.com/Lora-ResearchProject/Aquesafe_webApplication.git`
+ - Navigate to the root directory ( Aquesafe_webApplication )
+ - Enter `docker compose up`to create and image and run the container. 
 
 ---
 
