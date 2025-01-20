@@ -4,12 +4,12 @@ services:
   backend:
     build: ./Backend
     ports:
-      - "7001:7001"
+      - "9001:9001"
 
   frontend:
     build: ./Frontend
     ports:
-      - "7000:7000"
+      - "9000:9000"
     depends_on:
       - backend
 
