@@ -4,8 +4,8 @@
 // const baseURL = `http://${backendIP}:${backendPort}`;
 
 // --- For Production use
-const backendIP = "144.126.211.159";
-const backendPort = 7001;
+const backendIP = "159.223.194.167";
+const backendPort = 9001;
 const baseURL = `http://${backendIP}:${backendPort}`;
 
 export {baseURL};

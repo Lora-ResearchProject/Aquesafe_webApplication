@@ -5,6 +5,6 @@ const {
 
 const router = express.Router();
 
-router.get("/latest-locations", getLatestVesselLocations);
+router.get("/latestLocations", getLatestVesselLocations);
 
 module.exports = router;
