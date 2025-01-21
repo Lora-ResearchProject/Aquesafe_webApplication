@@ -2,7 +2,10 @@ const express = require("express");
 const {
   registerVessel,
   loginVessel,
-  getAllVessels
+  getAllVessels,
+  getVesselDetailsById,
+  editVesselDetails,
+  changePassword
 } = require("../controllers/vesselAuthController");
 
 const router = express.Router();
@@ -11,6 +14,9 @@ const router = express.Router();
 router.post("/vessel-register", registerVessel);
 router.post("/vessel-login", loginVessel);
 router.get("/", getAllVessels);
+router.get("/:vesselId", getVesselDetailsById);
+router.patch("/:vesselId/change-details", editVesselDetails);
+router.patch("/:vesselId/change-password", changePassword);
 
 
 module.exports = router;
