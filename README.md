@@ -322,8 +322,6 @@ POST http://localhost:3001/api/vessel-auth/vessel-register
 }
 ```
 
----
-
 ## 2. Vessel Login
 
 ### Endpoint
@@ -347,6 +345,71 @@ POST http://localhost:3001/api/vessel-auth/vessel-login
 {
   "vesselId": "002",
   "message": "Login successful"
+}
+```
+## 3. Get vessel details by vessel Id
+
+### Endpoint
+
+```
+GET http://localhost:3001/api/vessel-auth/<vesselId>
+```
+
+### Response
+
+```
+{
+    "email": "ss2@gmail.com",
+    "vesselId": "002",
+    "vesselName": "vessel-sarindu",
+    "__v": 0
+}
+```
+## 4. Change Vessel details (without password)
+
+### Endpoint
+
+```
+PATCH http://localhost:3001/api/vessel-auth/<vesselId>/change-details
+```
+### Request Body
+
+```
+{
+  "email": "ss2@gmail.com",
+  "vesselName": "vessel-sarindu"
+}
+```
+
+### Response
+
+```
+{
+    "message": "Vessel updated successfully"
+}
+```
+
+## 5. Change Password
+
+### Endpoint
+
+```
+PATCH http://localhost:3001/api/vessel-auth/<vesselId>/change-password
+```
+### Request Body
+
+```
+{
+  "oldPassword": "ABCabc123#",
+  "newPassword": "123AAABBBccc#"
+}
+```
+
+### Response
+
+```
+{
+    "message": "Password changed successfully"
 }
 ```
 
