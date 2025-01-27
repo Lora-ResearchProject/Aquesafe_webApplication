@@ -1,30 +1,32 @@
 #!/bin/bash
 
 # Define variables
+LOGFILE="$(pwd)/deploy.log"
 REPO_DIR="$(pwd)"  # The repository directory is the current working directory
 DOCKER_COMPOSE_FILE="docker-compose.yaml"
-LOG_FILE="deploy.log"
 
-# Function to log messages
-log() {
-    echo "[$(date)] $1" | tee -a "$LOG_FILE"
-}
+# Log the start of the deployment
+echo "Deployment started at $(date)" >> "$LOGFILE"
 
 # Navigate to the repository directory
-cd "$REPO_DIR" || { log "Error: Repository directory not found."; exit 1; }
+cd "$REPO_DIR" || { echo "Failed to change directory" >> "$LOGFILE"; exit 1; }
 
 # Pull the latest changes from the main branch
-log "Pulling latest code from the repository..."
-git reset --hard  # Reset any local changes
-git clean -fd  # Remove untracked files and directories
-git pull origin main || { log "Error: Failed to pull the latest code."; exit 1; }
+{
+    git fetch origin main && 
+    git reset --hard origin/main && 
+    git clean -fd
+} >> "$LOGFILE" 2>&1 || { echo "Git operations failed" >> "$LOGFILE"; exit 1; }
 
 # Stop and remove existing containers and project-specific images
-log "Stopping and removing existing containers and images for the project..."
-docker-compose down --rmi all || { log "Error: Failed to stop and remove containers and images."; exit 1; }
+{
+    docker-compose down --rmi all
+} >> "$LOGFILE" 2>&1 || { echo "Failed to stop and remove containers and images" >> "$LOGFILE"; exit 1; }
 
 # Build and start the containers using Docker Compose
-log "Building and starting containers..."
-docker-compose -f "$DOCKER_COMPOSE_FILE" up --build -d || { log "Error: Failed to build and start containers."; exit 1; }
+{
+    docker-compose -f "$DOCKER_COMPOSE_FILE" up --build -d
+} >> "$LOGFILE" 2>&1 || { echo "Failed to build and start containers" >> "$LOGFILE"; exit 1; }
 
-log "Deployment completed successfully!"
+# Log the completion of the deployment
+echo "Deployment completed at $(date)" >> "$LOGFILE"
