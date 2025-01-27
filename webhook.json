@@ -1,8 +1,8 @@
 [
   {
     "id": "github-webhook",
-    "execute-command": "/root/reseach/Aquesafe_webApplication/deploy.sh",
-    "command-working-directory": "/root/reseach/Aquesafe_webApplication/",
+    "execute-command": "/root/research/Aquesafe_webApplication/deploy.sh",
+    "command-working-directory": "/root/research/Aquesafe_webApplication/",
     "response-message": "Deployment initiated",
     "trigger-rule": {
       "match": {
