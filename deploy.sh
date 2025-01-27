@@ -20,12 +20,12 @@ cd "$REPO_DIR" || { echo "Failed to change directory" >> "$LOGFILE"; exit 1; }
 
 # Stop and remove existing containers and project-specific images
 {
-    docker-compose down --rmi all
+    docker compose down --rmi all
 } >> "$LOGFILE" 2>&1 || { echo "Failed to stop and remove containers and images" >> "$LOGFILE"; exit 1; }
 
 # Build and start the containers using Docker Compose
 {
-    docker-compose -f "$DOCKER_COMPOSE_FILE" up --build -d
+    docker compose -f "$DOCKER_COMPOSE_FILE" up --build -d
 } >> "$LOGFILE" 2>&1 || { echo "Failed to build and start containers" >> "$LOGFILE"; exit 1; }
 
 # Log the completion of the deployment
