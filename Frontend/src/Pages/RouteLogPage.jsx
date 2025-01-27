@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { getAllVesselLocationsdirect, fetchLatestVesselLocations } from "../services/locationService";
+import React, {useState, useEffect} from "react";
+import {
+  getAllVesselLocationsdirect,
+  fetchLatestVesselLocations,
+} from "../services/locationService";
 
 const TestingPage = () => {
   // State for the first function
@@ -46,14 +49,18 @@ const TestingPage = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">Testing Page</h1>
+      <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
+        Testing Page
+      </h1>
       <h2 className="text-xl text-center text-gray-600 mb-8">
         This page was modified for testing purposes
       </h2>
 
       {/* Section for all vessel locations */}
       <div className="mb-8 bg-white shadow rounded p-6">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Vessel Locations (Direct)</h2>
+        <h2 className="text-lg font-semibold text-gray-700 mb-4">
+          Vessel Locations (Direct)
+        </h2>
         {allLocationsLoading ? (
           <div className="text-blue-600">Loading vessel locations...</div>
         ) : allLocationsError ? (
@@ -74,7 +81,7 @@ const TestingPage = () => {
       {/* Section for latest vessel locations */}
       <div className="mb-8 bg-white shadow rounded p-6">
         <h2 className="text-lg font-semibold text-gray-700 mb-4">
-          Vessel Locations (Through Node Backend) testing 9
+          Vessel Locations (Through Node Backend) testing 10
         </h2>
         {latestLocationsLoading ? (
           <div className="text-blue-600">Loading vessel locations...</div>
@@ -98,9 +105,8 @@ const TestingPage = () => {
 
 export default TestingPage;
 
-
-
-{/* <div className="flex flex-col justify-evenly items-center h-full bg-gray-100 p-8">
+{
+  /* <div className="flex flex-col justify-evenly items-center h-full bg-gray-100 p-8">
       <div className="text-center">
         <h1 className="text-6xl font-bold text-gray-800">Route Log Page</h1>
       </div>
@@ -115,4 +121,5 @@ export default TestingPage;
       <div className="text-center">
         <p className="text-base text-gray-500">Stay tuned!</p>
       </div>
-    </div> */}
+    </div> */
+}
