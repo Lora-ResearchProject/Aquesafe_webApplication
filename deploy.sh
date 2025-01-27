@@ -3,10 +3,11 @@
 # Define variables
 REPO_DIR="$(pwd)"  # The repository directory is the current working directory
 DOCKER_COMPOSE_FILE="docker-compose.yaml"
+LOG_FILE="deploy.log"
 
 # Function to log messages
 log() {
-    echo "[$(date)] $1"
+    echo "[$(date)] $1" | tee -a "$LOG_FILE"
 }
 
 # Navigate to the repository directory
