@@ -1,0 +1,19 @@
+[
+  {
+    "id": "github-webhook",
+    "execute-command": "/root/reseach/Aquesafe_webApplication/deploy.sh",
+    "command-working-directory": "/root/reseach/Aquesafe_webApplication/",
+    "response-message": "Deployment initiated",
+    "trigger-rule": {
+      "match": {
+        "type": "value",
+        "secret": "aqure-secret",
+        "parameter": {
+          "source": "header",
+          "name": "X-GitHub-Event"
+        },
+        "value": "push"
+      }
+    }
+  }
+]
