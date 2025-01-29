@@ -10,6 +10,7 @@ const messageDataRoutes = require("./routes/messageDataRoutes");
 const sosRoutes = require("./routes/sosRoutes");
 const gatewayRoutes = require("./routes/gatewayRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const vesselRouteLogRoutes = require("./routes/vesselRouteLogRoutes");
 
 const testRoutes = require("./routes/testRoutes");
 
@@ -40,6 +41,7 @@ app.use("/api/sos", sosRoutes);
 app.use("/api/gateway", gatewayRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/test-post", testRoutes);
+app.use("/api/route-log", vesselRouteLogRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
