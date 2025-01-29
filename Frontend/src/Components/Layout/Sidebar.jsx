@@ -8,6 +8,7 @@ import {
   MapIcon,
   BellIcon,
   DatabaseIcon,
+  BadgeCheckIcon
 } from "@heroicons/react/outline";
 
 const Sidebar = () => {
@@ -32,6 +33,7 @@ const Sidebar = () => {
           <NavItem to="/tracker" icon={MapIcon} label="Tracker" />
           <NavItem to="/routelog" icon={MapIcon} label="Route Log" />
           <NavItem to="/messageData" icon={DatabaseIcon} label="Message DB" />
+          <NavItem to="/testpage" icon={BadgeCheckIcon} label="Test Page" />         
         </ul>
 
         {/* Logout Button */}
