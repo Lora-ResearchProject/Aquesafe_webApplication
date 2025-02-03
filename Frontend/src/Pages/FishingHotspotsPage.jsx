@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { getAllFishingHotspotsdirect } from "../services/locationService";
+import { fetchAllFishingHotspots } from "../services/locationService";
 import FlyToMarker from "../Components/Map/FlyToMarker";
 
 const defaultCenter = [6.7115, 79.9044];
@@ -16,7 +16,7 @@ const FishingHotspotsPage = () => {
   useEffect(() => {
     const fetchAllLocations = async () => {
       try {
-        const response = await getAllFishingHotspotsdirect();
+        const response = await fetchAllFishingHotspots();
         //console.log("🚀 ~ fetchAllLocations ~ response:", response);
         setAllLocationsData(response);
       } catch (err) {
