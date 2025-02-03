@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { baseURL } from "../../config/config";
 
 const ChatWindow = ({ vessel, onBack }) => {
   const [messages, setMessages] = useState([]);
@@ -10,7 +11,7 @@ const ChatWindow = ({ vessel, onBack }) => {
     const fetchMessages = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/chat/${vessel.vesselId}`
+          `${baseURL}/api/chat/${vessel.vesselId}`
         );
         setMessages(response.data);
       } catch (error) {
@@ -20,9 +21,7 @@ const ChatWindow = ({ vessel, onBack }) => {
 
     const fetchDropdownOptions = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/api/messageData/"
-        );
+        const response = await axios.get(`${baseURL}/api/messageData/`);
         setDropdownOptions(response.data.data);
       } catch (error) {
         console.error("Failed to fetch dropdown options:", error);
@@ -40,7 +39,7 @@ const ChatWindow = ({ vessel, onBack }) => {
     }
 
     try {
-      await axios.post("http://localhost:3001/api/chat/", {
+      await axios.post(`${baseURL}/api/chat/`, {
         vesselId: vessel.vesselId,
         messageNumber: selectedMessage.messageNumber,
         message: selectedMessage.message,
@@ -69,9 +68,7 @@ const ChatWindow = ({ vessel, onBack }) => {
         <h2 className="text-lg font-bold">{vessel.vesselName}</h2>
       </div>
       {/* Chat Messages */}
-      <div
-        className="flex-1 p-4 overflow-y-auto"
-      >
+      <div className="flex-1 p-4 overflow-y-auto">
         {messages.map((msg, index) => (
           <div
             key={index}

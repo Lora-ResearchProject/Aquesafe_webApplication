@@ -81,3 +81,60 @@ exports.getAllVessels = async (req, res) => {
     });
   }
 };
+
+// Get vessel details using vesselId
+exports.getVesselDetailsById = async (req, res) => {
+  const { vesselId } = req.params;
+  try {
+    const vessel = await Vessel.findOne({ vesselId }).select("-_id -password");
+    if (!vessel) {
+      return res.status(404).json({ message: "Vessel not found" });
+    }
+    res.status(200).json(vessel);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Edit vessel details (without password)
+exports.editVesselDetails = async (req, res) => {
+  const { vesselId } = req.params;
+  const { vesselName, email } = req.body;
+  try {
+    const updatedVessel = await Vessel.findOneAndUpdate(
+      { vesselId },
+      { vesselName, email },
+      { new: true, runValidators: true, fields: "-password" }
+    );
+    if (!updatedVessel) {
+      return res.status(404).json({ message: "Vessel not found" });
+    }
+    res.status(200).json({ message: "Vessel updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Change password
+exports.changePassword = async (req, res) => {
+  const { vesselId } = req.params;
+  const { oldPassword, newPassword } = req.body;
+  try {
+    const vessel = await Vessel.findOne({ vesselId });
+    if (!vessel) {
+      return res.status(404).json({ message: "Vessel not found" });
+    }
+
+    const isMatch = await vessel.matchPassword(oldPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Old password is incorrect" });
+    }
+
+    vessel.password = newPassword;
+    await vessel.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

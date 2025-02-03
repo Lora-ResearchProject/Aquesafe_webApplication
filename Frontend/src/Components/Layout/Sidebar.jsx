@@ -31,6 +31,7 @@ const Sidebar = () => {
           <NavItem to="/chat" icon={ChatAltIcon} label="Chat" />
           <NavItem to="/tracker" icon={MapIcon} label="Tracker" />
           <NavItem to="/routelog" icon={MapIcon} label="Route Log" />
+          <NavItem to="/hotspots" icon={MapIcon} label="Hotspots" />
           <NavItem to="/messageData" icon={DatabaseIcon} label="Message DB" />
         </ul>
 
