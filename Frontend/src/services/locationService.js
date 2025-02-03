@@ -10,11 +10,16 @@ const ROUTE_LOG_URL = baseURL + "/api/route-log";
 export const fetchLatestVesselLocations = async () => {
   try {
     const response = await axios.get(`${V_API_URL}/latestLocations`);
+
+    if (!response || response.status !== 200) {
+      throw new Error("Failed to fetch vessel locations");
+    }
+
     return response.data; // Return the fetched data
   } catch (error) {
     console.error("Error fetching vessel locations:", {
       message: error.message,
-      config: error.config, // Axios request configuration details
+      requestConfig: error.config, // Axios request configuration details
       response: error.response
         ? {
             status: error.response.status,
@@ -23,7 +28,7 @@ export const fetchLatestVesselLocations = async () => {
         : "No response received", // Log response details if available
     });
 
-    throw error; // Rethrow error to handle it in the component
+    throw new Error(`Error fetching vessel locations: ${error.message}`);
   }
 };
 
