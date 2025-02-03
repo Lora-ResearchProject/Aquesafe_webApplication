@@ -11,13 +11,21 @@ exports.fetchAllVesselLocations = async () => {
 
     const apiResponse = await axios.get(apiUrl);
 
-    if (apiResponse.data.status !== "success") {
+    if (apiResponse.status !== 200 || !apiResponse.data || apiResponse.data.status !== "success") {
       throw new Error("Failed to fetch data from external API");
+    }
+
+    if (!Array.isArray(apiResponse.data.data)) {
+      throw new Error("Invalid data format received from API");
     }
 
     return apiResponse.data.data; // Return the data array
   } catch (error) {
-    console.error("Error fetching data from external API:", error.message);
-    throw new Error("Error fetching data from external API");
+    console.error("Error fetching data from external API:", {
+      message: error.message,
+      response: error.response ? error.response.data : "No response received",
+    });
+
+    throw new Error(`Error fetching data from external API: ${error.message}`);
   }
 };
