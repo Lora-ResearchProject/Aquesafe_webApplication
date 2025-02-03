@@ -92,3 +92,18 @@ export const getAllVesselLocationsdirect = async () => {
     throw error; // Rethrow error for handling elsewhere
   }
 };
+
+export const getAllFishingHotspotsdirect = async () => {
+  try {
+    const response = await axios.get(
+      "http://159.223.194.167:9002/suggest_fishing_hotspots"
+    );
+    return response.data.data; // Return the fetched data
+  } catch (error) {
+    console.error("Error fetching all vessel locations:", {
+      message: error.message,
+      response: error.response ? error.response.data : "No response received",
+    });
+    throw error; // Rethrow error for handling elsewhere
+  }
+};
