@@ -14,7 +14,6 @@ import SOSPage from "./Pages/SosPage";
 import ChatPage from "./Pages/ChatPage";
 import RouteLogPage from "./Pages/RouteLogPage";
 import ProfilePage from "./Pages/ProfilePage";
-import TestingPage from "./Pages/TestingPage";
 import FishingHotspotsPage from "./Pages/FishingHotspotsPage";
 
 function App() {
@@ -116,17 +115,6 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <ProfilePage />
-              </DashboardLayout>
-            </ProtectedRoute>
-          }
-        />
-        {/* ------ testing page ------ */}
-        <Route
-          path="/testpage"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout>
-                <TestingPage />
               </DashboardLayout>
             </ProtectedRoute>
           }

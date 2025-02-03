@@ -6,7 +6,9 @@ const V_API_URL = baseURL + "/api/tracker";
 const GW_API_URL = baseURL + "/api/gateway";
 const VESSEL_AUTH_URL = baseURL + "/api/vessel-auth";
 const ROUTE_LOG_URL = baseURL + "/api/route-log";
+const FISHING_HOTSPOTS_URL = baseURL + "/api/hotspots";
 
+// Fetch latest vessel locations
 export const fetchLatestVesselLocations = async () => {
   try {
     const response = await axios.get(`${V_API_URL}/latestLocations`);
@@ -17,21 +19,12 @@ export const fetchLatestVesselLocations = async () => {
 
     return response.data; // Return the fetched data
   } catch (error) {
-    console.error("Error fetching vessel locations:", {
-      message: error.message,
-      requestConfig: error.config, // Axios request configuration details
-      response: error.response
-        ? {
-            status: error.response.status,
-            data: error.response.data,
-          }
-        : "No response received", // Log response details if available
-    });
-
+    console.error("Error fetching vessel locations:", error.message);
     throw new Error(`Error fetching vessel locations: ${error.message}`);
   }
 };
 
+// Fetch gateway locations
 export const fetchLatestGateWayLocations = async () => {
   try {
     const response = await axios.get(`${GW_API_URL}/`);
@@ -81,34 +74,18 @@ export const fetchVesselLocations = async (vesselId, date) => {
   }
 };
 
-//---------- For testing purpose
-
-export const getAllVesselLocationsdirect = async () => {
+// Fetch fishig hotspots
+export const fetchAllFishingHotspots = async () => {
   try {
-    const response = await axios.get(
-      "http://159.223.194.167:9002/get_all_vessel_locations"
-    );
-    return response.data.data; // Return the fetched data
-  } catch (error) {
-    console.error("Error fetching all vessel locations:", {
-      message: error.message,
-      response: error.response ? error.response.data : "No response received",
-    });
-    throw error; // Rethrow error for handling elsewhere
-  }
-};
+    const response = await axios.get(`${FISHING_HOTSPOTS_URL}/`);
 
-export const getAllFishingHotspotsdirect = async () => {
-  try {
-    const response = await axios.get(
-      "http://159.223.194.167:9002/suggest_fishing_hotspots"
-    );
-    return response.data.data; // Return the fetched data
+    if (!response || response.status !== 200) {
+      throw new Error("Failed to fetch fishing hotspots");
+    }
+
+    return response.data.data; // Return only the data array
   } catch (error) {
-    console.error("Error fetching all vessel locations:", {
-      message: error.message,
-      response: error.response ? error.response.data : "No response received",
-    });
-    throw error; // Rethrow error for handling elsewhere
+    console.error("Error fetching fishing hotspots:", error.message);
+    throw new Error(`Error fetching fishing hotspots: ${error.message}`);
   }
 };
