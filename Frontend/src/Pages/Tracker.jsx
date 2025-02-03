@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Sidebar from "../Components/Tracker/Sidebar";
 import TrackerMap from "../Components/Tracker/TrackerMap";
 import {
@@ -7,66 +7,78 @@ import {
 } from "../services/locationService";
 import "leaflet/dist/leaflet.css";
 
+const REFRESH_INTERVAL = 60000; // 60 seconds
+
 const Tracker = () => {
   const [locations, setLocations] = useState([]);
   const [gateWayLocations, setGateWayLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [gw_SearchTerm, setgw_SearchTerm] = useState("");
+  const [lastRefreshTime, setLastRefreshTime] = useState(Date.now());
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchLatestVesselLocations();
+  const intervalRef = useRef(null); // Store interval ID
 
-        // Transform the data to include type and name
-        const transformedData = data.map((loc) => ({
-          id: loc.vesselId,
-          type: "vessel",
-          name: `vessel${loc.vesselId}`,
-          lat: loc.lat,
-          lng: loc.lng,
-        }));
-
-        setLocations(transformedData);
-      } catch (error) {
-        console.error("Failed to fetch locations:", error);
-      }
-    };
-
-    // Initial fetch
-    fetchData();
-
-    // Set interval to fetch data every minute
-    const interval = setInterval(fetchData, 60000); // 60000ms = 1 minute
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(interval);
+  // Fetch latest vessel locations
+  const fetchVesselData = useCallback(async () => {
+    try {
+      const data = await fetchLatestVesselLocations();
+      const transformedData = data.map((loc) => ({
+        id: loc.vesselId,
+        type: "vessel",
+        name: `vessel${loc.vesselId}`,
+        lat: loc.lat,
+        lng: loc.lng,
+      }));
+      setLocations(transformedData);
+      setLastRefreshTime(Date.now());
+      setRefreshTrigger((prev) => prev + 1); // Trigger timer reset
+    } catch (error) {
+      console.error("Failed to fetch vessel locations:", error);
+    }
   }, []);
 
-  useEffect(() => {
-    const fetchGWData = async () => {
-      try {
-        const GWdata = await fetchLatestGateWayLocations();
-
-        // Transform the data to include type and name
-        const transformedGWData = GWdata.map((loc) => ({
-          id: loc.gatewayId,
-          type: "gateway",
-          name: loc.gatewayName,
-          lat: loc.lat,
-          lng: loc.lng,
-        }));
-
-        setGateWayLocations(transformedGWData);
-      } catch (error) {
-        console.error("Failed to fetch locations:", error);
-      }
-    };
-
-    // Initial fetch
-    fetchGWData();
+  // Fetch gateway locations (Only once on initial load)
+  const fetchGatewayData = useCallback(async () => {
+    try {
+      const GWdata = await fetchLatestGateWayLocations();
+      const transformedGWData = GWdata.map((loc) => ({
+        id: loc.gatewayId,
+        type: "gateway",
+        name: loc.gatewayName,
+        lat: loc.lat,
+        lng: loc.lng,
+      }));
+      setGateWayLocations(transformedGWData);
+    } catch (error) {
+      console.error("Failed to fetch gateway locations:", error);
+    }
   }, []);
+
+  // Function to start a new interval for vessel data fetching
+  const startAutoRefresh = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current); // Clear any existing interval
+    }
+    intervalRef.current = setInterval(fetchVesselData, REFRESH_INTERVAL);
+  }, [fetchVesselData]);
+
+  // Initial Data Fetching
+  useEffect(() => {
+    fetchVesselData(); // Fetch vessel data initially
+    fetchGatewayData(); // Fetch gateway data only once
+    startAutoRefresh(); // Start auto-refresh
+
+    return () => clearInterval(intervalRef.current); // Cleanup interval on unmount
+  }, [fetchVesselData, fetchGatewayData, startAutoRefresh]);
+
+  // Manual Refresh Function
+  const handleManualRefresh = () => {
+    clearInterval(intervalRef.current); // Stop the existing interval
+    fetchVesselData(); // Fetch immediately
+    startAutoRefresh(); // Restart auto-refresh with correct timing
+  };
 
   return (
     <div className="flex h-full">
@@ -85,36 +97,12 @@ const Tracker = () => {
         setGatewaySearchTerm={setgw_SearchTerm}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
+        refreshVessels={handleManualRefresh}
+        lastRefreshTime={lastRefreshTime}
+        refreshTrigger={refreshTrigger}
       />
     </div>
   );
 };
 
 export default Tracker;
-
-// const data = [
-//   // Colombo Gateways (on the beach)
-//   { id: 1, type: "gateway", name: "Colombo Gateway 001", lat: 6.9271, lng: 79.8612 }, // Galle Face Beach
-
-//   // Colombo Vessels (in the sea)
-//   { id: 3, type: "vessel", name: "Colombo Vessel 001", lat: 6.9400, lng: 79.7750 },  // Offshore, Colombo
-
-//   // Moratuwa Gateways (on the beach)
-//   { id: 5, type: "gateway", name: "Moratuwa Gateway 001", lat: 6.7944, lng: 79.8824 }, // Moratuwa Beach
-
-//   // Moratuwa Vessels (in the sea)
-//   { id: 7, type: "vessel", name: "Moratuwa Vessel 001", lat: 6.8000, lng: 79.7900 },  // Offshore, Moratuwa
-
-//   // Panadura Gateways (on the beach)
-//   { id: 9, type: "gateway", name: "Panadura Gateway 001", lat: 6.7115, lng: 79.9044 }, // Panadura Beach
-
-//   // Panadura Vessels (in the sea)
-//   { id: 11, type: "vessel", name: "Panadura Vessel 001", lat: 6.7130, lng: 79.7095 },  // Offshore, Panadura
-
-//   // Wadduwa Gateways (on the beach)
-//   { id: 13, type: "gateway", name: "Wadduwa Gateway 001", lat: 6.6360, lng: 79.9434 }, // Wadduwa Beach
-
-//   // Wadduwa Vessels (in the sea)
-//   { id: 15, type: "vessel", name: "Wadduwa Vessel 001", lat: 6.6400, lng: 79.7500 },  // Offshore, Wadduwa
-
-// ];
