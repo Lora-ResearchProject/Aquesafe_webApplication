@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 
 const AddMessagePopup = ({ onAddMessage, editMessage, setEditMessage, onClose }) => {
-  const [number, setNumber] = useState("");
+  //const [number, setNumber] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (editMessage) {
-      setNumber(editMessage.messageNumber);
+      //setNumber(editMessage.messageNumber);
       setMessage(editMessage.message);
     }
   }, [editMessage]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (number && parseInt(number) >= 0 && message) {
-      onAddMessage({ messageNumber: parseInt(number), message });
-      setNumber("");
+    if (message) {
+      onAddMessage({ message });
+      //setNumber("");
       setMessage("");
     }
   };
@@ -27,7 +27,7 @@ const AddMessagePopup = ({ onAddMessage, editMessage, setEditMessage, onClose })
           {editMessage ? "Edit Message" : "Add New Message"}
         </h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-gray-700">Number</label>
             <input
               type="number"
@@ -37,7 +37,7 @@ const AddMessagePopup = ({ onAddMessage, editMessage, setEditMessage, onClose })
               required
               min="0"
             />
-          </div>
+          </div> */}
           <div className="mb-4">
             <label className="block text-gray-700">Message</label>
             <textarea

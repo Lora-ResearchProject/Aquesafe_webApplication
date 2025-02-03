@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const MessageDataTable = ({ messages, onEdit, onDelete }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const messagesPerPage = 5;
+  const messagesPerPage = 10;
 
   const indexOfLastMessage = currentPage * messagesPerPage;
   const indexOfFirstMessage = indexOfLastMessage - messagesPerPage;
