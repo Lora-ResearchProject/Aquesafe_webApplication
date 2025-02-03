@@ -15,6 +15,7 @@ import ChatPage from "./Pages/ChatPage";
 import RouteLogPage from "./Pages/RouteLogPage";
 import ProfilePage from "./Pages/ProfilePage";
 import TestingPage from "./Pages/TestingPage";
+import FishingHotspotsPage from "./Pages/FishingHotspotsPage";
 
 function App() {
   return (
@@ -95,6 +96,16 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <RouteLogPage />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/hotspots"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <FishingHotspotsPage />
               </DashboardLayout>
             </ProtectedRoute>
           }
