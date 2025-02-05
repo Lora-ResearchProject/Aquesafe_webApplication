@@ -36,8 +36,8 @@ exports.createChat = async (req, res) => {
     // Define the external server URL dynamically (or use environment variable)
     const externalServerUrl = process.env.GATEWAY_API_URL;
 
-    // Send the formatted data to the external server
-    await sendToGateway(externalServerUrl, formattedMessage);
+    // Send the formatted data to the external server -------------------------------------------------------------- need to uncomment this after fix this
+    // await sendToGateway(externalServerUrl, formattedMessage);
 
     // Save to the database only after successful external API call
     const savedChat = await newChat.save();
