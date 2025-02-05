@@ -3,13 +3,13 @@ import { MapContainer as LeafletMap, TileLayer, Marker, Popup } from "react-leaf
 import FlyToMarker from "./FlyToMarker";
 import MarkerIcon from "./MarkerIcon";
 
-const defaultCenter = [6.7115, 79.9044];
+const defaultCenter = [7.8731, 80.7718];
 
 const MapContainer = ({ locations, selectedLocation, setSelectedLocation }) => {
   return (
     <LeafletMap
       center={defaultCenter}
-      zoom={12}
+      zoom={8}
       className="h-full w-full rounded-lg"
     >
       <TileLayer

@@ -9,13 +9,13 @@ import {
 import FlyToMarker from "../Map/FlyToMarker";
 import MarkerIcon from "../Map/MarkerIcon";
 
-const defaultCenter = [6.7115, 79.9044];
+const defaultCenter = [7.8731, 80.7718];
 
 const RLMapContainer = ({ locations }) => {
   return (
     <LeafletMap
       center={defaultCenter}
-      zoom={10}
+      zoom={8}
       className="h-full w-full rounded-lg"
     >
       <TileLayer

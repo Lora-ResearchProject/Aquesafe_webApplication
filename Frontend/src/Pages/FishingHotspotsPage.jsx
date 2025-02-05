@@ -4,7 +4,7 @@ import "leaflet/dist/leaflet.css";
 import { fetchAllFishingHotspots } from "../services/locationService";
 import FlyToMarker from "../Components/Map/FlyToMarker";
 
-const defaultCenter = [6.7115, 79.9044];
+const defaultCenter = [7.8731, 80.7718];
 
 const FishingHotspotsPage = () => {
   const [allLocationsData, setAllLocationsData] = useState(null);
