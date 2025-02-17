@@ -18,8 +18,25 @@ jobs:
         with:
           node-version: 20
 
-      - name: Run Tests
-        run: npm test
+      - name: Install Backend Dependencies
+        run: |
+          cd Backend
+          npm ci
+
+      - name: Run Backend Tests
+        run: |
+          cd Backend
+          npm test
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd Frontend
+          npm ci
+
+      - name: Run Frontend Tests
+        run: |
+          cd Frontend
+          npm test
 
       - name: Check for Security Vulnerabilities
         run: npm audit --audit-level=high || echo "Audit warnings found, but continuing deployment"
