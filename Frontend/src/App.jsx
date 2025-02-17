@@ -1,5 +1,5 @@
 // src/App.js
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./Components/auth/ProtectedRoute";
 import PublicRoute from "./Components/auth/PublicRoute";
@@ -18,7 +18,6 @@ import FishingHotspotsPage from "./Pages/FishingHotspotsPage";
 
 function App() {
   return (
-    <Router>
       <Routes>
         {/* Public Routes */}
         <Route
@@ -120,7 +119,6 @@ function App() {
           }
         />
       </Routes>
-    </Router>
   );
 }
 
