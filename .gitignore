@@ -1,6 +1,6 @@
 # -- COMMON
 node_modules
-package-lock.json
+# package-lock.json
 
 deploy.sh
 coverage
