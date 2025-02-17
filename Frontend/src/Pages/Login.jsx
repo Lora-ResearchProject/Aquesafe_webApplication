@@ -41,7 +41,10 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        <div className="py-0 px-4 border-none border-gray-200 flex justify-center items-center">
+          <h2 className="text-blue-600 text-3xl font-bold">AquaSafe</h2>
+        </div>
+        <h2 className="text-2xl font-bold mb-4 mt-4 text-center">Login</h2>
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
