@@ -1,7 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const vesselTrackerRoutes = require("./routes/vesselTrackerRoutes");
 const incommingMessageRoutes = require("./routes/incommingMessageRoutes");
@@ -16,7 +15,6 @@ const fishingHotspotsRoutes = require("./routes/fishingHotspotsRoutes");
 const testRoutes = require("./routes/testRoutes");
 
 dotenv.config();
-connectDB();
 
 const app = express();
 
@@ -41,7 +39,7 @@ app.use("/api/messageData", messageDataRoutes);
 app.use("/api/sos", sosRoutes);
 app.use("/api/gateway", gatewayRoutes);
 app.use("/api/chat", chatRoutes);
-app.use("/api/test-post", testRoutes);
+app.use("/api/test", testRoutes);
 app.use("/api/route-log", vesselRouteLogRoutes);
 app.use("/api/hotspots", fishingHotspotsRoutes);
 
