@@ -10,4 +10,9 @@ export default defineConfig({
     strictPort: true,
     allowedHosts: ["app.aquasafe.fish"],
   },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./src/setupTests.js",
+  },
 });
