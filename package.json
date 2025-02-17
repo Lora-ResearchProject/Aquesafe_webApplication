@@ -8,7 +8,7 @@
     "start:frontend": "cd Frontend && npm run dev",
     "start:backend": "cd Backend && npm start",
     "install-all": "npm install && cd Frontend && npm install && cd ../Backend && npm install && cd ../",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd Frontend && npm test && cd ../Backend && npm test && cd ../"
   },
   "author": "",
   "license": "ISC",
