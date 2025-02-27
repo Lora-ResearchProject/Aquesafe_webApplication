@@ -5,6 +5,7 @@ const gatewaySchema = new mongoose.Schema({
   gatewayName: { type: String, required: true },
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
+  status: { type: String, enum: ["Active", "Inactive"], required: true },
 });
 
 module.exports = mongoose.model("Gateway", gatewaySchema);
