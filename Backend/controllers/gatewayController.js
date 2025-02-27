@@ -12,15 +12,21 @@ exports.getGateways = async (req, res) => {
 
 // Create a new gateway
 exports.createGateway = async (req, res) => {
-  const { gatewayId, gatewayName, lat, lng } = req.body;
+  const { gatewayId, gatewayName, lat, lng, status } = req.body;
 
   // Validate input data
-  if (!gatewayId || !gatewayName || lat == null || lng == null) {
+  if (!gatewayId || !gatewayName || lat == null || lng == null || !status) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   try {
-    const newGateway = new Gateway({ gatewayId, gatewayName, lat, lng });
+    const newGateway = new Gateway({
+      gatewayId,
+      gatewayName,
+      lat,
+      lng,
+      status,
+    });
     await newGateway.save();
     res.status(201).json(newGateway);
   } catch (error) {

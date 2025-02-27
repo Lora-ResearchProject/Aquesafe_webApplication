@@ -23,7 +23,7 @@ const Sidebar = ({
         <button
           className={`py-2 px-4 ${
             activeTab === "vessels"
-              ? "border-b-2 border-blue-500 font-bold"
+              ? "border-b-2 border-blue-600 font-bold"
               : ""
           }`}
           onClick={() => setActiveTab("vessels")}
@@ -33,7 +33,7 @@ const Sidebar = ({
         <button
           className={`py-2 px-4 ${
             activeTab === "gateways"
-              ? "border-b-2 border-blue-500 font-bold"
+              ? "border-b-2 border-blue-600 font-bold"
               : ""
           }`}
           onClick={() => setActiveTab("gateways")}

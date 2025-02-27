@@ -1,16 +1,16 @@
 const Chat = require("../models/chatModel");
-const {sendToGateway} = require("../services/outgoingMessageService");
-const {generateId} = require("../utils/idGenerator");
-const {formatoutgoingMessage} = require("../utils/outgoingMessageStructures");
+const { sendToGateway } = require("../services/outgoingMessageService");
+const { generateId } = require("../utils/idGenerator");
+const { formatoutgoingMessage } = require("../utils/outgoingMessageStructures");
 
 // Handle creating a new chat message
 exports.createChat = async (req, res) => {
   try {
-    const {vesselId, messageNumber, message} = req.body;
+    const { vesselId, messageNumber, message } = req.body;
 
     // Validate required fields
     if (!vesselId || !messageNumber || !message) {
-      return res.status(400).json({error: "Missing required fields."});
+      return res.status(400).json({ error: "Missing required fields." });
     }
 
     // Create a new chat object (but don't save it yet)
@@ -48,26 +48,56 @@ exports.createChat = async (req, res) => {
     console.error(error);
     res
       .status(500)
-      .json({error: "Failed to send data to external server or save chat."});
+      .json({ error: "Failed to send data to external server or save chat." });
   }
 };
 
 // Handle retrieving chats
 exports.getChats = async (req, res) => {
   try {
-    const {vesselId} = req.params; // Get vessel ID from route parameters
+    const { vesselId } = req.params; // Get vessel ID from route parameters
 
     // Check if vesselId is provided
     if (!vesselId) {
-      return res.status(400).json({error: "Vessel ID is required."});
+      return res.status(400).json({ error: "Vessel ID is required." });
     }
 
     // Fetch chats filtered by vesselId and sorted by messageId in ascending order
-    const chats = await Chat.find({vesselId}).sort({messageId: 1});
+    const chats = await Chat.find({ vesselId }).sort({ messageId: 1 });
 
     res.status(200).json(chats); // Return the chats
   } catch (error) {
     console.error(error);
-    res.status(500).json({error: "Failed to retrieve chats."});
+    res.status(500).json({ error: "Failed to retrieve chats." });
+  }
+};
+
+exports.getLatestChats = async (req, res) => {
+  try {
+    // Aggregate to get the latest message for each vessel
+    const latestChats = await Chat.aggregate([
+      {
+        $sort: { dateTime: -1 }, // Sort by dateTime in descending order (latest first)
+      },
+      {
+        $group: {
+          _id: "$vesselId", // Group by vesselId
+          latestMessage: { $first: "$$ROOT" }, // Get the first document (latest message)
+        },
+      },
+      {
+        $replaceRoot: { newRoot: "$latestMessage" }, // Replace the root with the latest message
+      },
+      {
+        $sort: { dateTime: -1 }, // Sort the final result by dateTime (latest first)
+      },
+    ]);
+
+    res.status(200).json(latestChats); // Return the sorted latest messages per vessel
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to retrieve latest chats per vessel." });
   }
 };
