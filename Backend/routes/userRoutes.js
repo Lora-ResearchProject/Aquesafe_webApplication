@@ -3,6 +3,7 @@ const {
   createUser,
   loginUser,
   getUserProfile,
+  updateUserProfile,
   getAllUsers,
   deleteUser,
   changePassword,
@@ -19,7 +20,8 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 
 // Protected routes (require authentication)
-router.get("/profile-detils", protect, getUserProfile);
+router.get("/profile", protect, getUserProfile);
+router.put("/profile", protect, updateUserProfile);
 router.post("/change-password", protect, changePassword);
 
 // Admin-only routes

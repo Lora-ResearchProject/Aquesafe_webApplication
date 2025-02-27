@@ -55,11 +55,9 @@ exports.createUser = async (req, res) => {
         html: emailHtml,
       });
 
-      res
-        .status(201)
-        .json({
-          message: "User created successfully. Credentials sent via email.",
-        });
+      res.status(201).json({
+        message: "User created successfully. Credentials sent via email.",
+      });
     } else {
       res.status(400).json({ message: "Invalid user data" });
     }
@@ -101,6 +99,40 @@ exports.getUserProfile = async (req, res) => {
     }
 
     res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// User: Update Profile (Users & Admins can update their own profile)
+exports.updateUserProfile = async (req, res) => {
+  const { name, email } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user fields if provided
+    if (name) user.name = name;
+    if (email) {
+      // Check if the new email is already taken by another user
+      const emailExists = await User.findOne({ email });
+      if (emailExists && emailExists._id.toString() !== req.user.id) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+      user.email = email;
+    }
+
+    // Save the updated user
+    const updatedUser = await user.save();
+
+    res.status(201).json({
+      message: "User Updated successfully.",
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
