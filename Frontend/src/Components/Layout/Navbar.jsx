@@ -24,7 +24,7 @@ const Navbar = () => {
         </div>
         <div
           className={`border-2 rounded-full p-1 ${
-            isProfileActive ? "border-blue-500" : "border-gray-700"
+            isProfileActive ? "border-blue-600" : "border-gray-700"
           }`}
         >
           <UserIcon
