@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa";
 import { login } from "../services/authService";
 import logo from "../assets/logos/logo.png";
-import background from "../assets/backgroundImage/loginBg.jpg";
+import background from "../assets/backgroundImage/loginBg.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
