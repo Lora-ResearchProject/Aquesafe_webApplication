@@ -31,7 +31,7 @@ const LoginPage = () => {
       <div className="absolute top-4 left-6">
         <img src={logo} alt="Logo" className="w-36" />
       </div>
-      <div className="w-1/2 bg-blue-100 flex justify-center items-center">
+      <div className="w-2/5 bg-blue-100 flex justify-center items-center">
         <div className="h-1/2 w-1/2 flex flex-col justify-evenly items-center">
           <h2 className="text-3xl font-bold">Welcome Back!</h2>
           {error && <p className="text-red-500">{error}</p>}
@@ -74,7 +74,7 @@ const LoginPage = () => {
         </div>
       </div>
       <div
-        className="w-1/2 bg-cover bg-center"
+        className="w-3/5 bg-cover bg-center"
         style={{ backgroundImage: `url(${background})` }}
       ></div>
     </div>
