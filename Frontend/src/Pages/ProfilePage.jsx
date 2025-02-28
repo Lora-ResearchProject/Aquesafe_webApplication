@@ -1,22 +1,58 @@
-import React from "react";
+// src/pages/ProfilePage.js
+import React, { useEffect, useState } from "react";
+import {
+  fetchUserDetails,
+  updateUserDetails,
+  changePassword,
+} from "../services/authService";
+import UserDetails from "../Components/Profile/UserDetails";
+import ChangePassword from "../components/profile/ChangePassword";
 
 const ProfilePage = () => {
+  const [user, setUser] = useState({ name: "", email: "" });
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user details on component mount
+  useEffect(() => {
+    const loadUserDetails = async () => {
+      try {
+        const userData = await fetchUserDetails();
+        setUser(userData);
+      } catch (error) {
+        console.error("Failed to fetch user details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUserDetails();
+  }, []);
+
+  // Handle updating user details
+  const handleUpdateDetails = async (name, email) => {
+    const updatedUser = await updateUserDetails(name, email);
+    setUser({name, email});
+  };
+
+  // Handle changing password
+  const handleChangePassword = async (currentPassword, newPassword) => {
+    await changePassword(currentPassword, newPassword);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col justify-evenly items-center h-full bg-gray-100 p-8">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold text-gray-800">Profile Page</h1>
-      </div>
+    <div className="h-full p-5 flex flex-col justify-start items-center">
 
-      <div className="text-center">
-        <p className="text-3xl text-gray-600">
-          This page is currently under construction. We are working hard to
-          bring you an amazing experience!
-        </p>
-      </div>
+      <UserDetails user={user} onUpdate={handleUpdateDetails} />
 
-      <div className="text-center">
-        <p className="text-base text-gray-500">Stay tuned!</p>
-      </div>
+      <ChangePassword onChangePassword={handleChangePassword} />
     </div>
   );
 };

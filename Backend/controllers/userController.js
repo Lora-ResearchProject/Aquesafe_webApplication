@@ -2,7 +2,10 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { sendEmail } = require("../services/emailService");
-const frontBaseURL = process.env.FRONTEND_BASE_URL;
+const {
+  resetPasswordEmail,
+  newUserAccountEmail,
+} = require("../utils/emailTemplates");
 
 // Generate JWT token with role
 const generateToken = (id, role) => {
@@ -34,24 +37,13 @@ exports.createUser = async (req, res) => {
 
     if (user) {
       // Send an email to the user with their credentials
-      const emailSubject = "Your Account Has Been Created";
-      const emailText = `Hello ${name},\n\nYour account has been created successfully.\n\nHere are your login credentials:\nEmail: ${email}\nPassword: ${randomPassword}\n\nPlease log in and change your password to a strong one for security reasons.\n\nBest regards,\nThe Admin Team`;
-      const emailHtml = `
-        <h1>Hello ${name},</h1>
-        <p>Your account has been created successfully.</p>
-        <p>Here are your login credentials:</p>
-        <ul>
-          <li><strong>Email:</strong> ${email}</li>
-          <li><strong>Password:</strong> ${randomPassword}</li>
-        </ul>
-        <p>Please log in and change your password to a <strong>strong one</strong> for security reasons.</p>
-        <p>Best regards,<br>The Admin Team</p>
-      `;
+
+      const emailSubject = "Welcome to Aquasafe!";
+      const emailHtml = newUserAccountEmail(name, email, randomPassword);
 
       await sendEmail({
         to: email,
         subject: emailSubject,
-        text: emailText,
         html: emailHtml,
       });
 
@@ -201,6 +193,7 @@ exports.changePassword = async (req, res) => {
 // User: Forgot Password
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
+  const frontBaseURL = process.env.FRONTEND_BASE_URL;
 
   try {
     const user = await User.findOne({ email });
@@ -220,14 +213,14 @@ exports.forgotPassword = async (req, res) => {
 
     await user.save();
 
-    // Send the reset token to the user's email (you can use the email service we created earlier)
     const resetUrl = `${frontBaseURL}/reset-password/${resetToken}`;
-    const message = `You are receiving this email because you (or someone else) has requested a password reset. Please click the following link to reset your password:\n\n${resetUrl}`;
+    const emailSubject = "Password Reset Request";
+    const emailHtml = resetPasswordEmail(user.name, resetUrl);
 
     await sendEmail({
       to: user.email,
-      subject: "Password Reset Request",
-      text: message,
+      subject: emailSubject,
+      html: emailHtml,
     });
 
     res.json({ message: "Password reset email sent" });
