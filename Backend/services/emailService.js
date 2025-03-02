@@ -10,7 +10,7 @@ exports.sendEmail = async ({to, subject, text, html, retryCount = 0}) => {
     let transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST, // Titan Email's SMTP server
       port: process.env.EMAIL_PORT, // SMTP port for SSL
-      secure: false, // Use SSL (true for 465, false for other ports)
+      secure: true, // Use SSL (true for 465, false for other ports)
       auth: {
         user: process.env.EMAIL_USER, // Your Titan Email address
         pass: process.env.EMAIL_PASSWORD, // Your Titan Email password

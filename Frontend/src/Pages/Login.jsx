@@ -5,6 +5,7 @@ import { FaUser, FaLock } from "react-icons/fa";
 import { login } from "../services/authService";
 import logo from "../assets/logos/logo.png";
 import background from "../assets/backgroundImage/loginBg.jpg";
+import { getUserRole } from "../utils/auth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -18,9 +19,15 @@ const LoginPage = () => {
 
     try {
       const response = await login(email, password);
-      console.log("Login successful:", response);
 
-      navigate("/dashboard");
+      const role = getUserRole();
+      if (role === "admin") {
+        navigate("/admin-dashboard", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
+
+      //navigate("/dashboard");
     } catch (error) {
       setError(error.message || "Login failed. Please try again.");
     }

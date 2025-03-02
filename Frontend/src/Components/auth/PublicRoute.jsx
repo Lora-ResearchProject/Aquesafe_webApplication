@@ -1,20 +1,21 @@
-// src/components/PublicRoute.js
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { isAuthenticated, getUserRole } from "../../utils/auth";
 
 const PublicRoute = ({ children }) => {
-  const isAuth = isAuthenticated();
-  const userRole = getUserRole();
+  const isAuth = isAuthenticated(); // Check if the user is authenticated
+  const userRole = getUserRole(); // Get the user's role from the token
 
-  if (isAuth && userRole == "admin") {
-    return <Navigate to="/admin-dashboard" />;
+  // Redirect based on the user's role
+  if (isAuth) {
+    if (userRole === "admin") {
+      return <Navigate to="/admin-dashboard" replace />; // Redirect admin to admin dashboard
+    } else if (userRole === "user") {
+      return <Navigate to="/dashboard" replace />; // Redirect user to dashboard
+    }
   }
 
-  if (isAuth && userRole == "user") {
-    return <Navigate to="/dashboard" />;
-  }
-
+  // If the user is not authenticated, render the children (e.g., Login page)
   return children;
 };
 
