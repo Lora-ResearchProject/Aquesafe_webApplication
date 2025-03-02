@@ -29,3 +29,16 @@ export const isAuthenticated = () => {
   if (!token) return false;
   return !isTokenExpired(token);
 };
+
+// Get user role from token
+export const getUserRole = () => {
+  const token = getToken();
+  if (!token) return null;
+
+  try {
+    const { role } = jwtDecode(token); // Decode the token to get the role
+    return role;
+  } catch (error) {
+    return null;
+  }
+};
