@@ -7,7 +7,7 @@
 //   expect(response.body.message).toBe("API is working!");
 // });
 
-
+// dummy testing
 test("Backend dummy test that always passes", () => {
   expect(1 + 1).toBe(2);
 });
