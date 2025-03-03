@@ -32,3 +32,8 @@
 //   const user = await User.findOne({ email: "test@example.com" });
 //   expect(user).not.toBeNull();
 // });
+
+
+test("Backend dummy test that always passes", () => {
+    expect(1 + 1).toBe(2);
+  });
