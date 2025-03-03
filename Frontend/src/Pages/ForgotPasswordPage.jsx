@@ -16,16 +16,16 @@ const ForgotPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true); // Start loading
+    setIsLoading(true); 
 
     try {
       const response = await forgotPassword(email);
       setMessage(response.message);
-      setTimeout(() => navigate("/"), 5000); // Redirect to login after 5 seconds
+      setTimeout(() => navigate("/"), 5000); 
     } catch (error) {
       setError(error.message || "Failed to send reset link. Please try again.");
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false); 
     }
   };
 
