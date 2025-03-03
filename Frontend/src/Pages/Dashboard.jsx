@@ -4,19 +4,24 @@ import Section_02 from "../Components/dashboard/Section_02";
 import Section_03 from "../Components/dashboard/Section_03";
 import Section_04 from "../Components/dashboard/Section_04";
 
-import { fetchVessels } from "../services/locationService";
+import {
+  fetchLatestVesselLocations,
+  fetchVessels,
+} from "../services/locationService";
 import { fetchSOSData } from "../services/sosService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchGateways } from "../services/gatewayService";
 
 const MAX_Active_ALERTS = 4;
 const MAX_LATEST_CHATS = 4;
+const MAX_LATEST_VESSEL_LOCATIONS = 4;
 
 const Dashboard = () => {
   const [vesselData, setVesselData] = useState([]);
   const [sosAlerts, setSosAlerts] = useState([]);
   const [latestChats, setLatestChats] = useState([]);
   const [gateways, setGateways] = useState([]);
+  const [vesselLocations, setVesselLocations] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({
@@ -24,6 +29,7 @@ const Dashboard = () => {
     sos: null,
     chats: null,
     gateways: null,
+    locations: null,
   });
 
   useEffect(() => {
@@ -35,6 +41,7 @@ const Dashboard = () => {
         fetchSOSData(),
         fetchLatestChats(),
         fetchGateways(),
+        fetchLatestVesselLocations(),
       ]);
 
       setLoading(false);
@@ -86,6 +93,21 @@ const Dashboard = () => {
       } else {
         setErrors((prev) => ({ ...prev, gateways: results[3].reason.message }));
       }
+
+      // Process vessel locations with vessel name lookup
+      if (results[4].status === "fulfilled") {
+        const locationData = results[4].value.map((location) => ({
+          ...location,
+          vesselName: vesselMap[location.vesselId] || "Unknown Vessel",
+        }));
+
+        setVesselLocations(locationData);
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          locations: results[4].reason.message,
+        }));
+      }
     };
 
     fetchData();
@@ -99,7 +121,13 @@ const Dashboard = () => {
         loading={loading}
         error={errors.gateways}
       />
-      <Section_02 />
+      <Section_02
+        vesselData={vesselLocations.slice(0, MAX_LATEST_VESSEL_LOCATIONS)}
+        vesselCount={vesselLocations.length}
+        loading={loading}
+        error={errors.locations}
+      />
+
       <Section_03
         sosData={sosAlerts.slice(0, MAX_Active_ALERTS)}
         sosCount={sosAlerts.length}
