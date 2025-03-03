@@ -6,7 +6,7 @@ import {
   changePassword,
 } from "../services/authService";
 import UserDetails from "../Components/Profile/UserDetails";
-import ChangePassword from "../components/profile/ChangePassword";
+import ChangePassword from "../Components/Profile/ChangePassword";
 
 const ProfilePage = () => {
   const [user, setUser] = useState({ name: "", email: "" });
