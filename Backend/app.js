@@ -11,8 +11,10 @@ const gatewayRoutes = require("./routes/gatewayRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const vesselRouteLogRoutes = require("./routes/vesselRouteLogRoutes");
 const fishingHotspotsRoutes = require("./routes/fishingHotspotsRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const testRoutes = require("./routes/testRoutes");
+const { generateId } = require("./utils/idGenerator");
 
 dotenv.config();
 
@@ -42,6 +44,10 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/route-log", vesselRouteLogRoutes);
 app.use("/api/hotspots", fishingHotspotsRoutes);
+app.use("/api/notification", notificationRoutes);
+
+generateId()
+console.log("🚀 ~ generateId():", generateId())
 
 // Error handling middleware
 app.use((err, req, res, next) => {

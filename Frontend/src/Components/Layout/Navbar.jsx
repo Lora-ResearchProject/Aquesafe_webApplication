@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { BellIcon, UserIcon } from "@heroicons/react/outline";
 import logo from "../../assets/logos/logo.png";
+import NotificationDropdown from "./NotificationDropdown";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -18,12 +19,14 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center space-x-4">
-        <div className="relative">
-          <BellIcon className="h-6 w-6 text-gray-700 cursor-pointer" />
+        {/* <div className="relative">
+          <BellIcon className="h-7 w-7 text-gray-700 cursor-pointer" />
           <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center">
             4
           </span>
-        </div>
+          
+        </div> */}
+        <NotificationDropdown />
         <div
           className={`border-2 rounded-full p-1 cursor-pointer ${
             isProfileActive ? "border-blue-600" : "border-gray-700"
