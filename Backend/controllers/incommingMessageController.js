@@ -1,27 +1,34 @@
 const Sos = require("../models/sosModel");
 const Chat = require("../models/chatModel");
 const MessageData = require("../models/messageDataModel");
+const { createNotification } = require("./notificationController");
 
-// POST function to handle SOS data, and chat data
+// POST function to handle SOS data and chat data
 exports.storeVesselLocation = async (req, res) => {
   try {
     const { id, l, s, m } = req.body;
-    const [vesselId, messageId] = id.split("|"); // Split id into parts
-    let lat, lng;
+    const [vesselId, messageId] = id.split("|"); // Extract vesselId and messageId
 
+    if (!vesselId || !messageId) {
+      return res.status(400).json({ error: "Invalid vessel ID or Message ID" });
+    }
+
+    let lat = null,
+      lng = null;
+
+    // Parse latitude and longitude if available
     if (l) {
-      [lat, lng] = l.split("|").map((coord) => parseFloat(coord));
+      const coords = l.split("|").map((coord) => parseFloat(coord));
+      if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+        [lat, lng] = coords;
+      }
     }
 
-    if (!vesselId) {
-      return res.status(400).json({ error: "Invalid vessel Id" });
-    }
-
+    // Handle Chat Message
     if (m) {
-      // If 'm' exists, save data to the Chat model
       const messageNumber = parseInt(m, 10);
 
-      // Fetch the message using messageNumber from MessageData
+      // Fetch the message using messageNumber
       const messageData = await MessageData.findOne({ messageNumber });
 
       if (!messageData) {
@@ -31,36 +38,51 @@ exports.storeVesselLocation = async (req, res) => {
       }
 
       const chat = new Chat({
-        messageId: messageId,
-        vesselId: vesselId,
-        dateTime: new Date(), // Use current date and time
+        messageId,
+        vesselId,
+        dateTime: new Date(),
         messageNumber,
         message: messageData.message,
         direction: "receive",
       });
 
-      // Save the Chat document to the database
+      // Save chat data
       await chat.save();
 
       return res.status(201).json({ message: "Chat data saved successfully" });
     }
 
-    if (s === 1) {
-      // If 's' exists and is 1, save to the SOS model
+    // Handle SOS Alert
+    if (Number(s) === 1) {
       const sos = new Sos({
         vesselId,
         sosId: messageId,
-        dateTime: new Date(), // Use current date and time
+        dateTime: new Date(),
         lat,
         lng,
-        sosStatus: "active", // Default SOS status as "active"
+        sosStatus: "active",
       });
 
-      // Save the SOS document to the database
+      // Save SOS data
       await sos.save();
+
+      // Generate notification message
+      const messageTitle = `SOS Alert from Vessel ${vesselId}`;
+      const messageDescription = `An SOS has been triggered at coordinates (${lat}, ${lng}) on ${new Date().toLocaleString()}. Immediate action required!`;
+
+      // Create notification
+      await createNotification({
+        messageTitle,
+        messageDescription,
+        Type: "sos",
+      });
 
       return res.status(201).json({ message: "SOS data saved successfully" });
     }
+
+    return res
+      .status(400)
+      .json({ error: "Invalid request, missing required fields." });
   } catch (error) {
     console.error(
       "Error storing vessel location, SOS data, or chat data:",
@@ -69,20 +91,3 @@ exports.storeVesselLocation = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-// else {
-//   // Otherwise, save to the VesselLocation model
-//   const vesselLocation = new VesselLocation({
-//     vesselId,
-//     dateTime: new Date(), // Use current date and time
-//     lat,
-//     lng,
-//   });
-
-//   // Save the VesselLocation document to the database
-//   await vesselLocation.save();
-
-//   return res
-//     .status(201)
-//     .json({ message: "Vessel location saved successfully" });
-// }
