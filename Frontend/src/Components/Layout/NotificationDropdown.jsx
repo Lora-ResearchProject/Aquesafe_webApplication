@@ -20,9 +20,9 @@ const NotificationDropdown = () => {
     try {
       const notificationsData = await getNotifications();
       setNotifications(notificationsData.notifications.reverse()); // Reverse to show latest first
-      if (notificationsData.unreadCount > unreadCount) {
-        playNotificationSound();
-      }
+      // if (notificationsData.unreadCount > unreadCount) {
+      //   playNotificationSound(); //temparary remove the sound
+      // }
 
       setUnreadCount(notificationsData.unreadCount);
     } catch (error) {
