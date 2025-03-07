@@ -2,6 +2,7 @@ const Sos = require("../models/sosModel");
 const Chat = require("../models/chatModel");
 const MessageData = require("../models/messageDataModel");
 const { createNotification } = require("./notificationController");
+const { alertNearbyVessels } = require("../services/cerService");
 
 // POST function to handle SOS data and chat data
 exports.storeVesselLocation = async (req, res) => {
@@ -76,6 +77,8 @@ exports.storeVesselLocation = async (req, res) => {
         messageDescription,
         Type: "sos",
       });
+
+      await alertNearbyVessels(vesselId, lat, lng);
 
       return res.status(201).json({ message: "SOS data saved successfully" });
     }

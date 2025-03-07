@@ -1,5 +1,6 @@
 // Function to format data based on type
 function formatoutgoingMessage(msgdata, type) {
+  console.log("🚀 ~ formatoutgoingMessage ~ msgdata:", msgdata)
   if (!msgdata || !type) {
     throw new Error("message data and type are required.");
   }
@@ -7,6 +8,8 @@ function formatoutgoingMessage(msgdata, type) {
   switch (type) {
     case "chat":
       return formatChatMessage(msgdata);
+    case "soschat":
+      return formatSosChatMessage(msgdata);
     case "sos":
       return formatSosMessage(msgdata);
 
@@ -28,6 +31,23 @@ function formatChatMessage(msgdata) {
 
   return {
     id: `${vesselId}|${messageId}`,
+    m: messageNumber,
+  };
+}
+
+// Helper function to format sos chat message
+function formatSosChatMessage(msgdata) {
+  const { vesselId, messageId, messageNumber, lat, lng } = msgdata;
+
+  if (!vesselId || !messageId || !lat || !lng) {
+    throw new Error(
+      "message data must include vesselId, messageId, messageNumber, lat and lng."
+    );
+  }
+
+  return {
+    id: `${vesselId}|${messageId}`,
+    l: `${lat}|${lng}`,
     m: messageNumber,
   };
 }
