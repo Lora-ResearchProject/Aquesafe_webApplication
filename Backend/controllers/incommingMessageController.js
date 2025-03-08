@@ -3,11 +3,12 @@ const Chat = require("../models/chatModel");
 const MessageData = require("../models/messageDataModel");
 const { createNotification } = require("./notificationController");
 const { alertNearbyVessels } = require("../services/cerService");
+const { processWeatherCheck } = require("../services/weatherService");
 
 // POST function to handle SOS data and chat data
 exports.storeVesselLocation = async (req, res) => {
   try {
-    const { id, l, s, m } = req.body;
+    const { id, l, s, m, wr } = req.body; // Assuming wr is included in the request body
     const [vesselId, messageId] = id.split("|"); // Extract vesselId and messageId
 
     if (!vesselId || !messageId) {
@@ -83,6 +84,15 @@ exports.storeVesselLocation = async (req, res) => {
       return res.status(201).json({ message: "SOS data saved successfully" });
     }
 
+    // Handle Weather Check (if wr is 1)
+    if (Number(wr) === 1) {
+      const result = await processWeatherCheck(vesselId, lat, lng, wr);
+      return res
+        .status(200)
+        .json({ message: "Weather check processed successfully" });
+    }
+
+    // Default response if no valid option is provided
     return res
       .status(400)
       .json({ error: "Invalid request, missing required fields." });
@@ -91,6 +101,8 @@ exports.storeVesselLocation = async (req, res) => {
       "Error storing vessel location, SOS data, or chat data:",
       error
     );
-    res.status(500).json({ error: "Internal Server Error" });
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
   }
 };

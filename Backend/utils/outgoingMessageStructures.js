@@ -1,6 +1,5 @@
 // Function to format data based on type
 function formatoutgoingMessage(msgdata, type) {
-  console.log("🚀 ~ formatoutgoingMessage ~ msgdata:", msgdata)
   if (!msgdata || !type) {
     throw new Error("message data and type are required.");
   }
@@ -12,6 +11,8 @@ function formatoutgoingMessage(msgdata, type) {
       return formatSosChatMessage(msgdata);
     case "sos":
       return formatSosMessage(msgdata);
+    case "weather":
+      return formatWeatherMessage(msgdata);
 
     // Future case for other types can be added here
     default:
@@ -63,6 +64,22 @@ function formatSosMessage(msgdata) {
   return {
     id: `${vesselId}|${sosId}`,
     s,
+  };
+}
+
+// Helper function to format weather message
+function formatWeatherMessage(msgdata) {
+  const { vesselId, messageId, weatherPercentage } = msgdata;
+
+  if (!vesselId || !messageId) {
+    throw new Error(
+      "message data must include vesselId, messageId, weatherPercentage."
+    );
+  }
+
+  return {
+    id: `${vesselId}|${messageId}`,
+    w: weatherPercentage,
   };
 }
 

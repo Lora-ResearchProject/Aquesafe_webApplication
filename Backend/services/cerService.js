@@ -4,7 +4,6 @@ const { generateId } = require("../utils/idGenerator");
 const { formatoutgoingMessage } = require("../utils/outgoingMessageStructures");
 const { sendToGateway } = require("./outgoingMessageService");
 
-
 const Range = 10; // 10km
 
 const getFilteredVesselLocations = async (excludeVesselId) => {
@@ -24,17 +23,20 @@ const getFilteredVesselLocations = async (excludeVesselId) => {
         const currentDateTime = new Date(dateTime);
 
         if (currentDateTime >= tenHoursAgo) {
-          if (!acc[vesselId] || currentDateTime > new Date(acc[vesselId].dateTime)) {
+          if (
+            !acc[vesselId] ||
+            currentDateTime > new Date(acc[vesselId].dateTime)
+          ) {
             acc[vesselId] = { vesselId, dateTime, lat, lng };
           }
         }
-        
+
         return acc;
       }, {})
-        
     );
-    return latestLocations.filter((vessel) => vessel.vesselId !== excludeVesselId);
-    
+    return latestLocations.filter(
+      (vessel) => vessel.vesselId !== excludeVesselId
+    );
   } catch (error) {
     console.error("Error fetching vessel locations:", error);
     throw new Error("Failed to retrieve vessel locations.");
@@ -61,7 +63,6 @@ const haversine = (lat1, lon1, lat2, lon2) => {
 const getNearbyVessels = async (excludeVesselId, lat, lng) => {
   try {
     const vessels = await getFilteredVesselLocations(excludeVesselId);
-    console.log("🚀 ~ getNearbyVessels ~ vessels:", vessels)
 
     return vessels
       .filter((vessel) => haversine(lat, lng, vessel.lat, vessel.lng) <= Range)
@@ -73,7 +74,6 @@ const getNearbyVessels = async (excludeVesselId, lat, lng) => {
 };
 
 const saveAndSendMessage = async (vesselId, lat, lng) => {
-  console.log("🚀 ~ saveAndSendMessage ~ vesselId, lat, lng:", vesselId, lat, lng)
   try {
     const messageId = generateId();
     const messageNumber = 0;
@@ -114,7 +114,6 @@ const saveAndSendMessage = async (vesselId, lat, lng) => {
 const alertNearbyVessels = async (requestingVesselId, lat, lng) => {
   try {
     const nearbyVessels = await getNearbyVessels(requestingVesselId, lat, lng);
-    console.log("🚀 ~ alertNearbyVessels ~ nearbyVessels:", nearbyVessels)
 
     if (nearbyVessels.length === 0) {
       console.log("No nearby vessels found within the 10km range.");
@@ -123,7 +122,9 @@ const alertNearbyVessels = async (requestingVesselId, lat, lng) => {
 
     console.log(`Notifying ${nearbyVessels.length} vessels:`, nearbyVessels);
 
-    const sendMessages = nearbyVessels.map((vesselId) => saveAndSendMessage(vesselId, lat, lng));
+    const sendMessages = nearbyVessels.map((vesselId) =>
+      saveAndSendMessage(vesselId, lat, lng)
+    );
     return await Promise.all(sendMessages);
   } catch (error) {
     console.error("Error alerting nearby vessels:", error);
