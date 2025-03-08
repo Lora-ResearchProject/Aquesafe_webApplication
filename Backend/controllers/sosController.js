@@ -43,7 +43,9 @@ exports.getSosByVesselId = async (req, res) => {
     const sosRecords = await Sos.find({ vesselId });
 
     if (sosRecords.length === 0) {
-      return res.status(404).json({ error: "No SOS records found for the given vesselId" });
+      return res
+        .status(404)
+        .json({ error: "No SOS records found for the given vesselId" });
     }
 
     res.status(200).json(sosRecords);
@@ -100,5 +102,54 @@ exports.updateSosStatus = async (req, res) => {
   } catch (error) {
     console.error("Error updating SOS status:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Get SOS records by vesselId for the Mobile app
+exports.getSosByVesselIdForMobile = async (req, res) => {
+  try {
+    const { vesselId } = req.params; // Get vesselId from request parameters
+
+    if (!vesselId) {
+      return res
+        .status(400)
+        .json({ success: false, error: "vesselId is required" });
+    }
+
+    // Fetch active alerts for the given vesselId
+    const activeAlerts = await Sos.find({ vesselId, sosStatus: "active" }).sort(
+      { dateTime: -1 }
+    );
+
+    // Fetch resolved alerts only if needed
+    let resolvedAlerts = [];
+    if (activeAlerts.length < 3) {
+      resolvedAlerts = await Sos.find({ vesselId, sosStatus: "resolved" })
+        .sort({ dateTime: -1 })
+        .limit(3 - activeAlerts.length);
+    }
+
+    // Combine both, prioritizing active alerts
+    const alertsToSend = [...activeAlerts, ...resolvedAlerts];
+
+    // If no alerts found, return success: false
+    if (alertsToSend.length === 0) {
+      return res.status(200).json({
+        success: false,
+        message: "No SOS alerts found for this vessel",
+        count: 0,
+        alerts: [],
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "SOS alerts retrieved successfully",
+      count: alertsToSend.length,
+      alerts: alertsToSend,
+    });
+  } catch (error) {
+    console.error("Error fetching SOS alerts:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
