@@ -53,7 +53,7 @@ const processWeatherCheck = async (vesselId, lat, lon) => {
 
     // Send the message to the gateway
     const gatewayUrl = process.env.GATEWAY_API_URL;
-    await sendToGateway(gatewayUrl, formattedMessage);
+    // await sendToGateway(gatewayUrl, formattedMessage);
 
     console.log("Weather message sent successfully:", formattedMessage);
     return { success: true, message: "Weather data sent", data: msgData };
