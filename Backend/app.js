@@ -46,8 +46,8 @@ app.use("/api/route-log", vesselRouteLogRoutes);
 app.use("/api/hotspots", fishingHotspotsRoutes);
 app.use("/api/notification", notificationRoutes);
 
-generateId()
-console.log("🚀 ~ generateId():", generateId())
+// generateId()
+// console.log("🚀 ~ generateId():", generateId())
 
 // Error handling middleware
 app.use((err, req, res, next) => {
