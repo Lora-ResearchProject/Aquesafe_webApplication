@@ -86,7 +86,13 @@ exports.storeVesselLocation = async (req, res) => {
 
     // Handle Weather Check (if wr is 1)
     if (Number(wr) === 1) {
-      const result = await processWeatherCheck(vesselId, lat, lng, wr);
+      const result = await processWeatherCheck(
+        vesselId,
+        messageId,
+        lat,
+        lng,
+        wr
+      );
       return res
         .status(200)
         .json({ message: "Weather check processed successfully" });
