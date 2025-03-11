@@ -56,6 +56,11 @@ exports.storeVesselLocation = async (req, res) => {
 
     // Handle SOS Alert
     if (Number(s) === 1) {
+      // Alert nearby vessels and get the response message
+      const alertResponse = await alertNearbyVessels(vesselId, lat, lng);
+      const alertMessage = alertResponse.message;
+
+      // Create SOS entry
       const sos = new Sos({
         vesselId,
         sosId: messageId,
@@ -63,9 +68,10 @@ exports.storeVesselLocation = async (req, res) => {
         lat,
         lng,
         sosStatus: "active",
+        alertMessage,
       });
 
-      // Save SOS data
+      // Save the SOS record
       await sos.save();
 
       // Generate notification message
@@ -79,14 +85,18 @@ exports.storeVesselLocation = async (req, res) => {
         Type: "sos",
       });
 
-      await alertNearbyVessels(vesselId, lat, lng);
-
       return res.status(201).json({ message: "SOS data saved successfully" });
     }
 
     // Handle Weather Check (if wr is 1)
     if (Number(wr) === 1) {
-      const result = await processWeatherCheck(vesselId, lat, lng, wr);
+      const result = await processWeatherCheck(
+        vesselId,
+        messageId,
+        lat,
+        lng,
+        wr
+      );
       return res
         .status(200)
         .json({ message: "Weather check processed successfully" });

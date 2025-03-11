@@ -26,13 +26,10 @@ const getWeatherCheck = async (lat, lon) => {
 };
 
 // Main function to process and send weather data
-const processWeatherCheck = async (vesselId, lat, lon) => {
+const processWeatherCheck = async (vesselId, messageId, lat, lon) => {
   try {
     // Fetch weather percentage
     const weatherPercentage = await getWeatherCheck(lat, lon);
-
-    // Generate a unique messageId
-    const messageId = generateId();
 
     if (weatherPercentage) {
       // Ensure the value is a valid number; if not, replace with 0
@@ -53,7 +50,7 @@ const processWeatherCheck = async (vesselId, lat, lon) => {
 
     // Send the message to the gateway
     const gatewayUrl = process.env.GATEWAY_API_URL;
-    await sendToGateway(gatewayUrl, formattedMessage);
+    // await sendToGateway(gatewayUrl, formattedMessage); // -------------------------------------------------------------- need to uncomment this after fix this
 
     console.log("Weather message sent successfully:", formattedMessage);
     return { success: true, message: "Weather data sent", data: msgData };
