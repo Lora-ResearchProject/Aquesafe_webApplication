@@ -24,6 +24,11 @@ const SOSMessage = ({ sos, onClick }) => {
             <strong>Location:</strong>{" "}
             {`${sos.lat.toFixed(3)}N, ${sos.lng.toFixed(3)}W`}
           </p>
+
+          <p>
+            <strong>Vessel alerting:</strong>{" "}
+            {sos.alertMessage || "No alerts sent to nearby vessels."}
+          </p>
           <p>
             <strong>Date:</strong> {date} <strong>Time:</strong> {time}
           </p>
