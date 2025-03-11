@@ -7,6 +7,7 @@ const sosSchema = new mongoose.Schema({
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
   sosStatus: { type: String, enum: ["active", "resolved"], required: true },
+  alertMessage: { type: String },
 });
 
 module.exports = mongoose.model("SOS", sosSchema);

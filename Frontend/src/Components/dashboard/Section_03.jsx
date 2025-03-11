@@ -71,6 +71,10 @@ const Section_03 = ({ sosData, sosCount, loading, error }) => {
                     <strong>Location:</strong>{" "}
                     {`${sos.lat.toFixed(3)}N, ${sos.lng.toFixed(3)}W`}
                   </p>
+                  <p className="text-sm">
+                    <strong>Vessel alerting:</strong>{" "}
+                    {sos.alertMessage || "No alerts sent to nearby vessels."}
+                  </p>
                 </div>
 
                 {/* Right Side - Date & Time */}

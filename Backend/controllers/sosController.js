@@ -94,7 +94,7 @@ exports.updateSosStatus = async (req, res) => {
     const externalServerUrl = process.env.GATEWAY_API_URL;
 
     // Send the formatted data to the external server
-    await sendToGateway(externalServerUrl, formattedMessage);
+    // await sendToGateway(externalServerUrl, formattedMessage); // -------------------------------------------------------------- need to uncomment this after fix this
 
     res
       .status(200)

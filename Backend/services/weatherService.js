@@ -26,13 +26,10 @@ const getWeatherCheck = async (lat, lon) => {
 };
 
 // Main function to process and send weather data
-const processWeatherCheck = async (vesselId, lat, lon) => {
+const processWeatherCheck = async (vesselId, messageId, lat, lon) => {
   try {
     // Fetch weather percentage
     const weatherPercentage = await getWeatherCheck(lat, lon);
-
-    // Generate a unique messageId
-    const messageId = generateId();
 
     if (weatherPercentage) {
       // Ensure the value is a valid number; if not, replace with 0
