@@ -67,8 +67,7 @@ exports.loginVessel = async (req, res) => {
 // Get all vessel details
 exports.getAllVessels = async (req, res) => {
   try {
-    
-    const vessels = await Vessel.find({}, 'vesselId vesselName');
+    const vessels = await Vessel.find({}, "vesselId vesselName");
 
     res.status(200).json({
       success: true,

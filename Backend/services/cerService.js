@@ -137,4 +137,4 @@ const alertNearbyVessels = async (requestingVesselId, lat, lng) => {
   }
 };
 
-module.exports = { getNearbyVessels, saveAndSendMessage, alertNearbyVessels };
+module.exports = { getNearbyVessels, saveAndSendMessage, alertNearbyVessels, getFilteredVesselLocations };
