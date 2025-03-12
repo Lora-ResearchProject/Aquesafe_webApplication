@@ -6,6 +6,7 @@ const TrackerMap = ({
   selectedLocation,
   setSelectedLocation,
   zones,
+  hotspots,
 }) => {
   return (
     <div className="w-3/4 -z-0">
@@ -14,6 +15,7 @@ const TrackerMap = ({
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
         zones={zones}
+        hotspots={hotspots}
       />
     </div>
   );

@@ -120,7 +120,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/hotspots"
         element={
           <ProtectedRoute allowedRoles={["user", "admin"]}>
@@ -129,7 +129,7 @@ function App() {
             </DashboardLayout>
           </ProtectedRoute>
         }
-      />
+      /> */}
       <Route
         path="/profile"
         element={

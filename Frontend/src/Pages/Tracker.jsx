@@ -4,6 +4,7 @@ import TrackerMap from "../Components/Tracker/TrackerMap";
 import {
   fetchLatestVesselLocations,
   fetchLatestGateWayLocations,
+  fetchAllFishingHotspots,
 } from "../services/locationService";
 import { fetchZones } from "../services/zoneService";
 import "leaflet/dist/leaflet.css";
@@ -19,6 +20,7 @@ const Tracker = () => {
   const [lastRefreshTime, setLastRefreshTime] = useState(Date.now());
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [zones, setZones] = useState([]);
+  const [hotspots, setHotspots] = useState([]);
 
   const intervalRef = useRef(null); // Store interval ID
 
@@ -68,6 +70,16 @@ const Tracker = () => {
     }
   }, []);
 
+   // Fetch all zones
+   const fetchHotspots = useCallback(async () => {
+    try {
+      const fetchedHotspots = await fetchAllFishingHotspots();
+      setHotspots(fetchedHotspots); // Set fetched zones to the state
+    } catch (error) {
+      console.error("Failed to fetch zones:", error);
+    }
+  }, []);
+
   // Function to start a new interval for vessel data fetching
   const startAutoRefresh = useCallback(() => {
     if (intervalRef.current) {
@@ -81,10 +93,11 @@ const Tracker = () => {
     fetchVesselData(); // Fetch vessel data initially
     fetchGatewayData(); // Fetch gateway data only once
     fetchAllZones(); // Fetch zones initially
+    fetchHotspots();
     startAutoRefresh(); // Start auto-refresh
 
     return () => clearInterval(intervalRef.current); // Cleanup interval on unmount
-  }, [fetchVesselData, fetchGatewayData, fetchAllZones, startAutoRefresh]);
+  }, [fetchVesselData, fetchGatewayData, fetchAllZones,fetchHotspots, startAutoRefresh]);
 
   // Manual Refresh Function
   const handleManualRefresh = () => {
@@ -105,6 +118,7 @@ const Tracker = () => {
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
         zones={zones}
+        hotspots={hotspots}
       />
 
       <Sidebar
@@ -121,6 +135,7 @@ const Tracker = () => {
         refreshTrigger={refreshTrigger}
         onZoneCreated={handleZoneCreated}
         zones={zones}
+        hotspots={hotspots}
       />
     </div>
   );

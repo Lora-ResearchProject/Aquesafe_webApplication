@@ -4,7 +4,7 @@ import RefreshButton from "./RefreshButton";
 import ZoneCreater from "./ZoneCreater";
 import ZoneSearch from "./ZoneSearch";
 import ZoneList from "./ZoneList";
-import { deleteZone, updateZone } from "../../services/zoneService";
+import { deleteZone } from "../../services/zoneService";
 
 const Sidebar = ({
   vessels,
@@ -20,9 +20,11 @@ const Sidebar = ({
   refreshTrigger,
   onZoneCreated,
   zones,
+  hotspots,
 }) => {
   const [activeTab, setActiveTab] = useState("vessels");
   const [zoneSearchTerm, setZoneSearchTerm] = useState("");
+  const [hotspotSearchTerm, setHotspotSearchTerm] = useState("");
 
   // Handle deleting a zone
   const handleDeleteZone = async (zoneId) => {
@@ -41,9 +43,9 @@ const Sidebar = ({
 
   return (
     <div className="w-1/4 bg-gray-100 p-4 border-none border-gray-300">
-      <div className="flex space-x-4 mb-4">
+      <div className="flex space-x-1 mb-4">
         <button
-          className={`py-2 px-4 ${
+          className={`py-2 px-2 ${
             activeTab === "vessels"
               ? "border-b-2 border-blue-600 font-bold"
               : ""
@@ -53,7 +55,7 @@ const Sidebar = ({
           Vessels
         </button>
         <button
-          className={`py-2 px-4 ${
+          className={`py-2 px-2 ${
             activeTab === "gateways"
               ? "border-b-2 border-blue-600 font-bold"
               : ""
@@ -63,12 +65,22 @@ const Sidebar = ({
           Gateways
         </button>
         <button
-          className={`py-2 px-4 ${
+          className={`py-2 px-2 ${
             activeTab === "zones" ? "border-b-2 border-blue-600 font-bold" : ""
           }`}
           onClick={() => setActiveTab("zones")}
         >
           Zones
+        </button>
+        <button
+          className={`py-2 px-2 ${
+            activeTab === "hotspots"
+              ? "border-b-2 border-blue-600 font-bold"
+              : ""
+          }`}
+          onClick={() => setActiveTab("hotspots")}
+        >
+          Hotspots
         </button>
       </div>
 
@@ -92,6 +104,59 @@ const Sidebar = ({
             onEdit={handleEditZone} // Pass the edit handler
             onDelete={handleDeleteZone} // Pass the delete handler
           />
+        </>
+      ) : activeTab === "hotspots" ? (
+        <>
+          {/* Hotspot Search */}
+          <input
+            type="text"
+            placeholder="Search Hotspots..."
+            className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={hotspotSearchTerm}
+            onChange={(e) => setHotspotSearchTerm(e.target.value)}
+          />
+
+          {/* Hotspot List */}
+          <div className="space-y-2">
+            {hotspots
+              .filter((hotspot) =>
+                hotspot.hotspotId
+                  .toString()
+                  .toLowerCase()
+                  .includes(hotspotSearchTerm.toLowerCase())
+              )
+              .map((hotspot) => (
+                <div
+                  key={hotspot.hotspotId}
+                  onClick={() =>
+                    setSelectedLocation({
+                      lat: hotspot.latitude,
+                      lng: hotspot.longitude,
+                    })
+                  }
+                  className={`p-3 rounded-lg cursor-pointer border ${
+                    selectedLocation?.lat === hotspot.latitude &&
+                    selectedLocation?.lng === hotspot.longitude
+                      ? "bg-green-100 border-green-300"
+                      : "bg-white border-gray-300"
+                  } hover:bg-green-50`}
+                >
+                  <strong className="block text-lg font-medium text-gray-800">
+                    Hotspot ID: {hotspot.hotspotId}
+                  </strong>
+                  <p className="text-sm text-gray-600">
+                    Vessels: {hotspot.vesselCount}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Available Slots: {hotspot.availableSlots}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Last Updated:{" "}
+                    {new Date(hotspot.currentDateTime).toLocaleString()}
+                  </p>
+                </div>
+              ))}
+          </div>
         </>
       ) : (
         <>
