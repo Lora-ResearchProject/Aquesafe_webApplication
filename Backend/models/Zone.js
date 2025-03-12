@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const ZoneSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   boundary: [
     {
       lat: { type: Number, required: true },

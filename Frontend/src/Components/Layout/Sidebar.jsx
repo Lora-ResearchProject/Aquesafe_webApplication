@@ -53,7 +53,7 @@ const Sidebar = ({isAdmin}) => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
           <div className="bg-white p-4 rounded shadow-lg">
             <p className="text-lg font-bold">
               Are you sure you want to log out?

@@ -26,10 +26,10 @@ exports.getAllZones = async (req, res) => {
   }
 };
 
-// Get a single zone by name
-exports.getZoneByName = async (req, res) => {
+// Get a single zone by id
+exports.getZoneById = async (req, res) => {
   try {
-    const zone = await Zone.findOne({ name: req.params.name });
+    const zone = await Zone.findById(req.params.id); // Use ID to find zone
     if (!zone) return res.status(404).json({ error: "Zone not found" });
     res.status(200).json(zone);
   } catch (error) {
@@ -39,27 +39,57 @@ exports.getZoneByName = async (req, res) => {
   }
 };
 
-// Update a zone
 exports.updateZone = async (req, res) => {
+  const { id } = req.params;
+
+  const { name, boundary } = req.body;
+
   try {
-    const updatedZone = await Zone.findOneAndUpdate(
-      { name: req.params.name },
-      { boundary: req.body.boundary },
-      { new: true }
-    );
+    // 1. Validate Input
+    if (!id || !name || !boundary) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
 
-    if (!updatedZone) return res.status(404).json({ error: "Zone not found" });
+    if (!Array.isArray(boundary)) {
+      return res.status(400).json({ message: "Boundary must be an array" });
+    }
 
-    res.status(200).json(updatedZone);
+    for (const coord of boundary) {
+      if (!coord.lat || !coord.lng) {
+        return res
+          .status(400)
+          .json({ message: "Invalid boundary coordinates" });
+      }
+    }
+
+    // 2. Check if the Zone Exists
+    const existingZone = await Zone.findById(id);
+    if (!existingZone) {
+      return res.status(404).json({ message: "Zone not found" });
+    }
+
+    // 3. Update the Zone
+    existingZone.name = name;
+    existingZone.boundary = boundary;
+
+    const updatedZone = await existingZone.save();
+
+    // 4. Return Success Response
+    res.status(200).json({
+      message: "Zone updated successfully",
+      zone: updatedZone,
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update zone: " + error.message });
+    // 5. Handle Errors
+    console.error("Error updating zone:", error);
+    res.status(500).json({ message: "Failed to update zone" });
   }
 };
 
-// Delete a zone
+// Delete a zone by id
 exports.deleteZone = async (req, res) => {
   try {
-    const deletedZone = await Zone.findOneAndDelete({ name: req.params.name });
+    const deletedZone = await Zone.findByIdAndDelete(req.params.id); // Use ID to delete zone
 
     if (!deletedZone) return res.status(404).json({ error: "Zone not found" });
 
@@ -69,17 +99,17 @@ exports.deleteZone = async (req, res) => {
   }
 };
 
-// Get all vessels within a specified zone
+// Get all vessels within a specified zone by id
 exports.getVesselsByZone = async (req, res) => {
   try {
-    const zoneName = req.params.zoneName;
+    const zoneId = req.params.zoneId; // Use zone ID
     const vessels = await getFilteredVesselLocations();
 
-    if (zoneName.toLowerCase() === "all") {
+    if (zoneId === "all") {
       return res.status(200).json(vessels); // Return all vessels
     }
 
-    const zone = await Zone.findOne({ name: zoneName });
+    const zone = await Zone.findById(zoneId); // Find zone by ID
 
     if (!zone) {
       return res.status(404).json({ error: "Zone not found" });

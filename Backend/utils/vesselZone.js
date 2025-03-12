@@ -1,12 +1,18 @@
-exports.isVesselInZone = (vessel, zone) => {
-  const { lat, lng } = vessel;
-  const boundary = zone.boundary;
+function isVesselInZone(vessel, zone) {
+  const { lat, lng } = vessel; // Assuming vessel has lat and lng properties
+  const polygon = zone.boundary; // Array of { lat, lng } objects
 
-  // Implementing a basic bounding box check
-  const minLat = Math.min(...boundary.map((point) => point.lat));
-  const maxLat = Math.max(...boundary.map((point) => point.lat));
-  const minLng = Math.min(...boundary.map((point) => point.lng));
-  const maxLng = Math.max(...boundary.map((point) => point.lng));
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].lat, yi = polygon[i].lng;
+    const xj = polygon[j].lat, yj = polygon[j].lng;
 
-  return lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng;
-};
+    const intersect = ((yi > lat) !== (yj > lat)) &&
+      (lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi);
+
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+module.exports = { isVesselInZone };
