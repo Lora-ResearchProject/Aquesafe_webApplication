@@ -4,7 +4,9 @@ import TrackerMap from "../Components/Tracker/TrackerMap";
 import {
   fetchLatestVesselLocations,
   fetchLatestGateWayLocations,
+  fetchAllFishingHotspots,
 } from "../services/locationService";
+import { fetchZones } from "../services/zoneService";
 import "leaflet/dist/leaflet.css";
 
 const REFRESH_INTERVAL = 60000; // 60 seconds
@@ -17,6 +19,8 @@ const Tracker = () => {
   const [gw_SearchTerm, setgw_SearchTerm] = useState("");
   const [lastRefreshTime, setLastRefreshTime] = useState(Date.now());
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [zones, setZones] = useState([]);
+  const [hotspots, setHotspots] = useState([]);
 
   const intervalRef = useRef(null); // Store interval ID
 
@@ -56,6 +60,26 @@ const Tracker = () => {
     }
   }, []);
 
+  // Fetch all zones
+  const fetchAllZones = useCallback(async () => {
+    try {
+      const fetchedZones = await fetchZones();
+      setZones(fetchedZones); // Set fetched zones to the state
+    } catch (error) {
+      console.error("Failed to fetch zones:", error);
+    }
+  }, []);
+
+   // Fetch all zones
+   const fetchHotspots = useCallback(async () => {
+    try {
+      const fetchedHotspots = await fetchAllFishingHotspots();
+      setHotspots(fetchedHotspots); // Set fetched zones to the state
+    } catch (error) {
+      console.error("Failed to fetch zones:", error);
+    }
+  }, []);
+
   // Function to start a new interval for vessel data fetching
   const startAutoRefresh = useCallback(() => {
     if (intervalRef.current) {
@@ -68,10 +92,12 @@ const Tracker = () => {
   useEffect(() => {
     fetchVesselData(); // Fetch vessel data initially
     fetchGatewayData(); // Fetch gateway data only once
+    fetchAllZones(); // Fetch zones initially
+    fetchHotspots();
     startAutoRefresh(); // Start auto-refresh
 
     return () => clearInterval(intervalRef.current); // Cleanup interval on unmount
-  }, [fetchVesselData, fetchGatewayData, startAutoRefresh]);
+  }, [fetchVesselData, fetchGatewayData, fetchAllZones,fetchHotspots, startAutoRefresh]);
 
   // Manual Refresh Function
   const handleManualRefresh = () => {
@@ -80,12 +106,19 @@ const Tracker = () => {
     startAutoRefresh(); // Restart auto-refresh with correct timing
   };
 
+  // Handle the zone created event to refresh zones
+  const handleZoneCreated = () => {
+    fetchAllZones(); // Refresh zones after a new zone is created
+  };
+
   return (
     <div className="flex h-full">
       <TrackerMap
         locations={[...locations, ...gateWayLocations]}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
+        zones={zones}
+        hotspots={hotspots}
       />
 
       <Sidebar
@@ -100,6 +133,9 @@ const Tracker = () => {
         refreshVessels={handleManualRefresh}
         lastRefreshTime={lastRefreshTime}
         refreshTrigger={refreshTrigger}
+        onZoneCreated={handleZoneCreated}
+        zones={zones}
+        hotspots={hotspots}
       />
     </div>
   );

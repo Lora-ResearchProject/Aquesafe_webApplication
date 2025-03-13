@@ -12,6 +12,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const vesselRouteLogRoutes = require("./routes/vesselRouteLogRoutes");
 const fishingHotspotsRoutes = require("./routes/fishingHotspotsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const zoneRoutes = require("./routes/zoneRoutes");
 
 const testRoutes = require("./routes/testRoutes");
 const { generateId } = require("./utils/idGenerator");
@@ -45,6 +46,7 @@ app.use("/api/test", testRoutes);
 app.use("/api/route-log", vesselRouteLogRoutes);
 app.use("/api/hotspots", fishingHotspotsRoutes);
 app.use("/api/notification", notificationRoutes);
+app.use("/api/zones", zoneRoutes);
 
 // generateId()
 // console.log("🚀 ~ generateId():", generateId())

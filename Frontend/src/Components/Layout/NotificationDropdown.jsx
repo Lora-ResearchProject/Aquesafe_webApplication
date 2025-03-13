@@ -90,19 +90,27 @@ const NotificationDropdown = () => {
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative focus:outline-none flex items-center"
-      >
-        <BellIcon className="h-7 w-7 text-gray-700 cursor-pointer hover:text-gray-900" />
-        {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center">
-            {unreadCount}
-          </span>
-        )}
-      </button>
-
-      {isOpen && (
+    <button
+      onClick={() => setIsOpen(!isOpen)}
+      className="relative focus:outline-none flex items-center"
+    >
+      <BellIcon className="h-7 w-7 text-gray-700 cursor-pointer hover:text-gray-900" />
+      {unreadCount > 0 && (
+        <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center">
+          {unreadCount}
+        </span>
+      )}
+    </button>
+  
+    {isOpen && (
+      <>
+        {/* Backdrop */}
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 z-40"
+          onClick={() => setIsOpen(false)}
+        ></div>
+  
+        {/* Notification Panel */}
         <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
           <div className="p-4">
             <div className="flex justify-between items-center mb-4">
@@ -124,9 +132,7 @@ const NotificationDropdown = () => {
               </div>
             </div>
             {filteredNotifications.length === 0 ? (
-              <p className="text-gray-500 text-center">
-                No notifications found.
-              </p>
+              <p className="text-gray-500 text-center">No notifications found.</p>
             ) : (
               <ul className="max-h-[800px] overflow-y-auto space-y-2">
                 {filteredNotifications.map((notification) => (
@@ -142,7 +148,7 @@ const NotificationDropdown = () => {
                       <p className="text-xs text-gray-600 mt-1">
                         {notification.messageDescription}
                       </p>
-
+  
                       {/* Footer: Date & Actions */}
                       <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
                         <span>
@@ -177,8 +183,9 @@ const NotificationDropdown = () => {
             )}
           </div>
         </div>
-      )}
-    </div>
+      </>
+    )}
+  </div>
   );
 };
 

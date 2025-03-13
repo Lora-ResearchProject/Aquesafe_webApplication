@@ -8,12 +8,12 @@ import {
   MapIcon,
   BellIcon,
   DatabaseIcon,
-  KeyIcon, 
-  LocationMarkerIcon, 
-  CollectionIcon, 
+  KeyIcon,
+  LocationMarkerIcon,
+  CollectionIcon,
 } from "@heroicons/react/outline";
 
-const Sidebar = ({isAdmin}) => {
+const Sidebar = ({ isAdmin }) => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const userRole = getUserRole();
@@ -30,14 +30,26 @@ const Sidebar = ({isAdmin}) => {
       >
         {/* Navigation Links */}
         <ul className="space-y-4 mt-6">
-          {userRole === 'admin' && <NavItem to="/admin-dashboard" icon={KeyIcon} label="Admin Panel" />}
+          {userRole === "admin" && (
+            <>
+              <NavItem
+                to="/admin-dashboard"
+                icon={KeyIcon}
+                label="Admin Panel"
+              />
+              <NavItem
+                to="/messageData"
+                icon={DatabaseIcon}
+                label="Message DB"
+              />
+            </>
+          )}{" "}
           <NavItem to="/dashboard" icon={HomeIcon} label="Dashboard" />
           <NavItem to="/sos" icon={BellIcon} label="SOS Alerts" />
           <NavItem to="/chat" icon={ChatAltIcon} label="Chat" />
           <NavItem to="/tracker" icon={LocationMarkerIcon} label="Tracker" />
           <NavItem to="/routelog" icon={MapIcon} label="Route Log" />
-          <NavItem to="/hotspots" icon={CollectionIcon} label="Hotspots" />
-          <NavItem to="/messageData" icon={DatabaseIcon} label="Message DB" />
+          {/* <NavItem to="/hotspots" icon={CollectionIcon} label="Hotspots" /> */}
         </ul>
 
         {/* Logout Button */}
@@ -53,7 +65,7 @@ const Sidebar = ({isAdmin}) => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
           <div className="bg-white p-4 rounded shadow-lg">
             <p className="text-lg font-bold">
               Are you sure you want to log out?

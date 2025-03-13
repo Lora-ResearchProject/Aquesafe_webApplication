@@ -99,7 +99,10 @@ exports.storeVesselLocation = async (req, res) => {
       );
       return res
         .status(200)
-        .json({ message: "Weather check processed successfully" });
+        .json({
+          message: "Weather check processed successfully",
+          data: result.data,
+        });
     }
 
     // Default response if no valid option is provided
