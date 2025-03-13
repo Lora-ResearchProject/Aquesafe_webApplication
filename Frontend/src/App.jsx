@@ -53,7 +53,17 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <DashboardLayout>
-            <AdminDashboard />
+              <AdminDashboard />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/messageData"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <DashboardLayout>
+              <MessageDataPage />
             </DashboardLayout>
           </ProtectedRoute>
         }
@@ -80,16 +90,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/messageData"
-        element={
-          <ProtectedRoute allowedRoles={["user", "admin"]}>
-            <DashboardLayout>
-              <MessageDataPage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      />
+
       <Route
         path="/sos"
         element={

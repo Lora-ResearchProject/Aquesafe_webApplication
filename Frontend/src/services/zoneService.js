@@ -61,3 +61,15 @@ export const deleteZone = async (zoneId) => {
     throw error;
   }
 };
+
+export const getVesselsByZone = async (zoneId) => {
+  try {
+    const response = await axios.get(`${API_URL}/vessels/${zoneId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching vessels for zone ${zoneId}:`, error);
+    throw new Error(
+      "Unable to fetch vessels. Please check your network and try again."
+    );
+  }
+};

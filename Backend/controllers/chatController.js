@@ -101,3 +101,69 @@ exports.getLatestChats = async (req, res) => {
       .json({ error: "Failed to retrieve latest chats per vessel." });
   }
 };
+
+exports.createChatsForMultipleVessels = async (req, res) => {
+  try {
+    const { vesselIds, messageNumber, message } = req.body;
+
+    // Validate required fields
+    if (!vesselIds || !Array.isArray(vesselIds) || vesselIds.length === 0) {
+      return res.status(400).json({ error: "Vessel ID array is required." });
+    }
+    if (!messageNumber || !message) {
+      return res
+        .status(400)
+        .json({ error: "Missing required message fields." });
+    }
+
+    const externalServerUrl = process.env.GATEWAY_API_URL; // External server URL
+
+    // Create and send messages for each vessel
+    const chatPromises = vesselIds.map(async (vesselId) => {
+      try {
+        const newChat = new Chat({
+          messageId: generateId(),
+          vesselId,
+          dateTime: new Date(),
+          messageNumber,
+          message,
+          direction: "send",
+        });
+
+        const formattedMessage = formatoutgoingMessage(
+          {
+            vesselId: newChat.vesselId,
+            messageId: newChat.messageId,
+            messageNumber: newChat.messageNumber,
+          },
+          "chat"
+        );
+
+        // Uncomment this after fixing the external API issue
+        // await sendToGateway(externalServerUrl, formattedMessage);
+
+        // Save the chat to the database
+        return await newChat.save();
+      } catch (error) {
+        console.error(`Failed to send message for vessel ${vesselId}:`, error);
+        return { vesselId, error: error.message }; // Return error info for this vessel
+      }
+    });
+
+    // Wait for all chat operations to complete
+    const results = await Promise.all(chatPromises);
+
+    // Separate successful and failed messages
+    const successfulChats = results.filter((chat) => !chat.error);
+    const failedChats = results.filter((chat) => chat.error);
+
+    res.status(201).json({
+      message: "Chat messages processed.",
+      successfulChats,
+      failedChats,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to send messages or save chats." });
+  }
+};
