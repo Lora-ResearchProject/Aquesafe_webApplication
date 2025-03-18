@@ -1,4 +1,5 @@
 const Notification = require("../models/notificationModel");
+const { emitEvent } = require("../services/websocket");
 
 exports.createNotification = async ({
   messageTitle,
@@ -12,7 +13,12 @@ exports.createNotification = async ({
       Type,
     });
 
-    return await newNotification.save();
+    const savedNotification = await newNotification.save();
+    
+    // Emit WebSocket event
+    emitEvent("new_notification", savedNotification);
+
+    return savedNotification;
   } catch (error) {
     throw new Error(`Error creating notification: ${error.message}`);
   }

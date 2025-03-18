@@ -32,5 +32,6 @@ const emitEvent = (eventName, data) => {
 
 // emitEvent("sos_created", savedSos);
 // emitEvent("new_chat", savedChat);
+// emitEvent("new_notification", savedNotification);
 
 module.exports = { initWebSocket, emitEvent };
