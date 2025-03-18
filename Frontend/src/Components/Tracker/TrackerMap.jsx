@@ -1,21 +1,34 @@
 import React from "react";
 import MapContainer from "../Map/MapContainer";
+import Spinner from "../UI/Spinner"; // Adjust the import path as needed
 
 const TrackerMap = ({
-  locations,
+  vesselData,
+  gatewayData,
+  zoneData,
+  hotspotData,
   selectedLocation,
   setSelectedLocation,
-  zones,
-  hotspots,
 }) => {
+  const isLoading =
+    vesselData.loading ||
+    gatewayData.loading ||
+    zoneData.loading ||
+    hotspotData.loading;
+
   return (
-    <div className="w-3/4 -z-0">
+    <div className="w-3/4 relative -z-0">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
+          <Spinner />
+        </div>
+      )}
       <MapContainer
-        locations={locations}
+        locations={[...vesselData.locations, ...gatewayData.locations]}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
-        zones={zones}
-        hotspots={hotspots}
+        zones={zoneData.zones}
+        hotspots={hotspotData.hotspots}
       />
     </div>
   );

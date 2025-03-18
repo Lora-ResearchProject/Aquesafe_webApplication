@@ -5,24 +5,23 @@ import ZoneCreater from "./ZoneCreater";
 import ZoneSearch from "./ZoneSearch";
 import ZoneList from "./ZoneList";
 import { deleteZone } from "../../services/zoneService";
+import Spinner from "../UI/Spinner"; // Adjust the import path as needed
 
 const Sidebar = ({
-  vessels,
-  gateways,
-  vesselSearchTerm,
-  setVesselSearchTerm,
-  gatewaySearchTerm,
-  setGatewaySearchTerm,
+  vesselData,
+  gatewayData,
+  zoneData,
+  hotspotData,
   selectedLocation,
   setSelectedLocation,
   refreshVessels,
   lastRefreshTime,
   refreshTrigger,
   onZoneCreated,
-  zones,
-  hotspots,
 }) => {
   const [activeTab, setActiveTab] = useState("vessels");
+  const [vesselSearchTerm, setVesselSearchTerm] = useState("");
+  const [gatewaySearchTerm, setGatewaySearchTerm] = useState("");
   const [zoneSearchTerm, setZoneSearchTerm] = useState("");
   const [hotspotSearchTerm, setHotspotSearchTerm] = useState("");
 
@@ -30,7 +29,7 @@ const Sidebar = ({
   const handleDeleteZone = async (zoneId) => {
     try {
       await deleteZone(zoneId);
-      onZoneCreated(); // Refresh the zones list
+      onZoneCreated();
     } catch (error) {
       console.error("Failed to delete zone:", error);
     }
@@ -38,7 +37,152 @@ const Sidebar = ({
 
   // Handle editing a zone
   const handleEditZone = async () => {
-    onZoneCreated(); // Refresh the zones list after editing
+    onZoneCreated();
+  };
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "vessels":
+        if (vesselData.loading) return <Spinner />;
+        if (vesselData.error)
+          return <p className="text-red-500">{vesselData.error}</p>;
+        if (vesselData.locations.length === 0) return <p>No vessels found.</p>;
+        return (
+          <div className="space-y-2">
+            {vesselData.locations
+              .filter((item) =>
+                item.name.toLowerCase().includes(vesselSearchTerm.toLowerCase())
+              )
+              .map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => setSelectedLocation(item)}
+                  className={`p-3 rounded-lg cursor-pointer border ${
+                    selectedLocation?.id === item.id
+                      ? "bg-blue-100 border-blue-300"
+                      : "bg-white border-gray-300"
+                  } hover:bg-blue-50`}
+                >
+                  <strong className="block text-lg font-medium text-gray-800">
+                    {item.name}
+                  </strong>
+                  <p className="text-sm text-gray-600">
+                    {item.lat.toFixed(3)}N, {item.lng.toFixed(3)}W
+                  </p>
+                </div>
+              ))}
+          </div>
+        );
+
+      case "gateways":
+        if (gatewayData.loading) return <Spinner />;
+        if (gatewayData.error)
+          return <p className="text-red-500">{gatewayData.error}</p>;
+        if (gatewayData.locations.length === 0)
+          return <p>No gateways found.</p>;
+        return (
+          <div className="space-y-2">
+            {gatewayData.locations
+              .filter((item) =>
+                item.name
+                  .toLowerCase()
+                  .includes(gatewaySearchTerm.toLowerCase())
+              )
+              .map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => setSelectedLocation(item)}
+                  className={`p-3 rounded-lg cursor-pointer border ${
+                    selectedLocation?.id === item.id
+                      ? "bg-blue-100 border-blue-300"
+                      : "bg-white border-gray-300"
+                  } hover:bg-blue-50`}
+                >
+                  <strong className="block text-lg font-medium text-gray-800">
+                    {item.name}
+                  </strong>
+                  <p className="text-sm text-gray-600">
+                    {item.lat.toFixed(3)}N, {item.lng.toFixed(3)}W
+                  </p>
+                </div>
+              ))}
+          </div>
+        );
+
+      case "zones":
+        if (zoneData.loading) return <Spinner />;
+        if (zoneData.error)
+          return <p className="text-red-500">{zoneData.error}</p>;
+        if (zoneData.zones.length === 0) return <p>No zones found.</p>;
+        return (
+          <>
+            <ZoneSearch
+              searchTerm={zoneSearchTerm}
+              setSearchTerm={setZoneSearchTerm}
+            />
+            <div className="mb-4 px-2 flex items-center justify-end">
+              <ZoneCreater onZoneCreated={onZoneCreated} />
+            </div>
+            <ZoneList
+              zones={zoneData.zones}
+              searchTerm={zoneSearchTerm}
+              onEdit={handleEditZone}
+              onDelete={handleDeleteZone}
+            />
+          </>
+        );
+
+      case "hotspots":
+        if (hotspotData.loading) return <Spinner />;
+        if (hotspotData.error)
+          return <p className="text-red-500">{hotspotData.error}</p>;
+        if (hotspotData.hotspots.length === 0) return <p>No hotspots found.</p>;
+        return (
+          <div className="space-y-2">
+            {hotspotData.hotspots
+              .filter((hotspot) =>
+                hotspot.hotspotId
+                  .toString()
+                  .toLowerCase()
+                  .includes(hotspotSearchTerm.toLowerCase())
+              )
+              .map((hotspot) => (
+                <div
+                  key={hotspot.hotspotId}
+                  onClick={() =>
+                    setSelectedLocation({
+                      lat: hotspot.latitude,
+                      lng: hotspot.longitude,
+                    })
+                  }
+                  className={`p-3 rounded-lg cursor-pointer border ${
+                    selectedLocation?.lat === hotspot.latitude &&
+                    selectedLocation?.lng === hotspot.longitude
+                      ? "bg-green-100 border-green-300"
+                      : "bg-white border-gray-300"
+                  } hover:bg-green-50`}
+                >
+                  <strong className="block text-lg font-medium text-gray-800">
+                    Hotspot ID: {hotspot.hotspotId}
+                  </strong>
+                  <p className="text-sm text-gray-600">
+                    Vessels: {hotspot.vesselCount}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Available Slots: {hotspot.availableSlots}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Last Updated:{" "}
+                    {new Date(hotspot.currentDateTime).toLocaleString()}
+                  </p>
+                </div>
+              ))}
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -84,147 +228,44 @@ const Sidebar = ({
         </button>
       </div>
 
-      {activeTab === "zones" ? (
-        <>
-          {/* Zone Search */}
-          <ZoneSearch
-            searchTerm={zoneSearchTerm}
-            setSearchTerm={setZoneSearchTerm}
+      {activeTab === "vessels" && (
+        <div className="mb-4 px-2 flex items-center justify-between">
+          <RefreshTimer
+            refreshInterval={60000}
+            lastRefreshed={lastRefreshTime}
+            refreshTrigger={refreshTrigger}
           />
-
-          {/* Zone Creation Button */}
-          <div className="mb-4 px-2 flex items-center justify-end">
-            <ZoneCreater onZoneCreated={onZoneCreated} />
-          </div>
-
-          {/* Zone List */}
-          <ZoneList
-            zones={zones}
-            searchTerm={zoneSearchTerm}
-            onEdit={handleEditZone} // Pass the edit handler
-            onDelete={handleDeleteZone} // Pass the delete handler
-          />
-        </>
-      ) : activeTab === "hotspots" ? (
-        <>
-          {/* Hotspot Search */}
-          <input
-            type="text"
-            placeholder="Search Hotspots..."
-            className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={hotspotSearchTerm}
-            onChange={(e) => setHotspotSearchTerm(e.target.value)}
-          />
-
-          {/* Hotspot List */}
-          <div className="space-y-2">
-            {hotspots
-              .filter((hotspot) =>
-                hotspot.hotspotId
-                  .toString()
-                  .toLowerCase()
-                  .includes(hotspotSearchTerm.toLowerCase())
-              )
-              .map((hotspot) => (
-                <div
-                  key={hotspot.hotspotId}
-                  onClick={() =>
-                    setSelectedLocation({
-                      lat: hotspot.latitude,
-                      lng: hotspot.longitude,
-                    })
-                  }
-                  className={`p-3 rounded-lg cursor-pointer border ${
-                    selectedLocation?.lat === hotspot.latitude &&
-                    selectedLocation?.lng === hotspot.longitude
-                      ? "bg-green-100 border-green-300"
-                      : "bg-white border-gray-300"
-                  } hover:bg-green-50`}
-                >
-                  <strong className="block text-lg font-medium text-gray-800">
-                    Hotspot ID: {hotspot.hotspotId}
-                  </strong>
-                  <p className="text-sm text-gray-600">
-                    Vessels: {hotspot.vesselCount}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Available Slots: {hotspot.availableSlots}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Last Updated:{" "}
-                    {new Date(hotspot.currentDateTime).toLocaleString()}
-                  </p>
-                </div>
-              ))}
-          </div>
-        </>
-      ) : (
-        <>
-          {/* Search Input for Vessels or Gateways */}
-          <input
-            type="text"
-            placeholder={
-              activeTab === "vessels"
-                ? "Search Vessels..."
-                : "Search Gateways..."
-            }
-            className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={
-              activeTab === "vessels" ? vesselSearchTerm : gatewaySearchTerm
-            }
-            onChange={(e) =>
-              activeTab === "vessels"
-                ? setVesselSearchTerm(e.target.value)
-                : setGatewaySearchTerm(e.target.value)
-            }
-          />
-
-          {/* Refresh Timer and Button for Vessels */}
-          {activeTab === "vessels" && (
-            <div className="mb-4 px-2 flex items-center justify-between">
-              <RefreshTimer
-                refreshInterval={60000}
-                lastRefreshed={lastRefreshTime}
-                refreshTrigger={refreshTrigger}
-              />
-              <RefreshButton onRefresh={refreshVessels} />
-            </div>
-          )}
-
-          {/* List of Vessels or Gateways */}
-          <div className="space-y-2">
-            {(activeTab === "vessels" ? vessels : gateways)
-              .filter((item) =>
-                item.name
-                  .toLowerCase()
-                  .includes(
-                    (activeTab === "vessels"
-                      ? vesselSearchTerm
-                      : gatewaySearchTerm
-                    ).toLowerCase()
-                  )
-              )
-              .map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => setSelectedLocation(item)}
-                  className={`p-3 rounded-lg cursor-pointer border ${
-                    selectedLocation?.id === item.id
-                      ? "bg-blue-100 border-blue-300"
-                      : "bg-white border-gray-300"
-                  } hover:bg-blue-50`}
-                >
-                  <strong className="block text-lg font-medium text-gray-800">
-                    {item.name}
-                  </strong>
-                  <p className="text-sm text-gray-600">
-                    {item.lat.toFixed(3)}N, {item.lng.toFixed(3)}W
-                  </p>
-                </div>
-              ))}
-          </div>
-        </>
+          <RefreshButton onRefresh={refreshVessels} />
+        </div>
       )}
+
+      {(activeTab === "vessels" ||
+        activeTab === "gateways" ||
+        activeTab === "hotspots") && (
+        <input
+          type="text"
+          placeholder={`Search ${
+            activeTab.charAt(0).toUpperCase() + activeTab.slice(1)
+          }...`}
+          className="w-full px-3 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          value={
+            activeTab === "vessels"
+              ? vesselSearchTerm
+              : activeTab === "gateways"
+              ? gatewaySearchTerm
+              : hotspotSearchTerm
+          }
+          onChange={(e) =>
+            activeTab === "vessels"
+              ? setVesselSearchTerm(e.target.value)
+              : activeTab === "gateways"
+              ? setGatewaySearchTerm(e.target.value)
+              : setHotspotSearchTerm(e.target.value)
+          }
+        />
+      )}
+
+      {renderContent()}
     </div>
   );
 };
