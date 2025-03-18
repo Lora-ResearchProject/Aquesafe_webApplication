@@ -1,5 +1,6 @@
 const Chat = require("../models/chatModel");
 const { sendToGateway } = require("../services/outgoingMessageService");
+const { emitEvent } = require("../services/websocket");
 const { generateId } = require("../utils/idGenerator");
 const { formatoutgoingMessage } = require("../utils/outgoingMessageStructures");
 
@@ -41,6 +42,9 @@ exports.createChat = async (req, res) => {
 
     // Save to the database only after successful external API call
     const savedChat = await newChat.save();
+
+    // Emit WebSocket event
+    emitEvent("new_chat", savedChat);
 
     // Respond to the client with the saved chat
     res.status(201).json(savedChat);
@@ -142,8 +146,12 @@ exports.createChatsForMultipleVessels = async (req, res) => {
         // Uncomment this after fixing the external API issue
         // await sendToGateway(externalServerUrl, formattedMessage);
 
+        const savedChat = await newChat.save();
+        // Emit WebSocket event for this chat
+        emitEvent("new_chat", savedChat);
+
         // Save the chat to the database
-        return await newChat.save();
+        return savedChat;
       } catch (error) {
         console.error(`Failed to send message for vessel ${vesselId}:`, error);
         return { vesselId, error: error.message }; // Return error info for this vessel

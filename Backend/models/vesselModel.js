@@ -6,6 +6,7 @@ const vesselSchema = new mongoose.Schema({
   password: { type: String, required: true },
   vesselId: { type: String, required: true, unique: true },
   vesselName: { type: String, required: true },
+  danger: { type: Boolean, default: false },
 });
 
 // Hash the password before saving

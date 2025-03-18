@@ -17,6 +17,8 @@ import FishingHotspotsPage from "./Pages/FishingHotspotsPage";
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
 import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import AdminDashboard from "./Pages/AdminDashboard";
+import GatewayPage from "./Pages/GatewayPage";
+import VesselPage from "./Pages/VesselPage";
 
 function App() {
   return (
@@ -121,6 +123,17 @@ function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/gateway-page"
+        element={
+          <ProtectedRoute allowedRoles={["user", "admin"]}>
+            <DashboardLayout>
+              <GatewayPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
       {/* <Route
         path="/hotspots"
         element={
@@ -137,6 +150,16 @@ function App() {
           <ProtectedRoute allowedRoles={["user", "admin"]}>
             <DashboardLayout>
               <ProfilePage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/vessels"
+        element={
+          <ProtectedRoute allowedRoles={["user", "admin"]}>
+            <DashboardLayout>
+              <VesselPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

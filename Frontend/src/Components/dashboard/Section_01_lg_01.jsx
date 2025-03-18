@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
 import icon from "../../assets/icons/router.png";
+import { useNavigate } from "react-router-dom";
 
 const Section_01_lg_01 = ({ gateways, loading, error }) => {
+  const navigate = useNavigate();
   const activeGateways = gateways.filter((gw) => gw.status === "Active").length;
 
+  const handleRedirect = () => {
+    navigate("/gateway-page");
+  };
+
   return (
-    <div className="rounded-2xl shadow-lg bg-white h-full flex flex-col">
+    <div
+      className="rounded-2xl shadow-lg bg-white h-full flex flex-col cursor-pointer border-2 border-transparent hover:border-gray-400 transition-all duration-200"
+      onClick={handleRedirect}
+    >
       {/* Header */}
       <div className="flex justify-between items-center h-1/5 px-6 py-3">
         <div className="flex flex-col justify-evenly items-start">
@@ -19,7 +28,6 @@ const Section_01_lg_01 = ({ gateways, loading, error }) => {
               <span className="text-sm text-gray-500">active gateways</span>
             </div>
           )}
-
         </div>
         <div className="flex justify-center items-center">
           <img src={icon} alt="Icon" className="w-14 h-14" />

@@ -38,16 +38,25 @@ const MapContainer = ({
             parseFloat(coord.lng),
           ]);
 
+          // Assign colors based on zone type
+          const zoneColors =
+            zone.zoneType === "danger"
+              ? { border: "red", fill: "rgba(255, 0, 0, 0.5)" } // Red for danger zones
+              : { border: "blue", fill: "rgba(0, 0, 255, 0.3)" }; // Green for normal zones
+
           return (
             <Polygon
               key={index}
               positions={coordinates}
-              color="red"
-              fillColor="yellow"
+              color={zoneColors.border} // Border color
+              fillColor={zoneColors.fill} // Fill color
               weight={2}
-              opacity={0.3}
+              opacity={0.5}
             >
-              <Popup>{zone.name}</Popup>
+              <Popup>
+                <strong>{zone.name}</strong> <br />
+                {/* Type: {zone.zoneType} */}
+              </Popup>
             </Polygon>
           );
         })}

@@ -11,6 +11,7 @@ import {
 import { fetchSOSData } from "../services/sosService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchGateways } from "../services/gatewayService";
+import { listenEvent, removeListener } from "../services/socket";
 
 const MAX_Active_ALERTS = 4;
 const MAX_LATEST_CHATS = 4;
@@ -112,6 +113,45 @@ const Dashboard = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // Listen for real-time SOS updates
+    listenEvent("sos_created", (newSOS) => {
+      setSosAlerts((prev) => [
+        {
+          ...newSOS,
+          vesselName:
+            vesselData.find((v) => v.vesselId === newSOS.vesselId)
+              ?.vesselName || "Unknown Vessel",
+        },
+        ...prev,
+      ]);
+    });
+
+    // Listen for new chat events and fetch the latest chats
+    listenEvent("new_chat", async (newChat) => {
+      try {
+        const chatData = await fetchLatestChats();
+        setLatestChats(
+          chatData.map((chat) => ({
+            ...chat,
+            vesselName:
+              vesselData.find((v) => v.vesselId === chat.vesselId)
+                ?.vesselName || "Unknown Vessel",
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching latest chats:", error);
+      }
+    });
+
+    // Cleanup WebSocket listeners when component unmounts
+    return () => {
+      removeListener("sos_created");
+      removeListener("new_chat");
+    };
+  }, [vesselData]); // Re-run effect when vesselData updates
+
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-8 p-6 h-full">
       <Section_01

@@ -4,6 +4,7 @@ import ChatWindow from "../Components/Chat/ChatWindow";
 import { fetchVessels } from "../services/locationService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchZones } from "../services/zoneService";
+import { listenEvent, removeListener } from "../services/socket";
 
 const ChatPage = () => {
   const [vessels, setVessels] = useState([]);
@@ -11,10 +12,11 @@ const ChatPage = () => {
   const [zones, setZones] = useState([]);
   const [selectedVessel, setSelectedVessel] = useState(null);
   const [showNewChatPopup, setShowNewChatPopup] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch initial data
-  useEffect(() => {
-    const loadData = async () => {
+  const loadData = async () => {
+    try {
+      setLoading(true);
       const vesselsData = await fetchVessels();
       const latestChatsData = await fetchLatestChats();
       const zonesData = await fetchZones();
@@ -22,9 +24,25 @@ const ChatPage = () => {
       setVessels(vesselsData);
       setLatestChats(latestChatsData);
       setZones(zonesData);
-    };
+    } catch (error) {
+      console.error("Error fetching chat data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadData();
+
+    // Listen for new chat events via WebSocket
+    listenEvent("new_chat", async () => {
+      const latestChatsData = await fetchLatestChats();
+      setLatestChats(latestChatsData);
+    });
+
+    return () => {
+      removeListener("new_chat");
+    };
   }, []);
 
   // Filter vessels with and without chats
@@ -84,15 +102,15 @@ const ChatPage = () => {
       )}
 
       {/* Main Content */}
+
       {!selectedVessel ? (
-        <div>
-          <VesselList
-            vessels={vesselsWithChats}
-            latestChats={latestChats}
-            onSelect={setSelectedVessel}
-            onNewChatClick={() => setShowNewChatPopup(true)}
-          />
-        </div>
+        <VesselList
+          vessels={vesselsWithChats}
+          latestChats={latestChats}
+          loading={loading}
+          onSelect={setSelectedVessel}
+          onNewChatClick={() => setShowNewChatPopup(true)}
+        />
       ) : (
         <ChatWindow
           vessel={selectedVessel}

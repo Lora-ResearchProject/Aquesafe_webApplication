@@ -14,6 +14,4 @@ router.get("/get_by_vessel_id/:vesselId", getSosByVesselId); // Get SOS record b
 router.get("/get_by_vessel_id/mobile/:vesselId", getSosByVesselIdForMobile); // Get SOS records by vesselId for the Mobile app
 router.patch("/:id", updateSosStatus); // Update SOS status
 
-getSosByVesselIdForMobile
-
 module.exports = router;

@@ -2,7 +2,14 @@ import React from "react";
 import icon from "../../assets/icons/chatdp.png";
 import MessagePopup from "./MessagePopup";
 
-const VesselList = ({ vessels, latestChats, onSelect, onNewChatClick }) => {
+const VesselList = ({
+  vessels,
+  latestChats,
+  error,
+  loading,
+  onSelect,
+  onNewChatClick,
+}) => {
   const vesselsWithChats = vessels.map((vessel) => {
     const hasChat = latestChats.some(
       (chat) => chat.vesselId === vessel.vesselId
@@ -33,45 +40,69 @@ const VesselList = ({ vessels, latestChats, onSelect, onNewChatClick }) => {
         </button>
         <MessagePopup />
       </div>
-      <ul>
-        {vesselsWithChats.map((vessel) => {
-          const { date, time } = parseDateTime(vessel.latestChat?.dateTime);
-          return (
-            <li
-              key={vessel.vesselId}
-              className="bg-white p-3 rounded-lg mb-2 shadow-md flex justify-between items-center hover:bg-gray-50 cursor-pointer"
-              onClick={() => onSelect(vessel)}
-            >
-              {/* Profile Image */}
-              <img
-                src={icon}
-                alt="Chat"
-                className="w-12 h-12 rounded-full mr-4"
-              />
+      {/* Loading Spinner */}
+      {loading && (
+        <div className="flex flex-col items-center mt-20">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-2 text-gray-700">Chats loading, please wait...</p>
+        </div>
+      )}
 
-              {/* Vessel Details */}
-              <div className="flex-1">
-                <h2 className="font-semibold text-lg text-blue-600">
-                  {vessel.vesselName}
-                </h2>
-                {vessel.hasChat && (
-                  <p className="text-gray-600 text-sm truncate">
-                    {vessel.latestChat?.message}
-                  </p>
-                )}
-              </div>
+      {/* Error Message */}
+      {error && (
+        <div className="text-red-600 text-center mt-20">
+          Failed to load chats. Please try again.
+        </div>
+      )}
 
-              {/* Date & Time */}
-              {vessel.hasChat && (
-                <div className="text-xs text-gray-500 text-end">
-                  {date} <br />
-                  {time}
+      {/* No Messages */}
+      {!loading && !error && vessels.length === 0 && (
+        <p className="text-gray-500 text-center mt-20">
+          No messages available.
+        </p>
+      )}
+
+      {!loading && !error && vessels.length > 0 && (
+        <ul>
+          {vesselsWithChats.map((vessel) => {
+            const { date, time } = parseDateTime(vessel.latestChat?.dateTime);
+            return (
+              <li
+                key={vessel.vesselId}
+                className="bg-white p-3 rounded-lg mb-2 shadow-md flex justify-between items-center hover:bg-gray-50 cursor-pointer"
+                onClick={() => onSelect(vessel)}
+              >
+                {/* Profile Image */}
+                <img
+                  src={icon}
+                  alt="Chat"
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+
+                {/* Vessel Details */}
+                <div className="flex-1">
+                  <h2 className="font-semibold text-lg text-blue-600">
+                    {vessel.vesselName}
+                  </h2>
+                  {vessel.hasChat && (
+                    <p className="text-gray-600 text-sm truncate">
+                      {vessel.latestChat?.message}
+                    </p>
+                  )}
                 </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+
+                {/* Date & Time */}
+                {vessel.hasChat && (
+                  <div className="text-xs text-gray-500 text-end">
+                    {date} <br />
+                    {time}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 };

@@ -108,7 +108,6 @@ export const fetchChatDataWithVessels = async () => {
       ...chat,
       vesselName: vesselMap[chat.vesselId] || "Unknown Vessel",
     }));
-    console.log("🚀 ~ chatData ~ chatData:", chatData);
 
     return chatData;
   } catch (error) {

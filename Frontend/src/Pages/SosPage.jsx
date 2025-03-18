@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import SOSMessage from "../Components/Sos/SOSMessage";
 import SOSPopup from "../Components/Sos/SOSPopup";
-import { fetchSOSData, changeSOSStatus } from "../services/sosService";
+import { changeSOSStatus, fetchEnhancedSOSData } from "../services/sosService";
+import { listenEvent, removeListener } from "../services/socket";
 
 const SOSPage = () => {
   const [sosData, setSosData] = useState([]);
@@ -9,19 +10,29 @@ const SOSPage = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("active"); // State to manage tabs
 
-  // Fetch SOS data when the component mounts
+  const getSOSData = async () => {
+    try {
+      const data = await fetchEnhancedSOSData();
+      setSosData(data.reverse());
+    } catch (error) {
+      console.error("Error fetching SOS data:", error);
+    } finally {
+      setLoading(false); // Mark loading as complete
+    }
+  };
+
   useEffect(() => {
-    const getSOSData = async () => {
-      try {
-        const data = await fetchSOSData();
-        setSosData(data.reverse());
-      } catch (error) {
-        console.error("Error fetching SOS data:", error);
-      } finally {
-        setLoading(false); // Mark loading as complete
-      }
+    getSOSData(); // Fetch initial SOS data
+
+    // Listen for real-time SOS updates from WebSocket
+    listenEvent("sos_created", (newSOS) => {
+      setSosData((prev) => [newSOS, ...prev]); // Add new SOS to the list
+    });
+
+    // Cleanup WebSocket listener when unmounting
+    return () => {
+      removeListener("sos_created");
     };
-    getSOSData();
   }, []);
 
   const handleStatusChange = async (id) => {
@@ -57,7 +68,9 @@ const SOSPage = () => {
         </button>
         <button
           className={`py-2 px-4 ${
-            activeTab === "resolved" ? "border-b-2 border-blue-500 font-bold" : ""
+            activeTab === "resolved"
+              ? "border-b-2 border-blue-500 font-bold"
+              : ""
           }`}
           onClick={() => setActiveTab("resolved")}
         >

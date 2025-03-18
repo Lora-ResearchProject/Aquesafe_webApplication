@@ -62,7 +62,7 @@ const RouteLogPage = () => {
   return (
     <div className="h-screen w-full p-4 flex flex-row">
       {/* Left Section (Map) */}
-      <div className="flex-grow">
+      <div className="flex-grow -z-0">
         <MapContainer locations={locations} />
       </div>
 

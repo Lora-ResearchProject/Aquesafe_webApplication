@@ -4,6 +4,7 @@ import { createZone } from "../../services/zoneService";
 const ZoneCreater = ({ onZoneCreated }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [zoneName, setZoneName] = useState("");
+  const [zoneType, setZoneType] = useState("normal"); // Default to "normal"
   const [boundary, setBoundary] = useState([{ lat: "", lng: "" }]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -61,7 +62,7 @@ const ZoneCreater = ({ onZoneCreated }) => {
         return;
       }
 
-      await createZone({ name: zoneName, boundary });
+      await createZone({ name: zoneName, boundary, zoneType });
       setIsOpen(false);
       onZoneCreated(); // Notify parent component
     } catch (err) {
@@ -99,6 +100,7 @@ const ZoneCreater = ({ onZoneCreated }) => {
             )}
 
             <form onSubmit={handleSubmit}>
+              {/* Zone Name */}
               <label className="block mb-2">Zone Name:</label>
               <input
                 type="text"
@@ -108,6 +110,19 @@ const ZoneCreater = ({ onZoneCreated }) => {
                 required
               />
 
+              {/* Zone Type Selection */}
+              <label className="block mb-2">Zone Type:</label>
+              <select
+                className="border rounded p-2 w-full mb-3 bg-white"
+                value={zoneType}
+                onChange={(e) => setZoneType(e.target.value)}
+                required
+              >
+                <option value="normal">Normal</option>
+                <option value="danger">Danger</option>
+              </select>
+
+              {/* Boundary Coordinates */}
               <label className="block mb-2">Boundary Coordinates:</label>
               {boundary.map((coord, index) => (
                 <div key={index} className="flex space-x-3 mb-3">
@@ -149,6 +164,7 @@ const ZoneCreater = ({ onZoneCreated }) => {
                 Add Another Coordinate
               </button>
 
+              {/* Action Buttons */}
               <div className="flex justify-between">
                 <button
                   type="button"
