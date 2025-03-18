@@ -5,8 +5,8 @@ const { isVesselInZone } = require("../utils/vesselZone");
 // Create a new zone
 exports.createZone = async (req, res) => {
   try {
-    const { name, boundary } = req.body;
-    const newZone = new Zone({ name, boundary });
+    const { name, boundary, zoneType = "normal" } = req.body; // Default zoneType to "normal"
+    const newZone = new Zone({ name, boundary, zoneType });
     const savedZone = await newZone.save();
     res.status(201).json(savedZone);
   } catch (error) {
@@ -23,6 +23,30 @@ exports.getAllZones = async (req, res) => {
     res
       .status(500)
       .json({ error: "Failed to retrieve zones: " + error.message });
+  }
+};
+
+// Get normal zones
+exports.getNormalZones = async (req, res) => {
+  try {
+    const normalZones = await Zone.find({ zoneType: "normal" });
+    res.status(200).json(normalZones);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to retrieve normal zones: " + error.message });
+  }
+};
+
+// Get danger zones
+exports.getDangerZones = async (req, res) => {
+  try {
+    const dangerZones = await Zone.find({ zoneType: "danger" });
+    res.status(200).json(dangerZones);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to retrieve danger zones: " + error.message });
   }
 };
 

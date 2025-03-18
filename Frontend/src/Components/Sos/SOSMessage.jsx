@@ -19,7 +19,7 @@ const SOSMessage = ({ sos, onClick }) => {
     >
       <div className="flex items-center justify-between">
         <div className="w-5/6 pl-5">
-          <h2 className="font-bold text-lg">{sos.vesselId}</h2>
+          <h2 className="font-bold text-lg">{sos.vesselName}</h2>
           <p>
             <strong>Location:</strong>{" "}
             {`${sos.lat.toFixed(3)}N, ${sos.lng.toFixed(3)}W`}
