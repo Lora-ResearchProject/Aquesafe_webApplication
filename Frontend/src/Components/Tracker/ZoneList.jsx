@@ -1,7 +1,9 @@
 import React from "react";
 import ZoneActions from "./ZoneActions";
+import { getUserRole } from "../../utils/auth";
 
 const ZoneList = ({ zones, searchTerm, onEdit, onDelete }) => {
+  const userRole = getUserRole();
   // Filter and sort zones into normal and danger categories
   const normalZones = zones.filter(
     (zone) =>
@@ -37,11 +39,13 @@ const ZoneList = ({ zones, searchTerm, onEdit, onDelete }) => {
                     {zone.boundary.length} points
                   </p>
                 </div>
-                <ZoneActions
-                  zone={zone}
-                  onEdit={() => onEdit(zone)}
-                  onDelete={onDelete}
-                />
+                {userRole === "admin" && (
+                  <ZoneActions
+                    zone={zone}
+                    onEdit={() => onEdit(zone)}
+                    onDelete={onDelete}
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -68,11 +72,13 @@ const ZoneList = ({ zones, searchTerm, onEdit, onDelete }) => {
                     {zone.boundary.length} points
                   </p>
                 </div>
-                <ZoneActions
-                  zone={zone}
-                  onEdit={() => onEdit(zone)}
-                  onDelete={onDelete}
-                />
+                {userRole === "admin" && (
+                  <ZoneActions
+                    zone={zone}
+                    onEdit={() => onEdit(zone)}
+                    onDelete={onDelete}
+                  />
+                )}
               </div>
             </div>
           ))}

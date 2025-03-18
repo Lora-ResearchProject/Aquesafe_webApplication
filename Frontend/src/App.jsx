@@ -17,6 +17,7 @@ import FishingHotspotsPage from "./Pages/FishingHotspotsPage";
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
 import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import AdminDashboard from "./Pages/AdminDashboard";
+import GatewayPage from "./Pages/GatewayPage";
 
 function App() {
   return (
@@ -117,6 +118,17 @@ function App() {
           <ProtectedRoute allowedRoles={["user", "admin"]}>
             <DashboardLayout>
               <RouteLogPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/gateway-page"
+        element={
+          <ProtectedRoute allowedRoles={["user", "admin"]}>
+            <DashboardLayout>
+              <GatewayPage />
             </DashboardLayout>
           </ProtectedRoute>
         }

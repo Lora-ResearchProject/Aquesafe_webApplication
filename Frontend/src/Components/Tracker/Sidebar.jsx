@@ -6,6 +6,7 @@ import ZoneSearch from "./ZoneSearch";
 import ZoneList from "./ZoneList";
 import { deleteZone } from "../../services/zoneService";
 import Spinner from "../UI/Spinner"; // Adjust the import path as needed
+import { getUserRole } from "../../utils/auth";
 
 const Sidebar = ({
   vesselData,
@@ -24,6 +25,7 @@ const Sidebar = ({
   const [gatewaySearchTerm, setGatewaySearchTerm] = useState("");
   const [zoneSearchTerm, setZoneSearchTerm] = useState("");
   const [hotspotSearchTerm, setHotspotSearchTerm] = useState("");
+  const userRole = getUserRole();
 
   // Handle deleting a zone
   const handleDeleteZone = async (zoneId) => {
@@ -121,7 +123,9 @@ const Sidebar = ({
               setSearchTerm={setZoneSearchTerm}
             />
             <div className="mb-4 px-2 flex items-center justify-end">
-              <ZoneCreater onZoneCreated={onZoneCreated} />
+              {userRole === "admin" && (
+                <ZoneCreater onZoneCreated={onZoneCreated} />
+              )}
             </div>
             <ZoneList
               zones={zoneData.zones}
