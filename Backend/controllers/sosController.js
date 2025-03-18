@@ -1,5 +1,6 @@
 const Sos = require("../models/sosModel");
 const { sendToGateway } = require("../services/outgoingMessageService");
+const { emitEvent } = require("../services/websocket");
 const { formatoutgoingMessage } = require("../utils/outgoingMessageStructures");
 
 // GET all SOS records

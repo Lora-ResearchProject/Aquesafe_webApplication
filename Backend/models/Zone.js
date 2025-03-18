@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const ZoneSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  zoneType: {
+    type: String,
+    enum: ["normal", "danger"],
+    default: "normal",
+    required: true,
+  },
   boundary: [
     {
       lat: { type: Number, required: true },

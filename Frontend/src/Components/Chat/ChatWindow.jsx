@@ -2,30 +2,40 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { baseURL } from "../../config/config";
 import { sendMessageToVessel } from "../../services/chatService";
+import { listenEvent, removeListener } from "../../services/socket";
 
 const ChatWindow = ({ vessel, onBack }) => {
   const [messages, setMessages] = useState([]);
   const [dropdownOptions, setDropdownOptions] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const chatContainerRef = useRef(null); // Ref for the chat container
+  const [loading, setLoading] = useState(true); // Loading state
+  const chatContainerRef = useRef(null);
 
-  // Fetch messages and dropdown options when the component mounts
+  // Fetch messages and dropdown options when component mounts
   useEffect(() => {
     const fetchMessages = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           `${baseURL}/api/chat/${vessel.vesselId}`
         );
         setMessages(response.data);
       } catch (error) {
         console.error("Failed to fetch messages:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     const fetchDropdownOptions = async () => {
       try {
         const response = await axios.get(`${baseURL}/api/messageData/`);
-        setDropdownOptions(response.data.data);
+        // Filter out objects where messageNumber is 0
+        const filteredOptions = response.data.data.filter(
+          (option) => option.messageNumber !== 0
+        );
+
+        setDropdownOptions(filteredOptions);
       } catch (error) {
         console.error("Failed to fetch dropdown options:", error);
       }
@@ -33,6 +43,17 @@ const ChatWindow = ({ vessel, onBack }) => {
 
     fetchMessages();
     fetchDropdownOptions();
+
+    // Listen for real-time new messages
+    listenEvent("new_chat", (newMessage) => {
+      if (newMessage.vesselId === vessel.vesselId) {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
+    });
+
+    return () => {
+      removeListener("new_chat");
+    };
   }, [vessel]);
 
   // Handle sending a message
@@ -49,17 +70,16 @@ const ChatWindow = ({ vessel, onBack }) => {
         selectedMessage.message
       );
 
-      // Update the messages list with the sent message
-      setMessages((prev) => [
-        ...prev,
-        {
-          direction: "send",
-          messageNumber: selectedMessage.messageNumber,
-          message: selectedMessage.message,
-          dateTime: new Date().toISOString(),
-        },
-      ]);
-      setSelectedMessage(null); // Clear the selected message
+      // setMessages((prev) => [
+      //   ...prev,
+      //   {
+      //     direction: "send",
+      //     messageNumber: selectedMessage.messageNumber,
+      //     message: selectedMessage.message,
+      //     dateTime: new Date().toISOString(),
+      //   },
+      // ]);
+      setSelectedMessage(null);
     } catch (error) {
       console.error("Failed to send message:", error);
     }
@@ -86,7 +106,7 @@ const ChatWindow = ({ vessel, onBack }) => {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  }, [messages]); // Triggered when `messages` changes
+  }, [messages]);
 
   return (
     <div className="h-full mx-auto flex flex-col">
@@ -99,48 +119,60 @@ const ChatWindow = ({ vessel, onBack }) => {
         <div className="w-6"></div> {/* Spacer for alignment */}
       </div>
 
-      {/* Chat Messages */}
-      <div
-        ref={chatContainerRef} // Attach the ref to the chat container
-        className="flex-1 p-4 overflow-y-auto my-1"
-      >
-        {Object.entries(groupedMessages).map(([date, messages]) => (
-          <div key={date}>
-            {/* Date Header */}
-            <div className="flex items-center justify-center my-4">
-              <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                {date}
-              </div>
-            </div>
+      {/* Loading Spinner */}
+      {loading && (
+        <div className="flex-1 flex flex-col justify-center items-center">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-2 text-gray-700">Loading messages, please wait...</p>
+        </div>
+      )}
 
-            {/* Messages for this date */}
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`mb-4 flex ${
-                  msg.direction === "send" ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
-                  className={`max-w-xs p-3 rounded-lg ${
-                    msg.direction === "send"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  <p className="text-sm">{msg.message}</p>
-                  <p className="text-xs text-gray-400 mt-1 text-right">
-                    {new Date(msg.dateTime).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
+      {/* Chat Messages */}
+
+      {/* Chat Messages */}
+      {!loading && (
+        <div
+          ref={chatContainerRef} // Attach the ref to the chat container
+          className="flex-1 p-4 overflow-y-auto my-1"
+        >
+          {Object.entries(groupedMessages).map(([date, messages]) => (
+            <div key={date}>
+              {/* Date Header */}
+              <div className="flex items-center justify-center my-4">
+                <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                  {date}
                 </div>
               </div>
-            ))}
-          </div>
-        ))}
-      </div>
+
+              {/* Messages for this date */}
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`mb-4 flex ${
+                    msg.direction === "send" ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <div
+                    className={`max-w-xs p-3 rounded-lg ${
+                      msg.direction === "send"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    <p className="text-sm">{msg.message}</p>
+                    <p className="text-xs text-gray-400 mt-1 text-right">
+                      {new Date(msg.dateTime).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Input Area */}
       <div className="w-full flex justify-center items-center">

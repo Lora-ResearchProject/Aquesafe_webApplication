@@ -33,7 +33,12 @@ const MessagePopup = () => {
         setError("");
         try {
           const data = await fetchMessageOptions();
-          setDropdownOptions(data);
+
+          const filteredOptions = data.filter(
+            (option) => option.messageNumber !== 0
+          );
+
+          setDropdownOptions(filteredOptions);
         } catch (error) {
           console.error("Failed to fetch messages:", error);
           setError("Failed to load messages. Please try again.");
@@ -198,8 +203,6 @@ const MessagePopup = () => {
               setSelectedMessage={setSelectedMessage}
               loading={loading.options}
             />
-
-            
 
             {/* Action Buttons */}
             <div className="flex justify-end gap-4">

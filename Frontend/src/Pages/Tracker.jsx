@@ -12,20 +12,35 @@ import "leaflet/dist/leaflet.css";
 const REFRESH_INTERVAL = 60000; // 60 seconds
 
 const Tracker = () => {
-  const [locations, setLocations] = useState([]);
-  const [gateWayLocations, setGateWayLocations] = useState([]);
+  const [vesselData, setVesselData] = useState({
+    locations: [],
+    loading: true,
+    error: null,
+  });
+  const [gatewayData, setGatewayData] = useState({
+    locations: [],
+    loading: true,
+    error: null,
+  });
+  const [zoneData, setZoneData] = useState({
+    zones: [],
+    loading: true,
+    error: null,
+  });
+  const [hotspotData, setHotspotData] = useState({
+    hotspots: [],
+    loading: true,
+    error: null,
+  });
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [gw_SearchTerm, setgw_SearchTerm] = useState("");
   const [lastRefreshTime, setLastRefreshTime] = useState(Date.now());
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [zones, setZones] = useState([]);
-  const [hotspots, setHotspots] = useState([]);
 
-  const intervalRef = useRef(null); // Store interval ID
+  const intervalRef = useRef(null);
 
-  // Fetch latest vessel locations
+  // Fetch vessel locations
   const fetchVesselData = useCallback(async () => {
+    setVesselData((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const data = await fetchLatestVesselLocations();
       const transformedData = data.map((loc) => ({
@@ -35,16 +50,25 @@ const Tracker = () => {
         lat: loc.lat,
         lng: loc.lng,
       }));
-      setLocations(transformedData);
+      setVesselData({
+        locations: transformedData,
+        loading: false,
+        error: null,
+      });
       setLastRefreshTime(Date.now());
-      setRefreshTrigger((prev) => prev + 1); // Trigger timer reset
+      setRefreshTrigger((prev) => prev + 1);
     } catch (error) {
-      console.error("Failed to fetch vessel locations:", error);
+      setVesselData((prev) => ({
+        ...prev,
+        loading: false,
+        error: "Failed to fetch vessel locations",
+      }));
     }
   }, []);
 
-  // Fetch gateway locations (Only once on initial load)
+  // Fetch gateway locations
   const fetchGatewayData = useCallback(async () => {
+    setGatewayData((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const GWdata = await fetchLatestGateWayLocations();
       const transformedGWData = GWdata.map((loc) => ({
@@ -54,88 +78,110 @@ const Tracker = () => {
         lat: loc.lat,
         lng: loc.lng,
       }));
-      setGateWayLocations(transformedGWData);
+      setGatewayData({
+        locations: transformedGWData,
+        loading: false,
+        error: null,
+      });
     } catch (error) {
-      console.error("Failed to fetch gateway locations:", error);
+      setGatewayData((prev) => ({
+        ...prev,
+        loading: false,
+        error: "Failed to fetch gateway locations",
+      }));
     }
   }, []);
 
-  // Fetch all zones
+  // Fetch zones
   const fetchAllZones = useCallback(async () => {
+    setZoneData((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const fetchedZones = await fetchZones();
-      setZones(fetchedZones); // Set fetched zones to the state
+      setZoneData({ zones: fetchedZones, loading: false, error: null });
     } catch (error) {
-      console.error("Failed to fetch zones:", error);
+      setZoneData((prev) => ({
+        ...prev,
+        loading: false,
+        error: "Failed to fetch zones",
+      }));
     }
   }, []);
 
-   // Fetch all zones
-   const fetchHotspots = useCallback(async () => {
+  // Fetch hotspots
+  const fetchHotspots = useCallback(async () => {
+    setHotspotData((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const fetchedHotspots = await fetchAllFishingHotspots();
-      setHotspots(fetchedHotspots); // Set fetched zones to the state
+      setHotspotData({
+        hotspots: fetchedHotspots,
+        loading: false,
+        error: null,
+      });
     } catch (error) {
-      console.error("Failed to fetch zones:", error);
+      setHotspotData((prev) => ({
+        ...prev,
+        loading: false,
+        error: "Failed to fetch hotspots",
+      }));
     }
   }, []);
 
-  // Function to start a new interval for vessel data fetching
+  // Auto-refresh for vessels
   const startAutoRefresh = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current); // Clear any existing interval
-    }
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(fetchVesselData, REFRESH_INTERVAL);
   }, [fetchVesselData]);
 
-  // Initial Data Fetching
+  // Initial fetch and cleanup
   useEffect(() => {
-    fetchVesselData(); // Fetch vessel data initially
-    fetchGatewayData(); // Fetch gateway data only once
-    fetchAllZones(); // Fetch zones initially
+    fetchVesselData();
+    fetchGatewayData();
+    fetchAllZones();
     fetchHotspots();
-    startAutoRefresh(); // Start auto-refresh
+    startAutoRefresh();
 
-    return () => clearInterval(intervalRef.current); // Cleanup interval on unmount
-  }, [fetchVesselData, fetchGatewayData, fetchAllZones,fetchHotspots, startAutoRefresh]);
+    return () => clearInterval(intervalRef.current);
+  }, [
+    fetchVesselData,
+    fetchGatewayData,
+    fetchAllZones,
+    fetchHotspots,
+    startAutoRefresh,
+  ]);
 
-  // Manual Refresh Function
+  // Manual refresh
   const handleManualRefresh = () => {
-    clearInterval(intervalRef.current); // Stop the existing interval
-    fetchVesselData(); // Fetch immediately
-    startAutoRefresh(); // Restart auto-refresh with correct timing
+    clearInterval(intervalRef.current);
+    fetchVesselData();
+    startAutoRefresh();
   };
 
-  // Handle the zone created event to refresh zones
+  // Refresh zones when a new zone is created
   const handleZoneCreated = () => {
-    fetchAllZones(); // Refresh zones after a new zone is created
+    fetchAllZones();
   };
 
   return (
     <div className="flex h-full">
       <TrackerMap
-        locations={[...locations, ...gateWayLocations]}
+        vesselData={vesselData}
+        gatewayData={gatewayData}
+        zoneData={zoneData}
+        hotspotData={hotspotData}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
-        zones={zones}
-        hotspots={hotspots}
       />
-
       <Sidebar
-        vessels={locations}
-        gateways={gateWayLocations}
-        vesselSearchTerm={searchTerm}
-        setVesselSearchTerm={setSearchTerm}
-        gatewaySearchTerm={gw_SearchTerm}
-        setGatewaySearchTerm={setgw_SearchTerm}
+        vesselData={vesselData}
+        gatewayData={gatewayData}
+        zoneData={zoneData}
+        hotspotData={hotspotData}
         selectedLocation={selectedLocation}
         setSelectedLocation={setSelectedLocation}
         refreshVessels={handleManualRefresh}
         lastRefreshTime={lastRefreshTime}
         refreshTrigger={refreshTrigger}
         onZoneCreated={handleZoneCreated}
-        zones={zones}
-        hotspots={hotspots}
       />
     </div>
   );
