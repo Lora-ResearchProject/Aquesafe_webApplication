@@ -19,6 +19,7 @@ const zoneRoutes = require("./routes/zoneRoutes");
 
 const testRoutes = require("./routes/testRoutes");
 const { generateId } = require("./utils/idGenerator");
+const { startProximityAlertChecks } = require("./services/proximityAlertService");
 
 dotenv.config();
 
@@ -58,6 +59,9 @@ app.use("/api/zones", zoneRoutes);
 
 generateId();
 console.log("🚀 ~ generateId():", generateId());
+
+// Start proximity alert checks
+startProximityAlertChecks();
 
 // Error handling middleware
 app.use((err, req, res, next) => {
