@@ -57,8 +57,8 @@ app.use("/api/hotspots", fishingHotspotsRoutes);
 app.use("/api/notification", notificationRoutes);
 app.use("/api/zones", zoneRoutes);
 
-generateId();
-console.log("🚀 ~ generateId():", generateId());
+// generateId();
+// console.log("🚀 ~ generateId():", generateId());
 
 // Start proximity alert checks
 startProximityAlertChecks();
