@@ -19,7 +19,7 @@ The Aquesafe Web Application is an integrated platform designed to address the u
 
 ## System Architechture Diagram
 
-![WebApplicationSystemDiagram](Frontend/src/assets/system_diagram_2.png)
+![WebApplicationSystemDiagram](Frontend/src/assets/system_diagram_3.png)
 
 _Figure 1: AquaSafe Web Application System Architecture_
 
