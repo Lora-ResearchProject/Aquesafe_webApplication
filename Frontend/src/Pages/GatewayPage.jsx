@@ -7,7 +7,7 @@ import {
 } from "../services/gatewayService"; // Assuming fetchGateways is renamed to getGateways
 import GatewayForm from "../Components/gateway/GatewayForm";
 import GatewayPopup from "../Components/gateway/GatewayPopup";
-import WeatherComponent from "../Components/weather/WeatherFinder";
+import WeatherFinder from "../Components/weather/WeatherFinder";
 import { getUserRole } from "../utils/auth";
 
 const GatewayPage = () => {
@@ -138,7 +138,7 @@ const GatewayPage = () => {
                 <td className="py-2 px-4 border">{gateway.status}</td>
                 <td className="py-2 px-4 border">
                   <div className="flex justify-evenly items-center">
-                    <WeatherComponent lat={gateway.lat} lon={gateway.lng} />
+                    <WeatherFinder lat={gateway.lat} lon={gateway.lng} />
                     {userRole === "admin" && (
                       <>
                         <button
