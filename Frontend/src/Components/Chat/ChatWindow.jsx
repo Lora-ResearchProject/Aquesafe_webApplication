@@ -30,7 +30,12 @@ const ChatWindow = ({ vessel, onBack }) => {
     const fetchDropdownOptions = async () => {
       try {
         const response = await axios.get(`${baseURL}/api/messageData/`);
-        setDropdownOptions(response.data.data);
+        // Filter out objects where messageNumber is 0
+        const filteredOptions = response.data.data.filter(
+          (option) => option.messageNumber !== 0
+        );
+
+        setDropdownOptions(filteredOptions);
       } catch (error) {
         console.error("Failed to fetch dropdown options:", error);
       }
