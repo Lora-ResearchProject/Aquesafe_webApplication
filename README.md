@@ -4,18 +4,20 @@ The Aquesafe Web Application is an integrated platform designed to address the u
 
 ---
 
-# Features
+## Features
 
-- Implement GPS-Based Vessel Location Tracking and Visualization
-- Process Data from Onboard Nodes to Generate Accurate Fishing Boat Route Records
-- Optimize LoRa Data Transmission for Secure and Efficient Long-Range Delivery
-- Supply Essential Data to Onboard Nodes to Support Critical Functions
-- Manage Emergency Alerts and Implement a Real-Time Chat System
-- Monitor the LoRa Gateway to Ensure Reliable Data Transmission and Network Performance
+- **GPS-Based Vessel Location Tracking and Visualization** - The system provides real-time tracking of fishing vessels using GPS data, allowing users to visualize vessel locations on a map. This ensures efficient monitoring and management of vessel movements.
+- **Route Recording and Data Processing** - The application processes data from onboard nodes to generate accurate fishing boat route records. This allows users to review past routes for better decision-making and route optimization.
+- **Emergency Alerts (SOS)** - The system is equipped with a feature that receives emergency SOS alerts from vessels in critical situations. This ensures that fishing vessels can quickly notify nearby support systems in case of distress.
+- **Collaborative Emergency Response System** - When an SOS alert is triggered, the system checks for nearby vessels and sends alerts to them, enabling quick coordination and immediate assistance for vessels in distress.
+- **Proximity Alerts** - Users are notified when vessels enter any danger zones, allowing for proactive safety measures and avoiding potential collisions or unsafe situations.
+- **Real-Time Chat System with Zone-Based Chatting Options** - The system includes a real-time chat feature that allows users to communicate instantly. It supports zone-based chatting, enabling users to communicate with specific groups based on geographical areas.
+- **Onboard Node Data Support** - Essential data is supplied to onboard nodes to support critical functions such as weather information and other vessel operations, enhancing overall efficiency and safety.
+- **User-Friendly Dashboard** - The platform provides a comprehensive dashboard that displays key data in an intuitive format. This includes vessel locations, emergency alerts, the latest chats, and other essential information in one centralized view.
 
 ---
 
-# System Architechture Diagram
+## System Architechture Diagram
 
 ![WebApplicationSystemDiagram](Frontend/src/assets/system_diagram_2.png)
 
@@ -23,46 +25,46 @@ _Figure 1: AquaSafe Web Application System Architecture_
 
 ---
 
-# Installation
+## Installation
 
-## Locally setup
+### Locally setup
 
 - Get a git clone using `https://github.com/Lora-ResearchProject/Aquesafe_webApplication.git`
 - Navigate to the root directory (Aquesafe_webApplication)
-
-#### Frontend and Backend setup
-
 - run `npm run install-all`(For install all the dependensies in the Frontend and Backend).
 - To run this project, use the command `npm start` in the root directory.
 
-## Run Docker file
+### Run Docker file
 
 - Make the fundamental of the Docker container (Install all the dependencies that needed to run project)
 - Get a git clone using `https://github.com/Lora-ResearchProject/Aquesafe_webApplication.git`
 - Navigate to the root directory ( Aquesafe_webApplication )
 - Enter `docker compose up`to create and image and run the container.
 
-## Current Deployement
+### Current Deployement
 
-- Web application Frontend: `http://159.223.194.167:9000`
-- Web application Backend: `http://159.223.194.167:9001`
-- Web application Backend calling APIs: `http://159.223.194.167:9002`
+| Component                         | IP Addresses                   | Domain Name                                |
+| --------------------------------- | ------------------------------ | ------------------------------------------ |
+| Web Application ( Frontend )      | `http://159.223.194.167:9000/` | `https://app.aquasafe.fish/`               |
+| Web Application ( Backend )       | `http://159.223.194.167:9001/` | `https://app.aquasafe.fish/backend/`       |
+| Fishing Hotspots API ( Python )   | `http://159.223.194.167:9002/` | `https://app.aquasafe.fish/fishing-logic/` |
+| Weather Transmitter API ( Python )| `http://159.223.194.167:9002/` | `https://app.aquasafe.fish/weather-api/`   |
 
 ---
 
-# API Request and Response body Structure (gateway and server)
+## API Request and Response body Structure (gateway and server)
 
-## Overview
+### Overview
 
 This section outlines the structure of the request and response payloads for various operations handled by the gateway and server. Each section defines the fields and their corresponding purposes, along with examples of incoming and outgoing messages for clarity.
 
-## Request and Response Structures
+### Request and Response Structures
 
-### **1. Location**
+#### **1. Location**
 
 Handles incoming location updates.
 
-#### **Request Structure**
+##### **Request Structure**
 
 ```json
 {
@@ -74,7 +76,7 @@ Handles incoming location updates.
 - **`id`**: A unique identifier combining the vessel ID and message ID. Use `0000` for no message ID.
 - **`l`**: Location in latitude-longitude format.
 
-#### **Example Request**
+##### **Example Request**
 
 ```json
 {
@@ -83,11 +85,11 @@ Handles incoming location updates.
 }
 ```
 
-### **2. SOS**
+#### **2. SOS**
 
 Indicates an SOS alert from a vessel.
 
-#### **Request Structure**
+##### **Request Structure**
 
 ```json
 {
@@ -97,25 +99,25 @@ Indicates an SOS alert from a vessel.
 }
 ```
 
-- **`id`**: Unique identifier for the vessel and message.
+- **`id`**: Unique identifier for the vessel and SOS alert.
 - **`l`**: Location in latitude-longitude format.
 - **`s`**: Boolean indicating an SOS alert (`1` for yes).
 
-#### **Example Request**
+##### **Example Request**
 
 ```json
 {
-  "id": "123|1234",
+  "id": "123|UfmCzP2",
   "l": "80.12321|13.32432",
   "s": 1
 }
 ```
 
-### **3. Chat**
+#### **3. Chat**
 
 Handles incoming and outgoing messages between vessels.
 
-#### **Incoming Message Structure**
+##### **Incoming Message Structure**
 
 ```json
 {
@@ -127,7 +129,7 @@ Handles incoming and outgoing messages between vessels.
 - **`id`**: Identifier for the vessel and the message.
 - **`m`**: Message payload as a number.
 
-#### **Outgoing Message Structure**
+##### **Outgoing normal Message Structure**
 
 ```json
 {
@@ -135,32 +137,51 @@ Handles incoming and outgoing messages between vessels.
     "m": response_message_number
 }
 ```
+##### **Outgoing special Message Structure ( m=0 )**
 
-#### **Example**
+```json
+{
+    "id": "vesselid|messageid",
+    "l": "latitude|longitude",
+    "m": 0
+}
+```
+
+##### **Example**
 
 **Incoming Message:**
 
 ```json
 {
-  "id": "123|1234",
+  "id": "123|UfmCzP2",
   "m": 3
 }
 ```
 
-**Outgoing Message:**
+**Outgoing normal Message:**
 
 ```json
 {
-  "id": "123|A234",
+  "id": "123|UfmCzP2",
   "m": 4
 }
 ```
 
-### **4. Weather**
+**Outgoing special Message:**
+
+```json
+{
+  "id": "123|UfmCzP2",
+  "l": "80.12321|13.32432",
+  "m": 0
+}
+```
+
+#### **4. Weather**
 
 Provides weather information for a location.
 
-#### **Incoming Message Structure**
+##### **Incoming Message Structure**
 
 ```json
 {
@@ -174,7 +195,7 @@ Provides weather information for a location.
 - **`l`**: Location in latitude-longitude format.
 - **`wr`**: Boolean indicating a weather request (`1` for yes).
 
-#### **Outgoing Message Structure**
+##### **Outgoing Message Structure**
 
 ```json
 {
@@ -185,20 +206,18 @@ Provides weather information for a location.
 
 - **`w`**: Weather information as a percentage between 0 and 100.
 
-#### **Example**
+##### **Example**
 
 **Incoming Message:**
-
 ```json
 {
-  "id": "123|1234",
+  "id": "123|UfmCzP2",
   "l": "80.12321|13.32432",
   "wr": 1
 }
 ```
 
 **Outgoing Message:**
-
 ```json
 {
   "id": "123|0000",
@@ -206,11 +225,11 @@ Provides weather information for a location.
 }
 ```
 
-### **5. Fishing Hotspots**
+#### **5. Fishing Hotspots**
 
 Manages requests and responses related to fishing hotspots.
 
-#### **Incoming Message (Get Fishing Location)**
+##### **Incoming Message (Get Fishing Location)**
 
 ```json
 {
@@ -224,7 +243,7 @@ Manages requests and responses related to fishing hotspots.
 - **`l`**: Location in latitude-longitude format.
 - **`f`**: `1` to founded fishing location.
 
-#### **Incoming Message (Request Nearest Fishing Location)**
+##### **Incoming Message (Request Nearest Fishing Location)**
 
 ```json
 {
@@ -236,7 +255,7 @@ Manages requests and responses related to fishing hotspots.
 
 - **`f`**: `2` to request the nearest fishing location.
 
-#### **Outgoing Message (Return Nearest Fishing Location)**
+##### **Outgoing Message (Return Nearest Fishing Location)**
 
 ```json
 {
@@ -248,7 +267,7 @@ Manages requests and responses related to fishing hotspots.
 
 - **`f`**: `3` indicating the response with the nearest fishing location.
 
-#### **Examples**
+##### **Examples**
 
 **Incoming Message (Get Fishing Location):**
 
@@ -280,12 +299,12 @@ Manages requests and responses related to fishing hotspots.
 }
 ```
 
-## Field Descriptions
+### Field Descriptions
 
 | Field | Description                                                             | Example               |
 | ----- | ----------------------------------------------------------------------- | --------------------- |
-| `id`  | Unique identifier combining vessel ID and message ID (e.g.,`123 0000`). | `"123 0000"`          |
-| `l`   | Location in latitude-longitude format.                                  | `"80.12321 13.32432"` |
+| `id`  | Unique identifier combining vessel ID and message ID (e.g.,`123|UfmCzP2`). | `"123|UfmCzP2"`    |
+| `l`   | Location in latitude-longitude format.                                  | `"80.12321|13.32432"` |
 | `s`   | SOS alert flag (`1` for yes , `0` for no).                              | `1`                   |
 | `m`   | Message payload as a number.                                            | `3`                   |
 | `w`   | Weather information as a percentage between 0 and 100.                  | `60`                  |
@@ -294,17 +313,17 @@ Manages requests and responses related to fishing hotspots.
 
 ---
 
-# Vessel Authentication API Documentation
+## Vessel Authentication API Documentation
 
-## 1. Vessel Registration
+### 1. Vessel Registration
 
-### Endpoint
+##### Endpoint
 
 ```
 POST http://localhost:3001/api/vessel-auth/vessel-register
 ```
 
-### Request Body
+##### Request Body
 
 ```
 {
@@ -314,7 +333,7 @@ POST http://localhost:3001/api/vessel-auth/vessel-register
 }
 ```
 
-### Response
+##### Response
 
 ```
 {
@@ -322,15 +341,15 @@ POST http://localhost:3001/api/vessel-auth/vessel-register
 }
 ```
 
-## 2. Vessel Login
+### 2. Vessel Login
 
-### Endpoint
+##### Endpoint
 
 ```
 POST http://localhost:3001/api/vessel-auth/vessel-login
 ```
 
-### Request Body
+##### Request Body
 
 ```
 {
@@ -339,7 +358,7 @@ POST http://localhost:3001/api/vessel-auth/vessel-login
 }
 ```
 
-### Response
+##### Response
 
 ```
 {
@@ -347,15 +366,15 @@ POST http://localhost:3001/api/vessel-auth/vessel-login
   "message": "Login successful"
 }
 ```
-## 3. Get vessel details by vessel Id
+### 3. Get vessel details by vessel Id
 
-### Endpoint
+##### Endpoint
 
 ```
 GET http://localhost:3001/api/vessel-auth/<vesselId>
 ```
 
-### Response
+##### Response
 
 ```
 {
@@ -365,14 +384,14 @@ GET http://localhost:3001/api/vessel-auth/<vesselId>
     "__v": 0
 }
 ```
-## 4. Change Vessel details (without password)
+### 4. Change Vessel details (without password)
 
-### Endpoint
+##### Endpoint
 
 ```
 PATCH http://localhost:3001/api/vessel-auth/<vesselId>/change-details
 ```
-### Request Body
+##### Request Body
 
 ```
 {
@@ -381,7 +400,7 @@ PATCH http://localhost:3001/api/vessel-auth/<vesselId>/change-details
 }
 ```
 
-### Response
+##### Response
 
 ```
 {
@@ -389,14 +408,14 @@ PATCH http://localhost:3001/api/vessel-auth/<vesselId>/change-details
 }
 ```
 
-## 5. Change Password
+### 5. Change Password
 
-### Endpoint
+##### Endpoint
 
 ```
 PATCH http://localhost:3001/api/vessel-auth/<vesselId>/change-password
 ```
-### Request Body
+##### Request Body
 
 ```
 {
@@ -405,7 +424,7 @@ PATCH http://localhost:3001/api/vessel-auth/<vesselId>/change-password
 }
 ```
 
-### Response
+##### Response
 
 ```
 {
