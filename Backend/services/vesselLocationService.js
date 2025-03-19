@@ -36,8 +36,8 @@ exports.fetchAllVesselLocations = async () => {
   }
 };
 
-// Fetch suggested fishing hotspots from the external API
-exports.suggestFishingHotspots = async () => {
+// Fetch suggested fishing hotspots from the external API with optional query parameters
+exports.suggestFishingHotspots = async (queryParams = {}) => {
   try {
     const apiUrl = process.env.VESSEL_LOCATIONS_API_URL; // Get the URL from environment variables
 
@@ -47,7 +47,10 @@ exports.suggestFishingHotspots = async () => {
       );
     }
 
-    const apiResponse = await axios.get(`${apiUrl}/suggest_fishing_hotspots`);
+    // Make a GET request to the external API with the provided query parameters
+    const apiResponse = await axios.get(`${apiUrl}/get_fishing_locations`, {
+      params: queryParams,
+    });
 
     if (
       apiResponse.status !== 200 ||
