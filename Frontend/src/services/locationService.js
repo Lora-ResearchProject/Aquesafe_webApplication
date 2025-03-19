@@ -74,10 +74,12 @@ export const fetchVesselLocations = async (vesselId, date) => {
   }
 };
 
-// Fetch fishig hotspots
-export const fetchAllFishingHotspots = async () => {
+// Fetch fishing hotspots with optional query parameters
+export const fetchAllFishingHotspots = async (queryParams = {}) => {
   try {
-    const response = await axios.get(`${FISHING_HOTSPOTS_URL}/`);
+    const response = await axios.get(`${FISHING_HOTSPOTS_URL}/`, {
+      params: queryParams, // Pass query parameters to the API
+    });
 
     if (!response || response.status !== 200) {
       throw new Error("Failed to fetch fishing hotspots");

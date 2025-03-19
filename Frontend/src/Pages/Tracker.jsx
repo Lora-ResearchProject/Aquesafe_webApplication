@@ -107,24 +107,25 @@ const Tracker = () => {
     }
   }, []);
 
-  // Fetch hotspots
-  const fetchHotspots = useCallback(async () => {
-    setHotspotData((prev) => ({ ...prev, loading: true, error: null }));
-    try {
-      const fetchedHotspots = await fetchAllFishingHotspots();
-      setHotspotData({
-        hotspots: fetchedHotspots,
-        loading: false,
-        error: null,
-      });
-    } catch (error) {
-      setHotspotData((prev) => ({
-        ...prev,
-        loading: false,
-        error: "Failed to fetch hotspots",
-      }));
-    }
-  }, []);
+  // Fetch hotspots with optional period parameter
+const fetchHotspots = useCallback(async (period = "month") => {
+  setHotspotData((prev) => ({ ...prev, loading: true, error: null }));
+  try {
+    // Fetch hotspots for the specified period
+    const fetchedHotspots = await fetchAllFishingHotspots({ period });
+    setHotspotData({
+      hotspots: fetchedHotspots,
+      loading: false,
+      error: null,
+    });
+  } catch (error) {
+    setHotspotData((prev) => ({
+      ...prev,
+      loading: false,
+      error: "Failed to fetch hotspots",
+    }));
+  }
+}, []);
 
   // Auto-refresh for vessels
   const startAutoRefresh = useCallback(() => {
@@ -137,7 +138,7 @@ const Tracker = () => {
     fetchVesselData();
     fetchGatewayData();
     fetchAllZones();
-    fetchHotspots();
+    fetchHotspots("month");
     startAutoRefresh();
 
     return () => clearInterval(intervalRef.current);
@@ -182,6 +183,7 @@ const Tracker = () => {
         lastRefreshTime={lastRefreshTime}
         refreshTrigger={refreshTrigger}
         onZoneCreated={handleZoneCreated}
+        fetchHotspots={fetchHotspots}
       />
     </div>
   );
