@@ -4,9 +4,10 @@ let io;
 
 // Initialize WebSocket
 const initWebSocket = (server) => {
+  const fURL = process.env.FRONTEND_BASE_URL;
   io = new Server(server, {
     cors: {
-      origin: "http://localhost:9000",
+      origin: fURL,
       methods: ["GET", "POST"],
     },
   });

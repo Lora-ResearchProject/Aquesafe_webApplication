@@ -19,6 +19,7 @@ const Sidebar = ({
   lastRefreshTime,
   refreshTrigger,
   onZoneCreated,
+  fetchHotspots,
 }) => {
   const [activeTab, setActiveTab] = useState("vessels");
   const [vesselSearchTerm, setVesselSearchTerm] = useState("");
@@ -137,50 +138,78 @@ const Sidebar = ({
         );
 
       case "hotspots":
-        if (hotspotData.loading) return <Spinner />;
-        if (hotspotData.error)
-          return <p className="text-red-500">{hotspotData.error}</p>;
-        if (hotspotData.hotspots.length === 0) return <p>No hotspots found.</p>;
         return (
-          <div className="space-y-2">
-            {hotspotData.hotspots
-              .filter((hotspot) =>
-                hotspot.hotspotId
-                  .toString()
-                  .toLowerCase()
-                  .includes(hotspotSearchTerm.toLowerCase())
-              )
-              .map((hotspot) => (
-                <div
-                  key={hotspot.hotspotId}
-                  onClick={() =>
-                    setSelectedLocation({
-                      lat: hotspot.latitude,
-                      lng: hotspot.longitude,
-                    })
-                  }
-                  className={`p-3 rounded-lg cursor-pointer border ${
-                    selectedLocation?.lat === hotspot.latitude &&
-                    selectedLocation?.lng === hotspot.longitude
-                      ? "bg-green-100 border-green-300"
-                      : "bg-white border-gray-300"
-                  } hover:bg-green-50`}
-                >
-                  <strong className="block text-lg font-medium text-gray-800">
-                    Hotspot ID: {hotspot.hotspotId}
-                  </strong>
-                  <p className="text-sm text-gray-600">
-                    Vessels: {hotspot.vesselCount}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Available Slots: {hotspot.availableSlots}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Last Updated:{" "}
-                    {new Date(hotspot.currentDateTime).toLocaleString()}
-                  </p>
+          <div className="space-y-4 flex flex-col">
+            {/* Period Filter Dropdown */}
+            <div className="flex justify-end">
+              <select
+                onChange={(e) => {
+                  // Fetch hotspots based on the selected period
+                  fetchHotspots(e.target.value);
+                }}
+                className="p-2 border border-gray-300 rounded-lg"
+              >
+                <option value="month">Last Month</option>
+                <option value="year">This Year</option>
+                <option value="last year">Last Year</option>
+              </select>
+            </div>
+
+            {/* Loading State */}
+            {hotspotData.loading && <Spinner />}
+
+            {/* Error State */}
+            {hotspotData.error && (
+              <p className="text-red-500">{hotspotData.error}</p>
+            )}
+
+            {/* No Hotspots Found */}
+            {!hotspotData.loading &&
+              !hotspotData.error &&
+              hotspotData.hotspots.length === 0 && <p>No hotspots found.</p>}
+
+            {/* Hotspots List */}
+            {!hotspotData.loading &&
+              !hotspotData.error &&
+              hotspotData.hotspots.length > 0 && (
+                <div className="space-y-2 overflow-y-auto">
+                  {hotspotData.hotspots
+                    .filter((hotspot) =>
+                      hotspot.hotspotId
+                        .toString()
+                        .toLowerCase()
+                        .includes(hotspotSearchTerm.toLowerCase())
+                    )
+                    .map((hotspot) => (
+                      <div
+                        key={hotspot.hotspotId}
+                        onClick={() =>
+                          setSelectedLocation({
+                            lat: hotspot.latitude,
+                            lng: hotspot.longitude,
+                          })
+                        }
+                        className={`p-3 rounded-lg cursor-pointer border ${
+                          selectedLocation?.lat === hotspot.latitude &&
+                          selectedLocation?.lng === hotspot.longitude
+                            ? "bg-green-100 border-green-300"
+                            : "bg-white border-gray-300"
+                        } hover:bg-green-50`}
+                      >
+                        <strong className="block text-lg font-medium text-gray-800">
+                          Hotspot ID: {hotspot.hotspotId}
+                        </strong>
+                        <p className="text-sm text-gray-600">
+                          Status: {hotspot.status}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Last Updated:{" "}
+                          {new Date(hotspot.currentDateTime).toLocaleString()}
+                        </p>
+                      </div>
+                    ))}
                 </div>
-              ))}
+              )}
           </div>
         );
 
@@ -268,8 +297,7 @@ const Sidebar = ({
           }
         />
       )}
-
-      {renderContent()}
+      <div className="flex flex-col flex-1">{renderContent()}</div>
     </div>
   );
 };
