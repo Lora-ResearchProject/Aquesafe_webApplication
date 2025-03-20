@@ -1,7 +1,9 @@
 import { io } from "socket.io-client";
 import { baseURL } from "../config/config";
 
-const socket = io(baseURL); // Adjust based on your backend URL
+const socket = io(baseURL, {
+  transports: ["websocket"], // Force WebSocket connection
+}); // Adjust based on your backend URL
 
 // Function to emit events
 export const emitEvent = (eventName, data) => {
