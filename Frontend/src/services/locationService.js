@@ -8,16 +8,34 @@ const VESSEL_AUTH_URL = baseURL + "/api/vessel-auth";
 const ROUTE_LOG_URL = baseURL + "/api/route-log";
 const FISHING_HOTSPOTS_URL = baseURL + "/api/hotspots";
 
-// Fetch latest vessel locations
+// Fetch latest vessel locations with vesselName included
 export const fetchLatestVesselLocations = async () => {
   try {
-    const response = await axios.get(`${V_API_URL}/latestLocations`);
+    // Fetch the latest vessel locations
+    const locationResponse = await axios.get(`${V_API_URL}/latestLocations`);
 
-    if (!response || response.status !== 200) {
+    if (!locationResponse || locationResponse.status !== 200) {
       throw new Error("Failed to fetch vessel locations");
     }
 
-    return response.data; // Return the fetched data
+    // Fetch vessel details
+    const vessels = await fetchVessels();
+
+    // Map vessel id to vessel name
+    const vesselMap = vessels.reduce((map, vessel) => {
+      map[vessel.vesselId] = vessel.vesselName;
+      return map;
+    }, {});
+
+    // Combine location data with vessel names
+    const locationsWithNames = locationResponse.data.map((location) => {
+      return {
+        ...location,
+        vesselName: vesselMap[location.vesselId] || "Unknown Vessel", // Add vesselName
+      };
+    });
+
+    return locationsWithNames; // Return the data with vessel names
   } catch (error) {
     console.error("Error fetching vessel locations:", error.message);
     throw new Error(`Error fetching vessel locations: ${error.message}`);
