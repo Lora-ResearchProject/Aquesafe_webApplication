@@ -19,7 +19,7 @@ The Aquesafe Web Application is an integrated platform designed to address the u
 
 ## System Architechture Diagram
 
-![WebApplicationSystemDiagram](Frontend/src/assets/system_diagram_2.png)
+![WebApplicationSystemDiagram](Frontend/src/assets/system_diagram_3.png)
 
 _Figure 1: AquaSafe Web Application System Architecture_
 
@@ -303,8 +303,8 @@ Manages requests and responses related to fishing hotspots.
 
 | Field | Description                                                             | Example               |
 | ----- | ----------------------------------------------------------------------- | --------------------- |
-| `id`  | Unique identifier combining vessel ID and message ID (e.g.,`123|UfmCzP2`). | `"123|UfmCzP2"`    |
-| `l`   | Location in latitude-longitude format.                                  | `"80.12321|13.32432"` |
+| `id`  | Unique identifier combining vessel ID and message ID (e.g.,`123 UfmCzP2`). | `"123 UfmCzP2"`    |
+| `l`   | Location in latitude-longitude format.                                  | `"80.12321 13.32432"` |
 | `s`   | SOS alert flag (`1` for yes , `0` for no).                              | `1`                   |
 | `m`   | Message payload as a number.                                            | `3`                   |
 | `w`   | Weather information as a percentage between 0 and 100.                  | `60`                  |
