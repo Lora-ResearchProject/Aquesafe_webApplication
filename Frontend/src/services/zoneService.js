@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { baseURL } from "../config/config";
+import { fetchVessels } from "./locationService";
 
 const API_URL = baseURL + "/api/zones";
 
@@ -64,8 +65,26 @@ export const deleteZone = async (zoneId) => {
 
 export const getVesselsByZone = async (zoneId) => {
   try {
+    // Fetch vessels for the specified zone
     const response = await axios.get(`${API_URL}/vessels/${zoneId}`);
-    return response.data;
+    const zoneVessels = response.data;
+
+    // Fetch all vessels to get vessel names
+    const allVessels = await fetchVessels();
+
+    // Create a map of vesselId to vesselName for quick lookup
+    const vesselMap = new Map();
+    allVessels.forEach((vessel) => {
+      vesselMap.set(vessel.vesselId, vessel.vesselName);
+    });
+
+    // Add vesselName to each vessel in zoneVessels
+    const vesselsWithNames = zoneVessels.map((vessel) => ({
+      ...vessel,
+      vesselName: vesselMap.get(vessel.vesselId) || "Unknown Vessel", // Fallback in case vesselId is not found
+    }));
+
+    return vesselsWithNames;
   } catch (error) {
     console.error(`Error fetching vessels for zone ${zoneId}:`, error);
     throw new Error(

@@ -95,6 +95,8 @@ const MessagePopup = () => {
       loadVessels();
     }
   }, [showPopup, messageTarget, selectedZone]);
+          
+          
 
   // Handle sending a message
   const handleSendMessage = useCallback(async () => {

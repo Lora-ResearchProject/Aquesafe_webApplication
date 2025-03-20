@@ -98,12 +98,12 @@ const MapContainer = ({
                 <p>
                   <strong>Hotspot ID:</strong> {hotspot.hotspotId}
                 </p>
-                <p>
+                {/* <p>
                   <strong>Vessels:</strong> {hotspot.vesselCount}
                 </p>
                 <p>
                   <strong>Available Slots:</strong> {hotspot.availableSlots}
-                </p>
+                </p> */}
                 <p>
                   <strong>Last Updated:</strong>{" "}
                   {new Date(hotspot.currentDateTime).toLocaleString()}
