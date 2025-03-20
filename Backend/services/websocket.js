@@ -9,6 +9,7 @@ const initWebSocket = (server) => {
     cors: {
       origin: fURL,
       methods: ["GET", "POST"],
+      credentials: true,
     },
   });
 
