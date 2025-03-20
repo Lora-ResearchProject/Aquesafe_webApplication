@@ -46,7 +46,7 @@ const Tracker = () => {
       const transformedData = data.map((loc) => ({
         id: loc.vesselId,
         type: "vessel",
-        name: `vessel${loc.vesselId}`,
+        name: loc.vesselName,
         lat: loc.lat,
         lng: loc.lng,
       }));

@@ -26,6 +26,7 @@ const Sidebar = ({
   const [gatewaySearchTerm, setGatewaySearchTerm] = useState("");
   const [zoneSearchTerm, setZoneSearchTerm] = useState("");
   const [hotspotSearchTerm, setHotspotSearchTerm] = useState("");
+  const [selectedPeriod, setSelectedPeriod] = useState("month");
   const userRole = getUserRole();
 
   // Handle deleting a zone
@@ -143,7 +144,10 @@ const Sidebar = ({
             {/* Period Filter Dropdown */}
             <div className="flex justify-end">
               <select
+                value={selectedPeriod} // Bind the value to the state
                 onChange={(e) => {
+                  // Update the selected period state
+                  setSelectedPeriod(e.target.value);
                   // Fetch hotspots based on the selected period
                   fetchHotspots(e.target.value);
                 }}
@@ -172,7 +176,7 @@ const Sidebar = ({
             {!hotspotData.loading &&
               !hotspotData.error &&
               hotspotData.hotspots.length > 0 && (
-                <div className="space-y-2 overflow-y-auto">
+                <div className="space-y-2 overflow-y-auto h-[700px]">
                   {hotspotData.hotspots
                     .filter((hotspot) =>
                       hotspot.hotspotId
@@ -212,7 +216,7 @@ const Sidebar = ({
               )}
           </div>
         );
-
+        
       default:
         return null;
     }
