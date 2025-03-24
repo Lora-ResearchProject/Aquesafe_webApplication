@@ -45,7 +45,7 @@ const saveAlertMessage = async (vesselId, message, messageNumber) => {
     );
 
     const externalServerUrl = process.env.GATEWAY_API_URL;
-    await sendToGateway(externalServerUrl, formattedMessage); // Uncomment when ready
+    //await sendToGateway(externalServerUrl, formattedMessage); // Uncomment when ready
 
     const savedChat = await newChat.save();
     emitEvent("new_chat", savedChat);
