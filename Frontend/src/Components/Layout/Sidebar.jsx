@@ -30,6 +30,12 @@ const Sidebar = ({ isAdmin }) => {
       >
         {/* Navigation Links */}
         <ul className="space-y-4 mt-6">
+          <NavItem to="/dashboard" icon={HomeIcon} label="Dashboard" />
+          <NavItem to="/sos" icon={BellIcon} label="SOS Alerts" />
+          <NavItem to="/chat" icon={ChatAltIcon} label="Chat" />
+          <NavItem to="/tracker" icon={LocationMarkerIcon} label="Tracker" />
+          <NavItem to="/routelog" icon={MapIcon} label="Route Log" />
+          <NavItem to="/gateway-page" icon={CollectionIcon} label="GateWays" />
           {userRole === "admin" && (
             <>
               <NavItem
@@ -43,13 +49,7 @@ const Sidebar = ({ isAdmin }) => {
                 label="Message DB"
               />
             </>
-          )}{" "}
-          <NavItem to="/dashboard" icon={HomeIcon} label="Dashboard" />
-          <NavItem to="/sos" icon={BellIcon} label="SOS Alerts" />
-          <NavItem to="/chat" icon={ChatAltIcon} label="Chat" />
-          <NavItem to="/tracker" icon={LocationMarkerIcon} label="Tracker" />
-          <NavItem to="/routelog" icon={MapIcon} label="Route Log" />
-          <NavItem to="/gateway-page" icon={CollectionIcon} label="GateWays" />
+          )}
           {/* <NavItem to="/hotspots" icon={CollectionIcon} label="Hotspots" /> */}
         </ul>
 

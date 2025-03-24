@@ -9,7 +9,7 @@ const PublicRoute = ({ children }) => {
   // Redirect based on the user's role
   if (isAuth) {
     if (userRole === "admin") {
-      return <Navigate to="/admin-dashboard" replace />; // Redirect admin to admin dashboard
+      return <Navigate to="/dashboard" replace />; // Redirect admin to admin dashboard
     } else if (userRole === "user") {
       return <Navigate to="/dashboard" replace />; // Redirect user to dashboard
     }
