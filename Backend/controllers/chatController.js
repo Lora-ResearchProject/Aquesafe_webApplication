@@ -38,7 +38,7 @@ exports.createChat = async (req, res) => {
     const externalServerUrl = process.env.GATEWAY_API_URL;
 
     // Send the formatted data to the external server // -------------------------------------------------------------- need to uncomment this after fix this
-    await sendToGateway(externalServerUrl, formattedMessage);
+    //await sendToGateway(externalServerUrl, formattedMessage);
 
     // Save to the database only after successful external API call
     const savedChat = await newChat.save();
@@ -144,7 +144,7 @@ exports.createChatsForMultipleVessels = async (req, res) => {
         );
 
         // Uncomment this after fixing the external API issue
-        await sendToGateway(externalServerUrl, formattedMessage);
+        //await sendToGateway(externalServerUrl, formattedMessage);
 
         const savedChat = await newChat.save();
         // Emit WebSocket event for this chat

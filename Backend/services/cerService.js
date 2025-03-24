@@ -102,7 +102,7 @@ const saveAndSendMessage = async (vesselId, lat, lng) => {
 
     const externalServerUrl = process.env.GATEWAY_API_URL;
 
-    await sendToGateway(externalServerUrl, formattedMessage); // -------------------------------------------------------------- need to uncomment this after fix this
+    //await sendToGateway(externalServerUrl, formattedMessage); // -------------------------------------------------------------- need to uncomment this after fix this
     const savedChat = await newChat.save();
 
     emitEvent("new_chat", savedChat);

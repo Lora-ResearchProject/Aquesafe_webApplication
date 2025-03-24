@@ -22,7 +22,7 @@ const LoginPage = () => {
 
       const role = getUserRole();
       if (role === "admin") {
-        navigate("/admin-dashboard", { replace: true });
+        navigate("/dashboard", { replace: true });
       } else {
         navigate("/dashboard", { replace: true });
       }
