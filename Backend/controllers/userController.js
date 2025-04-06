@@ -49,6 +49,12 @@ exports.createUser = async (req, res) => {
 
       res.status(201).json({
         message: "User created successfully. Credentials sent via email.",
+        data: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });
