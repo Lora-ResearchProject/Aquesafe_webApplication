@@ -37,7 +37,7 @@ const AdminDashboard = () => {
 
     try {
       const createdUser = await createUser(newUser);
-      setUsers([...users, createdUser]);
+      setUsers([...users, createdUser.data]);
       setMessage(`User credentials sent to ${newUser.email} successfully!`);
       setNewUser({ name: "", email: "" }); // Clear form
       setShowCreateUserPopup(false); // Close popup
@@ -47,6 +47,7 @@ const AdminDashboard = () => {
     } finally {
       setIsLoading(false); // Stop loading
     }
+      
   };
 
   // Handle deleting a user
@@ -154,7 +155,7 @@ const AdminDashboard = () => {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user._id} className="border-b">
+              <tr key={`user_${user._id}`} className="border-b">
                 <td className="p-2">{user.name}</td>
                 <td className="p-2">{user.email}</td>
                 <td className="p-2">{user.role}</td>
