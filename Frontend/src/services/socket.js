@@ -23,25 +23,23 @@
 // // Export the socket instance if needed
 // export default socket;
 
-
 import { baseURL } from "../config/config";
 import { io } from "socket.io-client";
 
 export const socket = io(baseURL, {
   transports: ["websocket"],
-  path: "/backend/socket.io",
 });
-console.log("🚀 ~ socket:", socket)
-console.log("🚀 ~ baseURL:", baseURL)
+console.log("🚀 ~ socket:", socket);
+console.log("🚀 ~ baseURL:", baseURL);
 
 // Log all received events
 socket.onAny((event, ...args) => {
-  console.log(`📥 [Client Received] Event: "${event}"`, args);
+  console.log(`[Client Received] Event: "${event}"`, args);
 });
 
 // Log outgoing emits
 export const emitEvent = (eventName, data) => {
-  console.log(`📤 [Client Emit] Event: "${eventName}"`, data);
+  console.log(`[Client Emit] Event: "${eventName}"`, data);
   socket.emit(eventName, data);
 };
 
