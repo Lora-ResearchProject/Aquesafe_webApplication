@@ -7,7 +7,7 @@ const initWebSocket = (server) => {
   const fURL = process.env.FRONTEND_BASE_URL;
   io = new Server(server, {
     cors: {
-      origin: "*" ,//fURL,
+      origin: fURL ,//fURL,
       methods: ["GET", "POST"],
       credentials: true,
     },
