@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { removeToken, getUserRole } from "../../utils/auth";
 import {
-  HomeIcon,
-  ChatAltIcon,
-  LogoutIcon,
-  MapIcon,
-  BellIcon,
-  DatabaseIcon,
-  KeyIcon,
-  LocationMarkerIcon,
-  CollectionIcon,
-} from "@heroicons/react/outline";
+  HiOutlineHome as HomeIcon,
+  HiOutlineChatAlt as ChatAltIcon,
+  HiOutlineLogout as LogoutIcon,
+  HiOutlineMap as MapIcon,
+  HiOutlineBell as BellIcon,
+  HiOutlineDatabase as DatabaseIcon,
+  HiOutlineKey as KeyIcon,
+  HiOutlineLocationMarker as LocationMarkerIcon,
+  HiOutlineCollection as CollectionIcon,
+  HiOutlineSwitchHorizontal as DataPipelineIcon
+} from "react-icons/hi";
 
 const Sidebar = ({ isAdmin }) => {
   const [showModal, setShowModal] = useState(false);
@@ -38,6 +39,12 @@ const Sidebar = ({ isAdmin }) => {
           <NavItem to="/gateway-page" icon={CollectionIcon} label="GateWays" />
           {userRole === "admin" && (
             <>
+            
+            <NavItem
+                to="/dataPipeLine"
+                icon={DataPipelineIcon}
+                label="Data Pipeline"
+              />
               <NavItem
                 to="/admin-dashboard"
                 icon={KeyIcon}

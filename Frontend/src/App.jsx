@@ -19,6 +19,7 @@ import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import AdminDashboard from "./Pages/AdminDashboard";
 import GatewayPage from "./Pages/GatewayPage";
 import VesselPage from "./Pages/VesselPage";
+import DataPipeLinePage from "./Pages/DataPipeLinePage";
 
 function App() {
   return (
@@ -66,6 +67,16 @@ function App() {
           <ProtectedRoute allowedRoles={["admin"]}>
             <DashboardLayout>
               <MessageDataPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dataPipeLine"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <DashboardLayout>
+              <DataPipeLinePage />
             </DashboardLayout>
           </ProtectedRoute>
         }
