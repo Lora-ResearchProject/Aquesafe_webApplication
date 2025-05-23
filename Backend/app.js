@@ -17,10 +17,10 @@ const fishingHotspotsRoutes = require("./routes/fishingHotspotsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const zoneRoutes = require("./routes/zoneRoutes");
 const weatherRoutes = require("./routes/weatherRoutes");
-
-const testRoutes = require("./routes/testRoutes");
-const { generateId } = require("./utils/idGenerator");
-const { startProximityAlertChecks } = require("./services/proximityAlertService");
+const PipeLineStatusRoutes = require("./routes/PipeLineStatusRoutes");
+const {
+  startProximityAlertChecks,
+} = require("./services/proximityAlertService");
 
 dotenv.config();
 
@@ -52,17 +52,13 @@ app.use("/api/messageData", messageDataRoutes);
 app.use("/api/sos", sosRoutes);
 app.use("/api/gateway", gatewayRoutes);
 app.use("/api/chat", chatRoutes);
-app.use("/api/test", testRoutes);
+
 app.use("/api/route-log", vesselRouteLogRoutes);
 app.use("/api/hotspots", fishingHotspotsRoutes);
 app.use("/api/notification", notificationRoutes);
 app.use("/api/zones", zoneRoutes);
 app.use("/api/weather-check", weatherRoutes);
-
-
-
-// generateId();
-// console.log("🚀 ~ generateId():", generateId());
+app.use("/api/pipeline", PipeLineStatusRoutes);
 
 // Start proximity alert checks
 startProximityAlertChecks();
