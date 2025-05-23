@@ -29,6 +29,7 @@ import { io } from "socket.io-client";
 
 export const socket = io(baseURL, {
   transports: ["websocket"],
+  path: "/backend/socket.io",
 });
 console.log("🚀 ~ socket:", socket)
 console.log("🚀 ~ baseURL:", baseURL)
