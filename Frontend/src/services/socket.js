@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import { baseURL } from "../config/config";
-
-const socket = io(baseURL, {
+//baseURL
+const socket = io("https://app.aquasafe.fish/backend", {
   transports: ["websocket"], // Force WebSocket connection
 }); // Adjust based on your backend URL
 
