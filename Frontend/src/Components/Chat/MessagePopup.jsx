@@ -95,8 +95,6 @@ const MessagePopup = () => {
       loadVessels();
     }
   }, [showPopup, messageTarget, selectedZone]);
-          
-          
 
   // Handle sending a message
   const handleSendMessage = useCallback(async () => {
@@ -133,6 +131,8 @@ const MessagePopup = () => {
   // Close popup when clicking outside (backdrop)
   const handleBackdropClick = useCallback((e) => {
     if (e.target === e.currentTarget) {
+      setSelectedMessage(null);
+      setSelectedZone("all");
       setShowPopup(false);
     }
   }, []);
@@ -143,6 +143,12 @@ const MessagePopup = () => {
       !selectedMessage || (messageTarget === "zone" && selectedZone === "all"),
     [selectedMessage, messageTarget, selectedZone]
   );
+
+  const resetForm = () => {
+    setSelectedMessage(null);
+    setSelectedZone("all");
+    setShowPopup(false);
+  };
 
   return (
     <div>
@@ -210,7 +216,7 @@ const MessagePopup = () => {
             <div className="flex justify-end gap-4">
               <button
                 className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white"
-                onClick={() => setShowPopup(false)}
+                onClick={resetForm}
                 disabled={loading.send}
               >
                 Cancel

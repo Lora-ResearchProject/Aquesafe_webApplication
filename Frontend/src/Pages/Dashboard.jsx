@@ -119,12 +119,14 @@ const Dashboard = () => {
     const fetchAndMapSOS = async () => {
       try {
         const sosData = await fetchSOSData();
-        const mappedData = sosData.map((sos) => ({
-          ...sos,
-          vesselName:
-            vesselData.find((v) => v.vesselId === sos.vesselId)?.vesselName ||
-            "Unknown Vessel",
-        }));
+        const mappedData = sosData
+          .map((sos) => ({
+            ...sos,
+            vesselName:
+              vesselData.find((v) => v.vesselId === sos.vesselId)?.vesselName ||
+              "Unknown Vessel",
+          }))
+          .reverse();
         setSosAlerts(mappedData);
       } catch (error) {
         console.error("Error fetching SOS data:", error);

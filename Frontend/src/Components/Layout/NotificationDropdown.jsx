@@ -42,7 +42,7 @@ const NotificationDropdown = () => {
   useEffect(() => {
     fetchNotifications(); // Initial load on mount
   }, []);
-//issue
+  //issue
   useEffect(() => {
     if (!hasMounted.current) {
       hasMounted.current = true;

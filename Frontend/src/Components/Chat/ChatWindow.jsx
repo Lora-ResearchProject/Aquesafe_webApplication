@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { baseURL } from "../../config/config";
-import { sendMessageToVessel } from "../../services/chatService";
+import {
+  fetchMessageOptions,
+  sendMessageToVessel,
+} from "../../services/chatService";
 import { usePolling } from "../../contexts/PollingContext";
 
 const ChatWindow = ({ vessel, onBack }) => {
@@ -9,6 +12,7 @@ const ChatWindow = ({ vessel, onBack }) => {
   const [dropdownOptions, setDropdownOptions] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state
+  const [sending, setSending] = useState(false);
   const chatContainerRef = useRef(null);
   const { chatUpdateTrigger } = usePolling();
 
@@ -28,8 +32,8 @@ const ChatWindow = ({ vessel, onBack }) => {
 
   const fetchDropdownOptions = async () => {
     try {
-      const response = await axios.get(`${baseURL}/api/messageData/`);
-      const filteredOptions = response.data.data.filter(
+      const response = await fetchMessageOptions();
+      const filteredOptions = response.filter(
         (option) => option.messageNumber !== 0
       );
       setDropdownOptions(filteredOptions);
@@ -54,6 +58,7 @@ const ChatWindow = ({ vessel, onBack }) => {
       return;
     }
 
+    setSending(true);
     try {
       await sendMessageToVessel(
         vessel.vesselId,
@@ -61,18 +66,11 @@ const ChatWindow = ({ vessel, onBack }) => {
         selectedMessage.message
       );
 
-      // setMessages((prev) => [
-      //   ...prev,
-      //   {
-      //     direction: "send",
-      //     messageNumber: selectedMessage.messageNumber,
-      //     message: selectedMessage.message,
-      //     dateTime: new Date().toISOString(),
-      //   },
-      // ]);
       setSelectedMessage(null);
     } catch (error) {
       console.error("Failed to send message:", error);
+    } finally {
+      setSending(false);
     }
   };
 
@@ -103,7 +101,10 @@ const ChatWindow = ({ vessel, onBack }) => {
     <div className="h-full mx-auto flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b bg-white rounded-lg">
-        <button className="hover:underline focus:outline-none" onClick={onBack}>
+        <button
+          className="hover:text-blue-600 focus:outline-none"
+          onClick={onBack}
+        >
           ← Back
         </button>
         <h2 className="text-lg font-bold">{vessel.vesselName}</h2>
@@ -167,9 +168,12 @@ const ChatWindow = ({ vessel, onBack }) => {
 
       {/* Input Area */}
       <div className="w-full flex justify-center items-center">
-        <div className="p-4 bg-white rounded-xl flex justify-between items-center w-1/2 shadow-md">
+        <div className="p-4 bg-white rounded-xl flex justify-between items-center w-full max-w-2xl shadow-md space-x-4">
+          {/* Dropdown */}
           <select
-            className="p-2 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 mr-4 shadow-sm"
+            className={`flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm bg-white text-base ${
+              !selectedMessage ? "text-gray-400" : "text-gray-800"
+            }`}
             value={selectedMessage ? selectedMessage.messageNumber : ""}
             onChange={(e) =>
               setSelectedMessage(
@@ -179,18 +183,32 @@ const ChatWindow = ({ vessel, onBack }) => {
               )
             }
           >
-            <option value="">Select a message</option>
+            <option value="">Select a message to send</option>
             {dropdownOptions.map((option) => (
               <option key={option.messageNumber} value={option.messageNumber}>
                 {option.message}
               </option>
             ))}
           </select>
+
+          {/* Send Button */}
           <button
-            className="w-1/6 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-32 p-2 rounded-lg text-white transition duration-200 text-sm font-medium ${
+              !selectedMessage || sending
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
             onClick={handleSend}
+            disabled={!selectedMessage || sending}
           >
-            Send
+            {sending ? (
+              <div className="flex items-center justify-center">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                Sending...
+              </div>
+            ) : (
+              "Send"
+            )}
           </button>
         </div>
       </div>

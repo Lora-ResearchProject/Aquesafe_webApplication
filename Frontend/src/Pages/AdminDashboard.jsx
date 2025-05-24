@@ -1,4 +1,3 @@
-// src/pages/AdminDashboard.js
 import React, { useEffect, useState } from "react";
 import { fetchAllUsers, createUser, deleteUser } from "../services/authService";
 import SpinnerIcon from "../Components/UI/SpinnerIcon";
@@ -6,6 +5,7 @@ import SpinnerIcon from "../Components/UI/SpinnerIcon";
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({ name: "", email: "" });
+  const [formErrors, setFormErrors] = useState({ name: "", email: "" });
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -33,6 +33,23 @@ const AdminDashboard = () => {
     e.preventDefault();
     setError("");
     setMessage("");
+
+    const errors = { name: "", email: "" };
+    let hasError = false;
+
+    if (!newUser.name.trim()) {
+      errors.name = "Name is required";
+      hasError = true;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newUser.email)) {
+      errors.email = "Enter a valid email address";
+      hasError = true;
+    }
+
+    setFormErrors(errors);
+
+    if (hasError) return; // Stop form submission if there are validation errors
     setIsLoading(true); // Start loading
 
     try {
@@ -47,7 +64,6 @@ const AdminDashboard = () => {
     } finally {
       setIsLoading(false); // Stop loading
     }
-      
   };
 
   // Handle deleting a user
@@ -62,6 +78,11 @@ const AdminDashboard = () => {
         setError(error.message || "Failed to delete user.");
       }
     }
+  };
+  const resetForm = () => {
+    setNewUser({ name: "", email: "" });
+    setFormErrors({ name: "", email: "" });
+    setShowCreateUserPopup(false);
   };
 
   if (loading) {
@@ -82,6 +103,7 @@ const AdminDashboard = () => {
           Create User
         </button>
       </div>
+
       {/* Create User Popup */}
       {showCreateUserPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -96,9 +118,15 @@ const AdminDashboard = () => {
                   onChange={(e) =>
                     setNewUser({ ...newUser, name: e.target.value })
                   }
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  className={`w-full p-2 border rounded-lg focus:outline-none ${
+                    formErrors.name
+                      ? "border-red-500"
+                      : "focus:ring-2 focus:ring-blue-500"
+                  }`}
                 />
+                {formErrors.name && (
+                  <p className="text-sm text-red-500 mt-1">{formErrors.name}</p>
+                )}
               </div>
               <div>
                 <label className="block text-gray-700">Email</label>
@@ -108,15 +136,23 @@ const AdminDashboard = () => {
                   onChange={(e) =>
                     setNewUser({ ...newUser, email: e.target.value })
                   }
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  className={`w-full p-2 border rounded-lg focus:outline-none ${
+                    formErrors.email
+                      ? "border-red-500"
+                      : "focus:ring-2 focus:ring-blue-500"
+                  }`}
                 />
+                {formErrors.email && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {formErrors.email}
+                  </p>
+                )}
               </div>
               {error && <p className="text-red-500">{error}</p>}
               <div className="flex justify-end space-x-4">
                 <button
                   type="button"
-                  onClick={() => setShowCreateUserPopup(false)}
+                  onClick={resetForm}
                   className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
                 >
                   Cancel
@@ -142,38 +178,44 @@ const AdminDashboard = () => {
       )}
 
       {/* Users Table */}
-      <div>
-        <h2 className="text-xl font-bold mb-4">All Users</h2>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="p-2 text-left">Name</th>
-              <th className="p-2 text-left">Email</th>
-              <th className="p-2 text-left">Role</th>
-              <th className="p-2 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={`user_${user._id}`} className="border-b">
-                <td className="p-2">{user.name}</td>
-                <td className="p-2">{user.email}</td>
-                <td className="p-2">{user.role}</td>
-                <td className="p-2">
-                  {/* Only show Delete button if the user is not an admin */}
-                  {user.role !== "admin" && (
-                    <button
-                      onClick={() => handleDeleteUser(user._id)}
-                      className="bg-red-600 text-white py-1 px-3 rounded-lg hover:bg-red-700 transition duration-300"
-                    >
-                      Delete
-                    </button>
-                  )}
-                </td>
+      <div className="mt-8">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">All Users</h2>
+        <div className="overflow-x-auto rounded-lg shadow-sm bg-white">
+          <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
+            <thead className="bg-slate-300 text-gray-700 uppercase text-xs tracking-wider">
+              <tr>
+                <th className="px-4 py-3 text-left">Name</th>
+                <th className="px-4 py-3 text-left">Email</th>
+                <th className="px-4 py-3 text-left">Role</th>
+                <th className="px-4 py-3 text-left">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {users.map((user, index) => (
+                <tr
+                  key={`user_${user._id}`}
+                  className="hover:bg-gray-50 transition duration-150"
+                >
+                  <td className="px-4 py-3 font-medium">{user.name}</td>
+                  <td className="px-4 py-3">{user.email}</td>
+                  <td className="px-4 py-3 capitalize">{user.role}</td>
+                  <td className="px-4 py-3">
+                    {user.role !== "admin" ? (
+                      <button
+                        onClick={() => handleDeleteUser(user._id)}
+                        className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition duration-200"
+                      >
+                        Delete
+                      </button>
+                    ) : (
+                      <span className="text-gray-400 italic">Protected</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Success Message */}
