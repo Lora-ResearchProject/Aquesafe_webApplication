@@ -4,7 +4,7 @@ const MessageData = require("../models/messageDataModel");
 const { createNotification } = require("./notificationController");
 const { alertNearbyVessels } = require("../services/cerService");
 const { processWeatherCheck } = require("../services/weatherService");
-const { emitEvent } = require("../services/websocket");
+const { notifyClients } = require("../controllers/longPollController");
 
 // POST function to handle SOS data and chat data
 exports.storeVesselLocation = async (req, res) => {
@@ -52,7 +52,7 @@ exports.storeVesselLocation = async (req, res) => {
       // Save chat data
       const savedChat = await chat.save();
 
-      emitEvent("new_chat", savedChat);
+      notifyClients("chat");
 
       return res.status(201).json({ message: "Chat data saved successfully" });
     }
@@ -77,8 +77,7 @@ exports.storeVesselLocation = async (req, res) => {
       // Save the SOS record
       const savedSos = await sos.save();
 
-      // Emit WebSocket event
-      emitEvent("sos_created", savedSos);
+      notifyClients("sos");
 
       // Generate notification message
       const messageTitle = `SOS Alert from Vessel ${vesselId}`;
