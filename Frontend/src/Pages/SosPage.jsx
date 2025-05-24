@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SOSMessage from "../Components/Sos/SOSMessage";
 import SOSPopup from "../Components/Sos/SOSPopup";
 import { changeSOSStatus, fetchEnhancedSOSData } from "../services/sosService";
-import { listenEvent, removeListener } from "../services/socket";
+import useMultiPolling from "../hooks/useMultiPolling";
 
 const SOSPage = () => {
   const [sosData, setSosData] = useState([]);
@@ -22,18 +22,19 @@ const SOSPage = () => {
   };
 
   useEffect(() => {
-    getSOSData(); // Fetch initial SOS data
-
-    // Listen for real-time SOS updates from WebSocket
-    listenEvent("sos_created", (newSOS) => {
-      setSosData((prev) => [newSOS, ...prev]); // Add new SOS to the list
-    });
-
-    // Cleanup WebSocket listener when unmounting
-    return () => {
-      removeListener("sos_created");
-    };
+    getSOSData(); // Load initial SOS data
   }, []);
+
+  useMultiPolling({
+    onSOS: async () => {
+      try {
+        const latestSOS = await getSOSData(); // Refetch latest list
+        setSosData(latestSOS); // Replace entire list or adjust as needed
+      } catch (error) {
+        console.error("Failed to fetch SOS data:", error);
+      }
+    },
+  });
 
   const handleStatusChange = async (id) => {
     try {

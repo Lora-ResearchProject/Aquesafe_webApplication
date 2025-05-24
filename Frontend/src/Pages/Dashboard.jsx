@@ -11,7 +11,7 @@ import {
 import { fetchSOSData } from "../services/sosService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchGateways } from "../services/gatewayService";
-import { listenEvent, removeListener } from "../services/socket";
+import useMultiPolling from "../hooks/useMultiPolling";
 
 const MAX_Active_ALERTS = 4;
 const MAX_LATEST_CHATS = 4;
@@ -114,22 +114,24 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    // Listen for real-time SOS updates
-    listenEvent("sos_created", (newSOS) => {
-      setSosAlerts((prev) => [
-        {
-          ...newSOS,
+  useMultiPolling({
+    onSOS: async () => {
+      try {
+        const sosData = await fetchSOSData(); // 👈 Fetch latest SOS alerts
+        const mappedData = sosData.map((sos) => ({
+          ...sos,
           vesselName:
-            vesselData.find((v) => v.vesselId === newSOS.vesselId)
-              ?.vesselName || "Unknown Vessel",
-        },
-        ...prev,
-      ]);
-    });
+            vesselData.find((v) => v.vesselId === sos.vesselId)?.vesselName ||
+            "Unknown Vessel",
+        }));
 
-    // Listen for new chat events and fetch the latest chats
-    listenEvent("new_chat", async (newChat) => {
+        setSosAlerts(mappedData);
+      } catch (error) {
+        console.error("Error fetching SOS data:", error);
+      }
+    },
+
+    onChat: async () => {
       try {
         const chatData = await fetchLatestChats();
         setLatestChats(
@@ -143,14 +145,8 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching latest chats:", error);
       }
-    });
-
-    // Cleanup WebSocket listeners when component unmounts
-    return () => {
-      removeListener("sos_created");
-      removeListener("new_chat");
-    };
-  }, [vesselData]); // Re-run effect when vesselData updates
+    },
+  });
 
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-8 p-6 h-full">

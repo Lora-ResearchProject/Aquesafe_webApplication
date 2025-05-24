@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { baseURL } from "../../config/config";
 import { sendMessageToVessel } from "../../services/chatService";
-import { listenEvent, removeListener } from "../../services/socket";
+import useMultiPolling from "../../hooks/useMultiPolling";
 
 const ChatWindow = ({ vessel, onBack }) => {
   const [messages, setMessages] = useState([]);
@@ -11,51 +11,41 @@ const ChatWindow = ({ vessel, onBack }) => {
   const [loading, setLoading] = useState(true); // Loading state
   const chatContainerRef = useRef(null);
 
-  // Fetch messages and dropdown options when component mounts
+  const fetchMessages = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${baseURL}/api/chat/${vessel.vesselId}`
+      );
+      setMessages(response.data);
+    } catch (error) {
+      console.error("Failed to fetch messages:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDropdownOptions = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/api/messageData/`);
+      const filteredOptions = response.data.data.filter(
+        (option) => option.messageNumber !== 0
+      );
+      setDropdownOptions(filteredOptions);
+    } catch (error) {
+      console.error("Failed to fetch dropdown options:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `${baseURL}/api/chat/${vessel.vesselId}`
-        );
-        setMessages(response.data);
-      } catch (error) {
-        console.error("Failed to fetch messages:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchDropdownOptions = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/api/messageData/`);
-        // Filter out objects where messageNumber is 0
-        const filteredOptions = response.data.data.filter(
-          (option) => option.messageNumber !== 0
-        );
-
-        setDropdownOptions(filteredOptions);
-      } catch (error) {
-        console.error("Failed to fetch dropdown options:", error);
-      }
-    };
-
     fetchMessages();
     fetchDropdownOptions();
-
-    // Listen for real-time new messages
-    listenEvent("new_chat", (newMessage) => {
-      if (newMessage.vesselId === vessel.vesselId) {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-      }
-    });
-
-    return () => {
-      removeListener("new_chat");
-    };
   }, [vessel]);
 
+  // long polling for chat updates
+  useMultiPolling({
+    onChat: fetchMessages,
+  });
   // Handle sending a message
   const handleSend = async () => {
     if (!selectedMessage) {

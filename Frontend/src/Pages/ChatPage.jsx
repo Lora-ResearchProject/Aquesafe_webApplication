@@ -4,7 +4,7 @@ import ChatWindow from "../Components/Chat/ChatWindow";
 import { fetchVessels } from "../services/locationService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchZones } from "../services/zoneService";
-import { listenEvent, removeListener } from "../services/socket";
+import useMultiPolling from "../hooks/useMultiPolling";
 
 const ChatPage = () => {
   const [vessels, setVessels] = useState([]);
@@ -32,18 +32,15 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    loadData();
+    loadData(); // Load initial data when the component mounts
+  }, []);
 
-    // Listen for new chat events via WebSocket
-    listenEvent("new_chat", async () => {
+  useMultiPolling({
+    onChat: async () => {
       const latestChatsData = await fetchLatestChats();
       setLatestChats(latestChatsData);
-    });
-
-    return () => {
-      removeListener("new_chat");
-    };
-  }, []);
+    },
+  });
 
   // Filter vessels with and without chats
   const vesselsWithChats = vessels.filter((vessel) =>

@@ -8,7 +8,7 @@ import {
 } from "../../services/notificationService";
 
 import notifysound from "../../assets/sounds/notification_sound.mp3";
-import { listenEvent, removeListener } from "../../services/socket";
+import useMultiPolling from "../../hooks/useMultiPolling";
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState([]);
@@ -39,20 +39,16 @@ const NotificationDropdown = () => {
   // }, [unreadCount]);
 
   useEffect(() => {
-    fetchNotifications();
+    fetchNotifications(); // Initial load on mount
+  }, []);
 
-    // Listen for real-time SOS updates from WebSocket
-    listenEvent("new_notification", (newNotification) => {
-      setNotifications((prev) => [newNotification, ...prev]);
+  useMultiPolling({
+    onNotification: () => {
+      fetchNotifications(); // Optional: refetch latest if needed
       setUnreadCount((prev) => prev + 1);
       playNotificationSound();
-    });
-
-    // Cleanup WebSocket listener when unmounting
-    return () => {
-      removeListener("new_notification");
-    };
-  }, []);
+    },
+  });
 
   // Handle marking a notification as read
   const handleMarkAsRead = async (id) => {
