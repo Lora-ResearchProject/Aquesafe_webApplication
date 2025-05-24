@@ -2,12 +2,17 @@ import axios from "axios";
 import { baseURL } from "../config/config";
 import { fetchVessels } from "./locationService";
 import { getVesselsByZone } from "./zoneService";
+import { getToken } from "../utils/auth";
 
 const API_BASE_URL = baseURL + "/api/chat";
 
 export const fetchLatestChats = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/`);
+    const response = await fetch(`${API_BASE_URL}/`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include JWT token
+      },
+    });
     if (!response.ok) throw new Error("Failed to fetch latest chats");
 
     return await response.json();
@@ -19,11 +24,19 @@ export const fetchLatestChats = async () => {
 
 export const sendMessageToVessel = async (vesselId, messageNumber, message) => {
   try {
-    await axios.post(`${API_BASE_URL}/`, {
-      vesselId,
-      messageNumber,
-      message,
-    });
+    await axios.post(
+      `${API_BASE_URL}/`,
+      {
+        vesselId,
+        messageNumber,
+        message,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // Include JWT token
+        },
+      }
+    );
   } catch (error) {
     console.error("Failed to send message:", error);
   }
@@ -35,11 +48,19 @@ export const sendMessageToMultipleVessels = async (
   message
 ) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/multiple`, {
-      vesselIds,
-      messageNumber,
-      message,
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/multiple`,
+      {
+        vesselIds,
+        messageNumber,
+        message,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // Include JWT token
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Failed to send messages to multiple vessels:", error);
@@ -81,7 +102,11 @@ export const sendMessageToZone = async (zoneId, messageNumber, message) => {
 
 export const fetchMessageOptions = async () => {
   try {
-    const response = await axios.get(`${baseURL}/api/messageData/`);
+    const response = await axios.get(`${baseURL}/api/messageData/`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include JWT token
+      },
+    });
     return response.data.data; // Returning only the data array
   } catch (error) {
     console.error("Failed to fetch messages:", error);
