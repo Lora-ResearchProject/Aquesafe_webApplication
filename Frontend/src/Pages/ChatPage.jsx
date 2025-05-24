@@ -4,7 +4,7 @@ import ChatWindow from "../Components/Chat/ChatWindow";
 import { fetchVessels } from "../services/locationService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchZones } from "../services/zoneService";
-import useMultiPolling from "../hooks/useMultiPolling";
+import { usePolling } from "../contexts/PollingContext";
 
 const ChatPage = () => {
   const [vessels, setVessels] = useState([]);
@@ -13,6 +13,7 @@ const ChatPage = () => {
   const [selectedVessel, setSelectedVessel] = useState(null);
   const [showNewChatPopup, setShowNewChatPopup] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { chatUpdateTrigger } = usePolling();
 
   const loadData = async () => {
     try {
@@ -35,12 +36,14 @@ const ChatPage = () => {
     loadData(); // Load initial data when the component mounts
   }, []);
 
-  useMultiPolling({
-    onChat: async () => {
+  useEffect(() => {
+    const fetchChats = async () => {
       const latestChatsData = await fetchLatestChats();
       setLatestChats(latestChatsData);
-    },
-  });
+    };
+
+    fetchChats();
+  }, [chatUpdateTrigger]);
 
   // Filter vessels with and without chats
   const vesselsWithChats = vessels.filter((vessel) =>

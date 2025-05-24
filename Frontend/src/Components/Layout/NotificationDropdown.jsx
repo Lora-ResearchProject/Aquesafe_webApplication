@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { BellIcon } from "@heroicons/react/outline";
 import {
   getNotifications,
@@ -8,14 +8,15 @@ import {
 } from "../../services/notificationService";
 
 import notifysound from "../../assets/sounds/notification_sound.mp3";
-import useMultiPolling from "../../hooks/useMultiPolling";
+import { usePolling } from "../../contexts/PollingContext";
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [showAll, setShowAll] = useState(false); // Toggle for showing all/unread notifications
-
+  const { notificationUpdateTrigger } = usePolling();
+  const hasMounted = useRef(false);
   // Fetch notifications and unread count
   const fetchNotifications = async () => {
     try {
@@ -41,14 +42,16 @@ const NotificationDropdown = () => {
   useEffect(() => {
     fetchNotifications(); // Initial load on mount
   }, []);
-
-  useMultiPolling({
-    onNotification: () => {
-      fetchNotifications(); // Optional: refetch latest if needed
-      setUnreadCount((prev) => prev + 1);
-      playNotificationSound();
-    },
-  });
+//issue
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    fetchNotifications();
+    setUnreadCount((prev) => prev + 1);
+    playNotificationSound();
+  }, [notificationUpdateTrigger]);
 
   // Handle marking a notification as read
   const handleMarkAsRead = async (id) => {

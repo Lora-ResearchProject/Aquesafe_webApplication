@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import SOSMessage from "../Components/Sos/SOSMessage";
 import SOSPopup from "../Components/Sos/SOSPopup";
 import { changeSOSStatus, fetchEnhancedSOSData } from "../services/sosService";
-import useMultiPolling from "../hooks/useMultiPolling";
+import { usePolling } from "../contexts/PollingContext";
 
 const SOSPage = () => {
   const [sosData, setSosData] = useState([]);
   const [selectedSOS, setSelectedSOS] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("active"); // State to manage tabs
+  const { sosUpdateTrigger } = usePolling();
 
   const getSOSData = async () => {
     try {
@@ -23,18 +24,7 @@ const SOSPage = () => {
 
   useEffect(() => {
     getSOSData(); // Load initial SOS data
-  }, []);
-
-  useMultiPolling({
-    onSOS: async () => {
-      try {
-        const latestSOS = await getSOSData(); // Refetch latest list
-        setSosData(latestSOS); // Replace entire list or adjust as needed
-      } catch (error) {
-        console.error("Failed to fetch SOS data:", error);
-      }
-    },
-  });
+  }, [sosUpdateTrigger]);
 
   const handleStatusChange = async (id) => {
     try {

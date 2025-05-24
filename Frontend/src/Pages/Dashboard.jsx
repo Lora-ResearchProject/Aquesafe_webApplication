@@ -11,7 +11,7 @@ import {
 import { fetchSOSData } from "../services/sosService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchGateways } from "../services/gatewayService";
-import useMultiPolling from "../hooks/useMultiPolling";
+import { usePolling } from "../contexts/PollingContext";
 
 const MAX_Active_ALERTS = 4;
 const MAX_LATEST_CHATS = 4;
@@ -32,6 +32,7 @@ const Dashboard = () => {
     gateways: null,
     locations: null,
   });
+  const { sosUpdateTrigger, chatUpdateTrigger } = usePolling();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,39 +115,43 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  useMultiPolling({
-    onSOS: async () => {
+  useEffect(() => {
+    const fetchAndMapSOS = async () => {
       try {
-        const sosData = await fetchSOSData(); // 👈 Fetch latest SOS alerts
+        const sosData = await fetchSOSData();
         const mappedData = sosData.map((sos) => ({
           ...sos,
           vesselName:
             vesselData.find((v) => v.vesselId === sos.vesselId)?.vesselName ||
             "Unknown Vessel",
         }));
-
         setSosAlerts(mappedData);
       } catch (error) {
         console.error("Error fetching SOS data:", error);
       }
-    },
+    };
 
-    onChat: async () => {
+    fetchAndMapSOS();
+  }, [sosUpdateTrigger, vesselData]);
+
+  useEffect(() => {
+    const fetchAndMapChats = async () => {
       try {
         const chatData = await fetchLatestChats();
-        setLatestChats(
-          chatData.map((chat) => ({
-            ...chat,
-            vesselName:
-              vesselData.find((v) => v.vesselId === chat.vesselId)
-                ?.vesselName || "Unknown Vessel",
-          }))
-        );
+        const mappedChats = chatData.map((chat) => ({
+          ...chat,
+          vesselName:
+            vesselData.find((v) => v.vesselId === chat.vesselId)?.vesselName ||
+            "Unknown Vessel",
+        }));
+        setLatestChats(mappedChats);
       } catch (error) {
         console.error("Error fetching latest chats:", error);
       }
-    },
-  });
+    };
+
+    fetchAndMapChats();
+  }, [chatUpdateTrigger, vesselData]);
 
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-8 p-6 h-full">

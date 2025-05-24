@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { baseURL } from "../../config/config";
 import { sendMessageToVessel } from "../../services/chatService";
-import useMultiPolling from "../../hooks/useMultiPolling";
+import { usePolling } from "../../contexts/PollingContext";
 
 const ChatWindow = ({ vessel, onBack }) => {
   const [messages, setMessages] = useState([]);
@@ -10,6 +10,7 @@ const ChatWindow = ({ vessel, onBack }) => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state
   const chatContainerRef = useRef(null);
+  const { chatUpdateTrigger } = usePolling();
 
   const fetchMessages = async () => {
     try {
@@ -42,10 +43,10 @@ const ChatWindow = ({ vessel, onBack }) => {
     fetchDropdownOptions();
   }, [vessel]);
 
-  // long polling for chat updates
-  useMultiPolling({
-    onChat: fetchMessages,
-  });
+  useEffect(() => {
+    fetchMessages();
+  }, [chatUpdateTrigger]);
+
   // Handle sending a message
   const handleSend = async () => {
     if (!selectedMessage) {
