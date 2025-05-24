@@ -11,7 +11,7 @@ import {
   HiOutlineKey as KeyIcon,
   HiOutlineLocationMarker as LocationMarkerIcon,
   HiOutlineCollection as CollectionIcon,
-  HiOutlineSwitchHorizontal as DataPipelineIcon
+  HiOutlineSwitchHorizontal as DataPipelineIcon,
 } from "react-icons/hi";
 
 const Sidebar = ({ isAdmin }) => {
@@ -38,9 +38,12 @@ const Sidebar = ({ isAdmin }) => {
           <NavItem to="/routelog" icon={MapIcon} label="Route Log" />
           <NavItem to="/gateway-page" icon={CollectionIcon} label="GateWays" />
           {userRole === "admin" && (
-            <>
-            
-            <NavItem
+            <div className="mt-6 border-t border-gray-200 pt-4 space-y-4">
+              <p className="text-xs text-gray-400 uppercase font-semibold px-4 mb-2 text-center ">
+                Admin Section
+              </p>
+
+              <NavItem
                 to="/dataPipeLine"
                 icon={DataPipelineIcon}
                 label="Data Pipeline"
@@ -48,16 +51,15 @@ const Sidebar = ({ isAdmin }) => {
               <NavItem
                 to="/admin-dashboard"
                 icon={KeyIcon}
-                label="Admin Panel"
+                label="User Panel"
               />
               <NavItem
                 to="/messageData"
                 icon={DatabaseIcon}
                 label="Message DB"
               />
-            </>
+            </div>
           )}
-          {/* <NavItem to="/hotspots" icon={CollectionIcon} label="Hotspots" /> */}
         </ul>
 
         {/* Logout Button */}
