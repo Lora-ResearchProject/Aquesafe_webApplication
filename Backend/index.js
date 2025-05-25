@@ -1,5 +1,5 @@
 const dotenv = require("dotenv");
-const server = require("./app");
+const app = require("./app");
 const connectDB = require("./config/db");
 const { createDefaultAdmin } = require("./services/adminCreateService");
 
@@ -10,6 +10,6 @@ const PORT = process.env.PORT || 7002;
 connectDB();
 createDefaultAdmin();
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Aquesafe backend server running on ${PORT}`);
 });

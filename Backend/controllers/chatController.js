@@ -1,8 +1,8 @@
 const Chat = require("../models/chatModel");
 const { sendToGateway } = require("../services/outgoingMessageService");
-const { emitEvent } = require("../services/websocket");
 const { generateId } = require("../utils/idGenerator");
 const { formatoutgoingMessage } = require("../utils/outgoingMessageStructures");
+const { notifyClients } = require('../controllers/longPollController');
 
 // Handle creating a new chat message
 exports.createChat = async (req, res) => {
@@ -43,8 +43,7 @@ exports.createChat = async (req, res) => {
     // Save to the database only after successful external API call
     const savedChat = await newChat.save();
 
-    // Emit WebSocket event
-    emitEvent("new_chat", savedChat);
+    notifyClients('chat');
 
     // Respond to the client with the saved chat
     res.status(201).json(savedChat);
@@ -147,8 +146,8 @@ exports.createChatsForMultipleVessels = async (req, res) => {
         //await sendToGateway(externalServerUrl, formattedMessage);
 
         const savedChat = await newChat.save();
-        // Emit WebSocket event for this chat
-        emitEvent("new_chat", savedChat);
+        
+        notifyClients('chat');
 
         // Save the chat to the database
         return savedChat;

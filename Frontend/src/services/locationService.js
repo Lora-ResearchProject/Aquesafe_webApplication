@@ -1,6 +1,7 @@
 import axios from "axios";
 import { format } from "date-fns";
 import { baseURL } from "../config/config";
+import { getToken } from "../utils/auth";
 
 const V_API_URL = baseURL + "/api/tracker";
 const GW_API_URL = baseURL + "/api/gateway";
@@ -12,7 +13,11 @@ const FISHING_HOTSPOTS_URL = baseURL + "/api/hotspots";
 export const fetchLatestVesselLocations = async () => {
   try {
     // Fetch the latest vessel locations
-    const locationResponse = await axios.get(`${V_API_URL}/latestLocations`);
+    const locationResponse = await axios.get(`${V_API_URL}/latestLocations`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include JWT token
+      },
+    });
 
     if (!locationResponse || locationResponse.status !== 200) {
       throw new Error("Failed to fetch vessel locations");
@@ -45,7 +50,11 @@ export const fetchLatestVesselLocations = async () => {
 // Fetch gateway locations
 export const fetchLatestGateWayLocations = async () => {
   try {
-    const response = await axios.get(`${GW_API_URL}/`);
+    const response = await axios.get(`${GW_API_URL}/`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include JWT token
+      },
+    });
     return response.data; // Return the fetched data
   } catch (error) {
     console.error("Error fetching gateway locations:", error);
@@ -56,7 +65,11 @@ export const fetchLatestGateWayLocations = async () => {
 // Fetch all vessels
 export const fetchVessels = async () => {
   try {
-    const response = await axios.get(`${VESSEL_AUTH_URL}/`);
+    const response = await axios.get(`${VESSEL_AUTH_URL}/`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include JWT token
+      },
+    });
     return response.data.success ? response.data.data : [];
   } catch (error) {
     console.error("Error fetching vessels:", error);
@@ -71,7 +84,12 @@ export const fetchVesselLocations = async (vesselId, date) => {
     const formattedDate = format(new Date(date), "yyyy-MM-dd");
 
     const response = await axios.get(
-      `${ROUTE_LOG_URL}/locationsByDate?vesselId=${vesselId}&date=${formattedDate}`
+      `${ROUTE_LOG_URL}/locationsByDate?vesselId=${vesselId}&date=${formattedDate}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // Include JWT token
+        },
+      }
     );
 
     if (response.data.status === "success") {
@@ -95,9 +113,17 @@ export const fetchVesselLocations = async (vesselId, date) => {
 // Fetch fishing hotspots with optional query parameters
 export const fetchAllFishingHotspots = async (queryParams = {}) => {
   try {
-    const response = await axios.get(`${FISHING_HOTSPOTS_URL}/`, {
-      params: queryParams, // Pass query parameters to the API
-    });
+    const response = await axios.get(
+      `${FISHING_HOTSPOTS_URL}/`,
+      {
+        params: queryParams, // Pass query parameters to the API
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`, // Include JWT token
+        },
+      }
+    );
 
     if (!response || response.status !== 200) {
       throw new Error("Failed to fetch fishing hotspots");

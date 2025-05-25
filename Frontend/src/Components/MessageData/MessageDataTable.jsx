@@ -18,32 +18,35 @@ const MessageDataTable = ({ messages, onEdit, onDelete }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-300">
-        <thead className="bg-gray-100">
+    <div className="overflow-x-auto bg-white rounded-lg shadow-md mt-8">
+      <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
+        <thead className="bg-slate-300 text-xs uppercase tracking-wider text-gray-600">
           <tr>
-            <th className="border px-4 py-2">Number</th>
-            <th className="border px-4 py-2">Message</th>
-            <th className="border px-4 py-2">Actions</th>
+            <th className="px-4 py-3 text-left">Number</th>
+            <th className="px-4 py-3 text-left">Message</th>
+            <th className="px-4 py-3 text-center">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-100">
           {currentMessages.map((msg) => (
-            <tr key={msg._id} className="hover:bg-gray-50">
-              <td className="border px-4 py-2 text-center">
+            <tr
+              key={msg._id}
+              className="hover:bg-gray-50 transition duration-150 ease-in-out"
+            >
+              <td className="px-4 py-3 text-left font-medium text-gray-800">
                 {msg.messageNumber}
               </td>
-              <td className="border px-4 py-2">{msg.message}</td>
-              <td className="border px-4 py-2 text-center">
+              <td className="px-4 py-3">{msg.message}</td>
+              <td className="px-4 py-3 text-center space-x-2">
                 <button
                   onClick={() => onEdit(msg)}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded mr-2"
+                  className="inline-block bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-semibold px-3 py-1 rounded transition"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => onDelete(msg._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
+                  className="inline-block bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded transition"
                 >
                   Delete
                 </button>
@@ -52,34 +55,22 @@ const MessageDataTable = ({ messages, onEdit, onDelete }) => {
           ))}
         </tbody>
       </table>
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded mx-1"
-        >
-          Previous
-        </button>
+
+      {/* Pagination */}
+      <div className="flex justify-center my-6 space-x-2">
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
           <button
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`px-3 py-1 mx-1 rounded ${
+            className={`px-3 py-1 rounded text-sm border ${
               currentPage === page
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 hover:bg-gray-300"
+                ? "bg-blue-500 text-white font-semibold"
+                : "bg-white text-gray-700 hover:bg-gray-100"
             }`}
           >
             {page}
           </button>
         ))}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded mx-1"
-        >
-          Next
-        </button>
       </div>
     </div>
   );

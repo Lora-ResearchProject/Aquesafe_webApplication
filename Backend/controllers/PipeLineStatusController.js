@@ -10,7 +10,7 @@ exports.forwardLoraStatus = async (req, res) => {
 
   try {
     const response = await sendToGateway(
-      `${externalServerUrl}/api/test/lora-status`,
+      `${externalServerUrl}/api/lora-status`,
       payload
     );
     res.status(200).json(response);

@@ -1,4 +1,3 @@
-// src/services/authService.js
 import axios from "axios";
 import { baseURL } from "../config/config";
 import { getToken, saveToken } from "../utils/auth";
@@ -15,8 +14,6 @@ export const login = async (email, password) => {
 
     const { token } = response.data;
     saveToken(token);
-    // Store the token in localStorage
-    //localStorage.setItem("authToken", );
 
     return response.data;
   } catch (error) {

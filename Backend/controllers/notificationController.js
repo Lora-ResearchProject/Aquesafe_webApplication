@@ -1,5 +1,5 @@
 const Notification = require("../models/notificationModel");
-const { emitEvent } = require("../services/websocket");
+const { notifyClients } = require("../controllers/longPollController");
 
 exports.createNotification = async ({
   messageTitle,
@@ -14,9 +14,8 @@ exports.createNotification = async ({
     });
 
     const savedNotification = await newNotification.save();
-    
-    // Emit WebSocket event
-    emitEvent("new_notification", savedNotification);
+
+    notifyClients("notification");
 
     return savedNotification;
   } catch (error) {

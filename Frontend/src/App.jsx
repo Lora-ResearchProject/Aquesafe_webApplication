@@ -1,4 +1,3 @@
-// src/App.js
 import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./Components/auth/ProtectedRoute";
@@ -13,7 +12,6 @@ import SOSPage from "./Pages/SosPage";
 import ChatPage from "./Pages/ChatPage";
 import RouteLogPage from "./Pages/RouteLogPage";
 import ProfilePage from "./Pages/ProfilePage";
-import FishingHotspotsPage from "./Pages/FishingHotspotsPage";
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage";
 import ResetPasswordPage from "./Pages/ResetPasswordPage";
 import AdminDashboard from "./Pages/AdminDashboard";
@@ -24,7 +22,7 @@ import DataPipeLinePage from "./Pages/DataPipeLinePage";
 function App() {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* ---- Public Routes ---- */}
       <Route
         path="/"
         element={
@@ -145,16 +143,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-      {/* <Route
-        path="/hotspots"
-        element={
-          <ProtectedRoute allowedRoles={["user", "admin"]}>
-            <DashboardLayout>
-              <FishingHotspotsPage />
-            </DashboardLayout>
-          </ProtectedRoute>
-        }
-      /> */}
       <Route
         path="/profile"
         element={

@@ -2,7 +2,7 @@ const Zone = require("../models/Zone");
 const Vessel = require("../models/vesselModel");
 const Chat = require("../models/chatModel");
 const { generateId } = require("../utils/idGenerator");
-const { emitEvent } = require("./websocket");
+const { notifyClients } = require("../controllers/longPollController");
 const { formatoutgoingMessage } = require("../utils/outgoingMessageStructures");
 const { sendToGateway } = require("./outgoingMessageService");
 const { getFilteredVesselLocations } = require("./cerService");
@@ -48,7 +48,7 @@ const saveAlertMessage = async (vesselId, message, messageNumber) => {
     //await sendToGateway(externalServerUrl, formattedMessage); // Uncomment when ready
 
     const savedChat = await newChat.save();
-    emitEvent("new_chat", savedChat);
+    notifyClients("chat");
 
     return savedChat;
   } catch (error) {

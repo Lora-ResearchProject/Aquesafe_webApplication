@@ -1,14 +1,18 @@
 import axios from "axios";
-
 import { baseURL } from "../config/config";
 import { fetchVessels } from "./locationService";
+import { getToken } from "../utils/auth";
 
 const API_URL = baseURL + "/api/zones";
 
 // Fetch all zones
 export const fetchZones = async () => {
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include JWT token
+      },
+    });
     if (!response.ok) throw new Error("Failed to fetch zones");
     return await response.json();
   } catch (error) {
@@ -22,7 +26,10 @@ export const createZone = async (zoneData) => {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
       body: JSON.stringify(zoneData),
     });
     if (!response.ok) throw new Error("Failed to create zone");
@@ -38,7 +45,10 @@ export const updateZone = async (zoneId, updatedData) => {
   try {
     const response = await fetch(`${API_URL}/${zoneId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
       body: JSON.stringify(updatedData),
     });
     if (!response.ok) throw new Error("Failed to update zone");
@@ -54,6 +64,7 @@ export const deleteZone = async (zoneId) => {
   try {
     const response = await fetch(`${API_URL}/${zoneId}`, {
       method: "DELETE",
+      headers: { Authorization: `Bearer ${getToken()}` },
     });
     if (!response.ok) throw new Error("Failed to delete zone");
     return await response.json();
@@ -66,7 +77,11 @@ export const deleteZone = async (zoneId) => {
 export const getVesselsByZone = async (zoneId) => {
   try {
     // Fetch vessels for the specified zone
-    const response = await axios.get(`${API_URL}/vessels/${zoneId}`);
+    const response = await axios.get(`${API_URL}/vessels/${zoneId}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include JWT token
+      },
+    });
     const zoneVessels = response.data;
 
     // Fetch all vessels to get vessel names

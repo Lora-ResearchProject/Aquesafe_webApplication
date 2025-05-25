@@ -1,10 +1,15 @@
 import { baseURL } from "../config/config";
+import { getToken } from "../utils/auth";
 
 const API_BASE_URL = baseURL + "/api/gateway";
 
 export const fetchGateways = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/`);
+    const response = await fetch(`${API_BASE_URL}/`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Include JWT token
+      },
+    });
     if (!response.ok) throw new Error("Failed to fetch gateways");
 
     const data = await response.json();
@@ -20,6 +25,7 @@ export const createGateway = async (gatewayData) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`, // Include JWT token
     },
     body: JSON.stringify(gatewayData),
   });
@@ -35,6 +41,7 @@ export const updateGateway = async (id, gatewayData) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`, // Include JWT token
     },
     body: JSON.stringify(gatewayData),
   });
@@ -48,6 +55,9 @@ export const updateGateway = async (id, gatewayData) => {
 export const deleteGateway = async (id) => {
   const response = await fetch(`${API_BASE_URL}/${id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${getToken()}`, // Include JWT token
+    },
   });
   if (!response.ok) {
     throw new Error("Failed to delete gateway");

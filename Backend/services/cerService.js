@@ -3,7 +3,7 @@ const { fetchAllVesselLocations } = require("./vesselLocationService");
 const { generateId } = require("../utils/idGenerator");
 const { formatoutgoingMessage } = require("../utils/outgoingMessageStructures");
 const { sendToGateway } = require("./outgoingMessageService");
-const { emitEvent } = require("./websocket");
+const { notifyClients } = require("../controllers/longPollController");
 
 const range = 5; // 5km
 
@@ -105,7 +105,7 @@ const saveAndSendMessage = async (vesselId, lat, lng) => {
     //await sendToGateway(externalServerUrl, formattedMessage); // -------------------------------------------------------------- need to uncomment this after fix this
     const savedChat = await newChat.save();
 
-    emitEvent("new_chat", savedChat);
+    notifyClients('chat');
 
     return savedChat;
   } catch (error) {

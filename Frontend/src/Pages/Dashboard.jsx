@@ -11,7 +11,7 @@ import {
 import { fetchSOSData } from "../services/sosService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchGateways } from "../services/gatewayService";
-import { listenEvent, removeListener } from "../services/socket";
+import { usePolling } from "../contexts/PollingContext";
 
 const MAX_Active_ALERTS = 4;
 const MAX_LATEST_CHATS = 4;
@@ -32,6 +32,7 @@ const Dashboard = () => {
     gateways: null,
     locations: null,
   });
+  const { sosUpdateTrigger, chatUpdateTrigger } = usePolling();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -115,42 +116,44 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    // Listen for real-time SOS updates
-    listenEvent("sos_created", (newSOS) => {
-      setSosAlerts((prev) => [
-        {
-          ...newSOS,
-          vesselName:
-            vesselData.find((v) => v.vesselId === newSOS.vesselId)
-              ?.vesselName || "Unknown Vessel",
-        },
-        ...prev,
-      ]);
-    });
+    const fetchAndMapSOS = async () => {
+      try {
+        const sosData = await fetchSOSData();
+        const mappedData = sosData
+          .map((sos) => ({
+            ...sos,
+            vesselName:
+              vesselData.find((v) => v.vesselId === sos.vesselId)?.vesselName ||
+              "Unknown Vessel",
+          }))
+          .reverse();
+        setSosAlerts(mappedData);
+      } catch (error) {
+        console.error("Error fetching SOS data:", error);
+      }
+    };
 
-    // Listen for new chat events and fetch the latest chats
-    listenEvent("new_chat", async (newChat) => {
+    fetchAndMapSOS();
+  }, [sosUpdateTrigger, vesselData]);
+
+  useEffect(() => {
+    const fetchAndMapChats = async () => {
       try {
         const chatData = await fetchLatestChats();
-        setLatestChats(
-          chatData.map((chat) => ({
-            ...chat,
-            vesselName:
-              vesselData.find((v) => v.vesselId === chat.vesselId)
-                ?.vesselName || "Unknown Vessel",
-          }))
-        );
+        const mappedChats = chatData.map((chat) => ({
+          ...chat,
+          vesselName:
+            vesselData.find((v) => v.vesselId === chat.vesselId)?.vesselName ||
+            "Unknown Vessel",
+        }));
+        setLatestChats(mappedChats);
       } catch (error) {
         console.error("Error fetching latest chats:", error);
       }
-    });
-
-    // Cleanup WebSocket listeners when component unmounts
-    return () => {
-      removeListener("sos_created");
-      removeListener("new_chat");
     };
-  }, [vesselData]); // Re-run effect when vesselData updates
+
+    fetchAndMapChats();
+  }, [chatUpdateTrigger, vesselData]);
 
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-8 p-6 h-full">

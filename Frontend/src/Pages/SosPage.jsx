@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import SOSMessage from "../Components/Sos/SOSMessage";
 import SOSPopup from "../Components/Sos/SOSPopup";
 import { changeSOSStatus, fetchEnhancedSOSData } from "../services/sosService";
-import { listenEvent, removeListener } from "../services/socket";
+import { usePolling } from "../contexts/PollingContext";
 
 const SOSPage = () => {
   const [sosData, setSosData] = useState([]);
   const [selectedSOS, setSelectedSOS] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("active"); // State to manage tabs
+  const { sosUpdateTrigger } = usePolling();
 
   const getSOSData = async () => {
     try {
@@ -22,18 +23,8 @@ const SOSPage = () => {
   };
 
   useEffect(() => {
-    getSOSData(); // Fetch initial SOS data
-
-    // Listen for real-time SOS updates from WebSocket
-    listenEvent("sos_created", (newSOS) => {
-      setSosData((prev) => [newSOS, ...prev]); // Add new SOS to the list
-    });
-
-    // Cleanup WebSocket listener when unmounting
-    return () => {
-      removeListener("sos_created");
-    };
-  }, []);
+    getSOSData(); // Load initial SOS data
+  }, [sosUpdateTrigger]);
 
   const handleStatusChange = async (id) => {
     try {

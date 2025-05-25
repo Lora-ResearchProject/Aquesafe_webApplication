@@ -4,7 +4,7 @@ import ChatWindow from "../Components/Chat/ChatWindow";
 import { fetchVessels } from "../services/locationService";
 import { fetchLatestChats } from "../services/chatService";
 import { fetchZones } from "../services/zoneService";
-import { listenEvent, removeListener } from "../services/socket";
+import { usePolling } from "../contexts/PollingContext";
 
 const ChatPage = () => {
   const [vessels, setVessels] = useState([]);
@@ -13,6 +13,7 @@ const ChatPage = () => {
   const [selectedVessel, setSelectedVessel] = useState(null);
   const [showNewChatPopup, setShowNewChatPopup] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { chatUpdateTrigger } = usePolling();
 
   const loadData = async () => {
     try {
@@ -32,18 +33,17 @@ const ChatPage = () => {
   };
 
   useEffect(() => {
-    loadData();
+    loadData(); // Load initial data when the component mounts
+  }, []);
 
-    // Listen for new chat events via WebSocket
-    listenEvent("new_chat", async () => {
+  useEffect(() => {
+    const fetchChats = async () => {
       const latestChatsData = await fetchLatestChats();
       setLatestChats(latestChatsData);
-    });
-
-    return () => {
-      removeListener("new_chat");
     };
-  }, []);
+
+    fetchChats();
+  }, [chatUpdateTrigger]);
 
   // Filter vessels with and without chats
   const vesselsWithChats = vessels.filter((vessel) =>
@@ -73,24 +73,40 @@ const ChatPage = () => {
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50"
           onClick={handleBackdropClick}
         >
-          <div className="bg-white p-6 rounded-lg shadow-xl w-96">
+          <div
+            className="bg-white p-6 rounded-lg shadow-xl w-96"
+            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+          >
             <h2 className="text-xl font-bold mb-4 text-gray-800">New Chat</h2>
-            <ul>
-              {vesselsWithoutChats.map((vessel) => (
-                <li
-                  key={vessel.vesselId}
-                  className="bg-white p-3 rounded-lg mb-2 shadow-md flex justify-between items-center hover:bg-gray-50 cursor-pointer"
-                  onClick={() => handleNewChatSelect(vessel)}
-                >
-                  {/* Vessel Details */}
-                  <div className="flex-1">
-                    <h2 className="font-semibold text-lg text-blue-600">
-                      {vessel.vesselName}
-                    </h2>
-                  </div>
-                </li>
-              ))}
-            </ul>
+
+            {/* Loading */}
+            {loading ? (
+              <div className="text-center py-6 text-gray-500">Loading...</div>
+            ) : vesselsWithoutChats.length === 0 ? (
+              // Empty state
+              <div className="text-center py-6 text-gray-500">
+                No vessels available to start a new chat.
+              </div>
+            ) : (
+              // Vessel list
+              <ul>
+                {vesselsWithoutChats.map((vessel) => (
+                  <li
+                    key={vessel.vesselId}
+                    className="bg-white p-3 rounded-lg mb-2 shadow-md flex justify-between items-center hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handleNewChatSelect(vessel)}
+                  >
+                    <div className="flex-1">
+                      <h2 className="font-semibold text-lg text-blue-600">
+                        {vessel.vesselName}
+                      </h2>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* Cancel button */}
             <button
               className="mt-4 w-full bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
               onClick={() => setShowNewChatPopup(false)}

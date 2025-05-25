@@ -13,13 +13,13 @@ export const removeToken = () => {
 // Decode the token and check its expiration
 export const isTokenExpired = (token) => {
   try {
-    const { exp } = jwtDecode(token); // Decode the token to get expiration time
+    const { exp } = jwtDecode(token);
     if (Date.now() >= exp * 1000) {
-      return true; // Token is expired
+      return true;
     }
-    return false; // Token is still valid
+    return false;
   } catch (error) {
-    return true; // If decoding fails, treat as expired
+    return true;
   }
 };
 
@@ -36,7 +36,7 @@ export const getUserRole = () => {
   if (!token) return null;
 
   try {
-    const { role } = jwtDecode(token); // Decode the token to get the role
+    const { role } = jwtDecode(token);
     return role;
   } catch (error) {
     return null;

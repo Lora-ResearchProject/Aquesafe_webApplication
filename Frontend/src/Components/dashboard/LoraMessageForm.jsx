@@ -93,7 +93,7 @@ const LoraMessageForm = ({ onSubmit, disabled }) => {
             Device ID (3 digits)
           </label>
           <input
-            type="text"
+            type="number"
             maxLength={3}
             value={idPrefix}
             onChange={(e) => setIdPrefix(e.target.value)}
@@ -128,19 +128,21 @@ const LoraMessageForm = ({ onSubmit, disabled }) => {
               Latitude
             </label>
             <input
-              type="text"
+              type="number"
               value={lat}
               onChange={(e) => setLat(e.target.value)}
               className="border px-3 py-2 rounded-md text-sm w-full mb-2"
+              required
             />
             <label className="block font-medium text-sm text-gray-700">
               Longitude
             </label>
             <input
-              type="text"
+              type="number"
               value={lon}
               onChange={(e) => setLon(e.target.value)}
               className="border px-3 py-2 rounded-md text-sm w-full"
+              required
             />
           </div>
         )}
@@ -159,6 +161,7 @@ const LoraMessageForm = ({ onSubmit, disabled }) => {
                 value={formData[field]}
                 onChange={handleChange}
                 className="border px-3 py-2 rounded-md text-sm w-full"
+                required
               />
             </div>
           ) : null

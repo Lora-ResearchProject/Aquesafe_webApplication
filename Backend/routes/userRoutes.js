@@ -10,6 +10,7 @@ const {
   forgotPassword,
   resetPassword,
 } = require("../controllers/userController");
+const { addClient } = require("../controllers/longPollController");
 const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -28,5 +29,9 @@ router.post("/change-password", protect, changePassword);
 router.post("/", protect, authorize(["admin"]), createUser);
 router.get("/", protect, authorize(["admin"]), getAllUsers);
 router.delete("/:id", protect, authorize(["admin"]), deleteUser);
+
+router.get("/poll", (req, res) => {
+  addClient(res);
+});
 
 module.exports = router;
