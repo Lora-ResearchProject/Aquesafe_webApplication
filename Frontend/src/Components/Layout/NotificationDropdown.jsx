@@ -44,10 +44,6 @@ const NotificationDropdown = () => {
   }, []);
   //issue
   useEffect(() => {
-    if (!hasMounted.current) {
-      hasMounted.current = true;
-      return;
-    }
     fetchNotifications();
     setUnreadCount((prev) => prev + 1);
     playNotificationSound();
