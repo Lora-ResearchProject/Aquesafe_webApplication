@@ -16,6 +16,7 @@
     "@heroicons/react": "^1.0.6",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.474.0",

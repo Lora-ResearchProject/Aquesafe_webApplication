@@ -1,4 +1,3 @@
-// src/pages/ProfilePage.js
 import React, { useEffect, useState } from "react";
 import {
   fetchUserDetails,

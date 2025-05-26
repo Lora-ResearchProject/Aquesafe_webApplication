@@ -7,35 +7,35 @@ import FlyToMarker from "../Components/Map/FlyToMarker";
 const defaultCenter = [7.8731, 80.7718];
 
 const FishingHotspotsPage = () => {
-  const [allLocationsData, setAllLocationsData] = useState(null);
-  const [allLocationsError, setAllLocationsError] = useState(null);
-  const [allLocationsLoading, setAllLocationsLoading] = useState(true);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const mapRef = useRef(null);
+  // const [allLocationsData, setAllLocationsData] = useState(null);
+  // const [allLocationsError, setAllLocationsError] = useState(null);
+  // const [allLocationsLoading, setAllLocationsLoading] = useState(true);
+  // const [selectedLocation, setSelectedLocation] = useState(null);
+  // const mapRef = useRef(null);
 
-  useEffect(() => {
-    const fetchAllLocations = async () => {
-      try {
-        const response = await fetchAllFishingHotspots();
-        //console.log("🚀 ~ fetchAllLocations ~ response:", response);
-        setAllLocationsData(response);
-      } catch (err) {
-        setAllLocationsError(err.message || "An unexpected error occurred.");
-      } finally {
-        setAllLocationsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchAllLocations = async () => {
+  //     try {
+  //       const response = await fetchAllFishingHotspots();
+  //       //console.log("🚀 ~ fetchAllLocations ~ response:", response);
+  //       setAllLocationsData(response);
+  //     } catch (err) {
+  //       setAllLocationsError(err.message || "An unexpected error occurred.");
+  //     } finally {
+  //       setAllLocationsLoading(false);
+  //     }
+  //   };
 
-    fetchAllLocations();
-  }, []);
+  //   fetchAllLocations();
+  // }, []);
 
-  const handleLocationClick = (hotspot) => {
-    setSelectedLocation({ lat: hotspot.latitude, lng: hotspot.longitude });
-  };
+  // const handleLocationClick = (hotspot) => {
+  //   setSelectedLocation({ lat: hotspot.latitude, lng: hotspot.longitude });
+  // };
 
   return (
     <div className="h-screen w-full p-4 flex">
-      {/* Map Section */}
+      {/* Map Section
       <div className="flex-grow">
         <MapContainer
           center={defaultCenter}
@@ -77,7 +77,7 @@ const FishingHotspotsPage = () => {
         </MapContainer>
       </div>
       
-      {/* Sidebar Section */}
+     
       <div className="w-1/4 p-4 overflow-y-auto border-l">
         <h2 className="text-lg font-semibold mb-2">Hotspot Locations</h2>
         {allLocationsData ? (
@@ -95,7 +95,7 @@ const FishingHotspotsPage = () => {
         ) : (
           <p className="text-gray-500">Loading locations...</p>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

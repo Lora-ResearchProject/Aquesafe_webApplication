@@ -17,6 +17,17 @@ const NotificationDropdown = () => {
   const [showAll, setShowAll] = useState(false); // Toggle for showing all/unread notifications
   const { notificationUpdateTrigger } = usePolling();
   const hasMounted = useRef(false);
+
+  const hasInitialized = useRef(false);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    hasInitialized.current = true;
+  }, 5000);
+
+  return () => clearTimeout(timer);
+}, []); // runs once to start 5-second timer
+
   // Fetch notifications and unread count
   const fetchNotifications = async () => {
     try {
@@ -44,6 +55,7 @@ const NotificationDropdown = () => {
   }, []);
   //issue
   useEffect(() => {
+    if (!hasInitialized.current) return;
     fetchNotifications();
     setUnreadCount((prev) => prev + 1);
     playNotificationSound();

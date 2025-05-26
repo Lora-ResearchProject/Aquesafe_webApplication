@@ -1,4 +1,3 @@
-// src/components/profile/UserDetails.js
 import React, { useState } from "react";
 import profileImage from "../../assets/icons/profileImage.png"; // Static profile image
 
@@ -51,7 +50,7 @@ const UserDetails = ({ user, onUpdate }) => {
 
       {/* Edit Popup */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-md w-96">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Edit User Details</h2>
             {message && <p className="text-green-500 mb-4">{message}</p>}

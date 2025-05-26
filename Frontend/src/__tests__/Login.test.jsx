@@ -1,37 +1,85 @@
-// import { render, screen, fireEvent } from "@testing-library/react";
-// import { MemoryRouter } from "react-router-dom";
-// import Login from "../Pages/Login";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import LoginPage from '../Pages/Login';
 
-// test("Renders login form and handles user input", () => {
-//   render(
-//     <MemoryRouter>
-//       <Login />
-//     </MemoryRouter>
-//   );
+// Mock services
+vi.mock('../services/authService', () => ({
+  login: vi.fn(),
+}));
 
-//   // Check for the heading "Login"
-//   const loginHeading = screen.getByRole("heading", { level: 2, name: /login/i });
-//   expect(loginHeading).toBeInTheDocument();
+vi.mock('../utils/auth', () => ({
+  getUserRole: vi.fn(),
+}));
 
-//   // Check for email and password input fields
-//   const emailInput = screen.getByLabelText(/email/i);
-//   expect(emailInput).toBeInTheDocument();
+import { login } from '../services/authService';
+import { getUserRole } from '../utils/auth';
 
-//   const passwordInput = screen.getByLabelText(/password/i);
-//   expect(passwordInput).toBeInTheDocument();
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
-//   // Simulate user typing in email and password
-//   fireEvent.change(emailInput, { target: { value: "test@example.com" } });
-//   fireEvent.change(passwordInput, { target: { value: "password123" } });
+const renderLogin = () =>
+  render(
+    <BrowserRouter>
+      <LoginPage />
+    </BrowserRouter>
+  );
 
-//   expect(emailInput.value).toBe("test@example.com");
-//   expect(passwordInput.value).toBe("password123");
-
-//   // Check if the login button is present
-//   const loginButton = screen.getByRole("button", { name: /login/i });
-//   expect(loginButton).toBeInTheDocument();
-// });
-
-test("Dummy test that always passes", () => {
-    expect(true).toBe(true);
+describe('LoginPage (Vite + Vitest)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
+
+  it('renders email/password inputs and login button', () => {
+    renderLogin();
+    expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
+  });
+
+  it('displays error on failed login', async () => {
+    login.mockRejectedValue(new Error('Invalid credentials'));
+
+    renderLogin();
+    fireEvent.change(screen.getByPlaceholderText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/password/i), {
+      target: { value: 'wrongpass' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
+    });
+  });
+
+  it('navigates on successful login', async () => {
+    login.mockResolvedValue({ token: 'abc123' });
+    getUserRole.mockReturnValue('admin');
+
+    renderLogin();
+    fireEvent.change(screen.getByPlaceholderText(/email/i), {
+      target: { value: 'admin@example.com' },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/password/i), {
+      target: { value: 'Admin@1234' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard', { replace: true });
+    });
+  });
+
+  it('has a working forgot password link', () => {
+    renderLogin();
+    const link = screen.getByText(/forgot password/i);
+    expect(link.closest('a')).toHaveAttribute('href', '/forgot-password');
+  });
+});

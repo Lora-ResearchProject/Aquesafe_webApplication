@@ -4,6 +4,7 @@ import {
   fetchVessels,
 } from "../services/locationService";
 import WeatherFinder from "../Components/weather/WeatherFinder";
+import dayjs from "dayjs";
 
 const VesselPage = () => {
   const [vessels, setVessels] = useState([]);
@@ -37,10 +38,9 @@ const VesselPage = () => {
 
   // Format date-time function
   const formatDateTime = (dateTime) => {
-    if (!dateTime) return "N/A";
-    const dateObj = new Date(dateTime);
-    return dateObj.toLocaleString(); // Converts to readable format
-  };
+  if (!dateTime) return "N/A";
+  return dayjs(dateTime).format("YYYY-MM-DD"); // Keeps exact value
+};
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (error)
