@@ -120,6 +120,7 @@ const Dashboard = () => {
       try {
         const sosData = await fetchSOSData();
         const mappedData = sosData
+          .filter((sos) => sos.sosStatus === "active")
           .map((sos) => ({
             ...sos,
             vesselName:
