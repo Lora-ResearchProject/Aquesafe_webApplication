@@ -28,7 +28,7 @@ exports.sendEmail = async ({to, subject, text, html, retryCount = 0}) => {
     // Send the email
     const info = await transporter.sendMail(mailOptions);
 
-    console.log("Email sent: " + info.response);
+    //console.log("Email sent: " + info.response);
     return info;
   } catch (error) {
     console.error("Error sending email: ", error);
@@ -36,7 +36,7 @@ exports.sendEmail = async ({to, subject, text, html, retryCount = 0}) => {
     // Error handling
     if (retryCount < MAX_RETRIES && error.code === "ECONNECTION") {
       // Retry for connection errors
-      console.log(`Retrying... Attempt ${retryCount + 1}`);
+     // console.log(`Retrying... Attempt ${retryCount + 1}`);
       return await sendEmail(to, subject, text, html, retryCount + 1);
     } else if (error.code === "EAUTH") {
       // Handle authentication errors
