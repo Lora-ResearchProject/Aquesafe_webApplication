@@ -14,15 +14,22 @@ function addClient(res) {
   });
 }
 
-function notifyClients(eventType) {
+function notifyClients(...eventTypes) {
   waitingClients.forEach(({ res, timeout }) => {
     clearTimeout(timeout);
+
     const payload = {
       chat: false,
       notification: false,
       sos: false,
     };
-    payload[eventType] = true;
+
+    eventTypes.forEach((type) => {
+      if (type in payload) {
+        payload[type] = true;
+      }
+    });
+
     res.json(payload);
   });
 
