@@ -14,54 +14,51 @@ const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [showAll, setShowAll] = useState(false); // Toggle for showing all/unread notifications
+  const [showAll, setShowAll] = useState(false);
+
   const { notificationUpdateTrigger } = usePolling();
-  const hasMounted = useRef(false);
 
-  const hasInitialized = useRef(false);
+  const hasInitialized = useRef(false); // delay awareness
+  const prevUnreadCount = useRef(0); // to compare before/after counts
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    hasInitialized.current = true;
-  }, 5000);
+  // Delay initialization (5 seconds)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      hasInitialized.current = true;
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
-  return () => clearTimeout(timer);
-}, []); // runs once to start 5-second timer
+  // Initial fetch on mount
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
-  // Fetch notifications and unread count
   const fetchNotifications = async () => {
     try {
-      const notificationsData = await getNotifications();
-      setNotifications(notificationsData.notifications.reverse()); // Reverse to show latest first
-      // if (notificationsData.unreadCount > unreadCount) {
-      //   playNotificationSound(); //temparary remove the sound
-      // }
+      const data = await getNotifications();
+      setNotifications(data.notifications.reverse());
+      setUnreadCount(data.unreadCount);
 
-      setUnreadCount(notificationsData.unreadCount);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      // Play sound only if new notifications and initialized
+      if (
+        hasInitialized.current &&
+        data.unreadCount > prevUnreadCount.current
+      ) {
+        playNotificationSound();
+      }
+
+      prevUnreadCount.current = data.unreadCount;
+    } catch (err) {
+      console.error("Failed to fetch notifications:", err);
     }
   };
 
-  // Fetch notifications every minute
-  // useEffect(() => {
-  //   fetchNotifications(); // Initial fetch
-  //   const interval = setInterval(fetchNotifications, 60000); // Poll every minute
-  //   return () => clearInterval(interval); // Cleanup interval on unmount
-  // }, [unreadCount]);
-
+  // Triggered when backend signals update
   useEffect(() => {
-    fetchNotifications(); // Initial load on mount
-  }, []);
-  //issue
-  useEffect(() => {
-    console.log("useEffect ~ fetchNotifications:")
-    // if (!hasInitialized.current) return;
+    if (!hasInitialized.current) return;
     fetchNotifications();
-    setUnreadCount((prev) => prev + 1);
-    playNotificationSound();
   }, [notificationUpdateTrigger]);
-    
 
   // Handle marking a notification as read
   const handleMarkAsRead = async (id) => {
