@@ -6,7 +6,7 @@ The Aquesafe Web Application is an integrated platform designed to address the u
 
 ## Features
 
-- **Data Optimization and Security Algorithms** - ??
+- **Data Optimization and Security Algorithms** - The system implements advanced data compression techniques to minimize the size of transmitted messages, ensuring efficient use of limited bandwidth in LoRa-based communication. Additionally, lightweight encryption and checksum validation are applied to safeguard the integrity and confidentiality of data during transmission.
 - **GPS-Based Vessel Location Tracking and Visualization** - The system provides real-time tracking of fishing vessels using GPS data, allowing users to visualize vessel locations on a map. This ensures efficient monitoring and management of vessel movements.
 - **Route Recording and Data Processing** - The application processes data from onboard nodes to generate accurate fishing boat route records. This allows users to review past routes for better decision-making and route optimization.
 - **Emergency Alerts (SOS)** - The system is equipped with a feature that receives emergency SOS alerts from vessels in critical situations. This ensures that fishing vessels can quickly notify nearby support systems in case of distress.
