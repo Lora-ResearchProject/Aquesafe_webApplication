@@ -59,7 +59,7 @@ const Sidebar = ({
               )
               .map((item) => (
                 <div
-                  key={item.id}
+                  key={`1-${item.id}`}
                   onClick={() => setSelectedLocation(item)}
                   className={`p-3 rounded-lg cursor-pointer border ${
                     selectedLocation?.id === item.id
@@ -94,7 +94,7 @@ const Sidebar = ({
               )
               .map((item) => (
                 <div
-                  key={item.id}
+                  key={`2-${item.id}`}
                   onClick={() => setSelectedLocation(item)}
                   className={`p-3 rounded-lg cursor-pointer border ${
                     selectedLocation?.id === item.id
@@ -186,7 +186,7 @@ const Sidebar = ({
                     )
                     .map((hotspot) => (
                       <div
-                        key={hotspot.hotspotId}
+                        key={`6-${hotspot.hotspotId}`}
                         onClick={() =>
                           setSelectedLocation({
                             lat: hotspot.latitude,

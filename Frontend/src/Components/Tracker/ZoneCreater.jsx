@@ -125,7 +125,7 @@ const ZoneCreater = ({ onZoneCreated }) => {
               {/* Boundary Coordinates */}
               <label className="block mb-2">Boundary Coordinates:</label>
               {boundary.map((coord, index) => (
-                <div key={index} className="flex space-x-3 mb-3">
+                <div key={`z1-${index}`} className="flex space-x-3 mb-3">
                   <input
                     type="number"
                     className="border rounded p-2 w-1/2"

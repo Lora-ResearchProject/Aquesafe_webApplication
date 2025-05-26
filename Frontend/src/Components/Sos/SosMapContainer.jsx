@@ -24,7 +24,7 @@ const SosMapContainer = ({ sosdata }) => {
       />
 
       <Marker
-        key={sosdata.vesselId}
+        key={`s1-${sosdata.vesselId}`}
         position={[sosdata.lat, sosdata.lng]}
         icon={MarkerIcon('vessel')}
       >
