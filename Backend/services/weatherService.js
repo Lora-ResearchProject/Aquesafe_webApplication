@@ -48,10 +48,6 @@ const processWeatherCheck = async (vesselId, messageId, lat, lon) => {
     // Format the message
     const formattedMessage = formatoutgoingMessage(msgData, "weather");
 
-    // Send the message to the gateway
-    const gatewayUrl = process.env.GATEWAY_API_URL;
-    await sendToGateway(gatewayUrl, formattedMessage); // -------------------------------------------------------------- need to uncomment this after fix this
-
     //console.log("Weather message sent successfully:", formattedMessage);
     return { success: true, message: "Weather data sent", data: formattedMessage };
   } catch (error) {
