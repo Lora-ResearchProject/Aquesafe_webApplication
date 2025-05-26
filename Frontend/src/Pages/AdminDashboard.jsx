@@ -111,8 +111,11 @@ const AdminDashboard = () => {
             <h2 className="text-xl font-bold mb-4">Create New User</h2>
             <form onSubmit={handleCreateUser} className="space-y-4">
               <div>
-                <label className="block text-gray-700">Name</label>
+                <label htmlFor="name" className="block text-gray-700">
+                  Name
+                </label>
                 <input
+                  id="name"
                   type="text"
                   value={newUser.name}
                   onChange={(e) =>
@@ -129,8 +132,11 @@ const AdminDashboard = () => {
                 )}
               </div>
               <div>
-                <label className="block text-gray-700">Email</label>
+                <label htmlFor="email" className="block text-gray-700">
+                  Email
+                </label>
                 <input
+                  id="email"
                   type="email"
                   value={newUser.email}
                   onChange={(e) =>
