@@ -1,6 +1,6 @@
 # Aquesafe_webApplication
 
-The Aquesafe Web Application is an integrated platform designed to address the unique challenges faced by small fishing vessels, particularly those operating in remote and resource-constrained maritime environments. By leveraging advanced technologies such as LoRa, the platform provides real-time tracking, long-range communication, and actionable data insights to enhance maritime safety, operational efficiency, and regulatory compliance. With a focus on affordability, low-power consumption, and user-friendly tools, Aquesafe empowers small-scale fishers to access critical information for safe and efficient operations, bridging the technological gap and promoting sustainable fishing practices.
+The Aquesafe Web Application is an integrated platform designed to address the unique challenges faced by small fishing vessels, particularly those operating in remote and resource-constrained maritime environments. By leveraging advanced technologies such as LoRa, the platform provides real-time tracking, long-range communication, and actionable data insights to enhance maritime safety, operational efficiency, and regulatory compliance. With a focus on affordability, low-power consumption, and user-friendly tools, Aquesafe empowers small-scale fishers to access critical information for safe and efficient operations, bridging the technological gap and promoting sustainable fishing practices..
 
 ---
 
