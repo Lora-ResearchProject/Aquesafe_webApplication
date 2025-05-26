@@ -55,11 +55,13 @@ useEffect(() => {
   }, []);
   //issue
   useEffect(() => {
+    console.log("useEffect ~ fetchNotifications:")
     // if (!hasInitialized.current) return;
     fetchNotifications();
     setUnreadCount((prev) => prev + 1);
     playNotificationSound();
   }, [notificationUpdateTrigger]);
+    
 
   // Handle marking a notification as read
   const handleMarkAsRead = async (id) => {

@@ -2,8 +2,10 @@ const axios = require("axios");
 
 // Function to send data to another server
 async function sendToGateway(baseUrl, data, useStatusPath = false) {
+  console.log("sendToGateway ~ useStatusPath:", useStatusPath)
   const endpoint = useStatusPath ? "/api/lora-status" : "/lora/sendChatData";
   const fullUrl = baseUrl + endpoint;
+  console.log("sendToGateway ~ fullUrl:", fullUrl)
 
   try {
     const response = await axios.post(fullUrl, data, {
