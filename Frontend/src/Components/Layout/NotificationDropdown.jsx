@@ -55,7 +55,7 @@ useEffect(() => {
   }, []);
   //issue
   useEffect(() => {
-    if (!hasInitialized.current) return;
+    // if (!hasInitialized.current) return;
     fetchNotifications();
     setUnreadCount((prev) => prev + 1);
     playNotificationSound();
