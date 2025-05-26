@@ -15,8 +15,6 @@ exports.createNotification = async ({
 
     const savedNotification = await newNotification.save();
 
-    notifyClients("notification");
-
     return savedNotification;
   } catch (error) {
     throw new Error(`Error creating notification: ${error.message}`);

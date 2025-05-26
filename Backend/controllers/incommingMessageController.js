@@ -77,8 +77,6 @@ exports.storeVesselLocation = async (req, res) => {
       // Save the SOS record
       const savedSos = await sos.save();
 
-      notifyClients("sos");
-
       // Generate notification message
       const messageTitle = `SOS Alert from Vessel ${vesselId}`;
       const messageDescription = `An SOS has been triggered at coordinates (${lat}, ${lng}) on ${new Date().toLocaleString()}. Immediate action required!`;
@@ -89,7 +87,7 @@ exports.storeVesselLocation = async (req, res) => {
         messageDescription,
         Type: "sos",
       });
-
+      notifyClients("sos", "notification");
       return res.status(201).json({ message: "SOS data saved successfully" });
     }
 
