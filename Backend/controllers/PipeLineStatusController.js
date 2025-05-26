@@ -9,7 +9,7 @@ exports.forwardLoraStatus = async (req, res) => {
   }
 
   try {
-    const response = await sendToGateway("${externalServerUrl}", payload, true);
+    const response = await sendToGateway(externalServerUrl, payload, true);
     res.status(200).json(response);
   } catch (error) {
     console.error("Error forwarding to external server:", error.message);
