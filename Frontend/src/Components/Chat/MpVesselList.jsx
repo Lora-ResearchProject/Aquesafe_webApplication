@@ -16,7 +16,7 @@ const MpVesselList = ({ vessels, loading }) => {
       ) : (
         <ul className="max-h-48 overflow-y-auto border rounded-lg p-2">
           {vessels.map((vessel) => (
-            <li key={vessel.vesselId} className="text-sm text-gray-700">
+            <li key={`mp-${vessel.vesselId}`} className="text-sm text-gray-700">
               {vessel.vesselName}
             </li>
           ))}

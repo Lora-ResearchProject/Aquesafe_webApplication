@@ -16,7 +16,7 @@ const MpZoneSelector = ({ zones, selectedZone, setSelectedZone, loading }) => {
         >
           <option value="all">Select a zone</option>
           {zones.map((zone) => (
-            <option key={zone._id} value={zone._id}>
+            <option key={`mz-${zone._id}`} value={zone._id}>
               {zone.name}
             </option>
           ))}

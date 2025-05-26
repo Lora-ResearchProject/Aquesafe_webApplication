@@ -24,7 +24,7 @@ const RLMapContainer = ({ locations }) => {
       />
       {locations.map((location, index) => (
         <Marker
-          key={index}
+          key={`rl-${index}`}
           position={[location.lat, location.lng]}
           icon={MarkerIcon()}
         >

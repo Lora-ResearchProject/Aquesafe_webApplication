@@ -46,7 +46,7 @@ const MapContainer = ({
 
           return (
             <Polygon
-              key={index}
+              key={`3-${index}`}
               positions={coordinates}
               color={zoneColors.border} // Border color
               fillColor={zoneColors.fill} // Fill color
@@ -64,7 +64,7 @@ const MapContainer = ({
       {/* Render Vessels as Markers */}
       {locations.map((location) => (
         <Marker
-          key={location.id}
+          key={`4-${location.id}`}
           position={[location.lat, location.lng]}
           icon={MarkerIcon(location.type)}
           eventHandlers={{
@@ -79,7 +79,7 @@ const MapContainer = ({
       {hotspots &&
         hotspots.map((hotspot) => (
           <Circle
-            key={hotspot.hotspotId}
+            key={`5-${hotspot.hotspotId}`}
             center={[hotspot.latitude, hotspot.longitude]}
             radius={1000} // Adjust the radius as needed
             color="red"

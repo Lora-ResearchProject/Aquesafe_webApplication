@@ -27,7 +27,7 @@ const ZoneList = ({ zones, searchTerm, onEdit, onDelete }) => {
           </h3>
           {normalZones.map((zone) => (
             <div
-              key={zone._id}
+              key={`z3-${zone._id}`}
               className="p-3 rounded-lg bg-white border border-gray-300 hover:bg-blue-50 cursor-pointer mt-2"
             >
               <div className="flex justify-between items-center">
@@ -60,7 +60,7 @@ const ZoneList = ({ zones, searchTerm, onEdit, onDelete }) => {
           </h3>
           {dangerZones.map((zone) => (
             <div
-              key={zone._id}
+              key={`z4-${zone._id}`}
               className="p-3 rounded-lg bg-red-100 border border-red-400 hover:bg-red-200 cursor-pointer mb-2"
             >
               <div className="flex justify-between items-center">
