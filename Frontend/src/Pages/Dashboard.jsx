@@ -98,10 +98,12 @@ const Dashboard = () => {
 
       // Process vessel locations with vessel name lookup
       if (results[4].status === "fulfilled") {
-        const locationData = results[4].value.map((location) => ({
-          ...location,
-          vesselName: vesselMap[location.vesselId] || "Unknown Vessel",
-        }));
+        const locationData = results[4].value
+          .map((location) => ({
+            ...location,
+            vesselName: vesselMap[location.vesselId] || "Unknown Vessel",
+          }))
+          .sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime)); // descending by date
 
         setVesselLocations(locationData);
       } else {
