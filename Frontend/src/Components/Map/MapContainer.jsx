@@ -62,9 +62,9 @@ const MapContainer = ({
         })}
 
       {/* Render Vessels as Markers */}
-      {locations.map((location) => (
+      {locations.map((location, index) => (
         <Marker
-          key={`4-${location.id}`}
+          key={`4-${location.id}-${index}`}
           position={[location.lat, location.lng]}
           icon={MarkerIcon(location.type)}
           eventHandlers={{
