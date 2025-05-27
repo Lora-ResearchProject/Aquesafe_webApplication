@@ -45,7 +45,7 @@ const saveAlertMessage = async (vesselId, message, messageNumber) => {
     );
 
     const externalServerUrl = process.env.GATEWAY_API_URL;
-    //await sendToGateway(externalServerUrl, formattedMessage); // Uncomment when ready
+    await sendToGateway(externalServerUrl, formattedMessage); // Uncomment when ready
 
     const savedChat = await newChat.save();
     notifyClients("chat");
@@ -147,6 +147,7 @@ const startProximityAlertChecks = () => {
     isRunning = true;
     try {
       await checkProximityAlerts();
+      console.log("Proximity check run.");
     } catch (error) {
       console.error("Error in runCheck:", error);
     } finally {
