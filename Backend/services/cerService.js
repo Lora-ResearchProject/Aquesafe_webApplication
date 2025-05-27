@@ -16,7 +16,7 @@ const getFilteredVesselLocations = async (excludeVesselId) => {
     }
 
     const currentTime = new Date();
-    const tenHoursAgo = new Date(currentTime.getTime() - 10 * 60 * 60 * 1000);
+    const tenHoursAgo = new Date(currentTime.getTime() - 30 * 60 * 60 * 1000);
 
     const latestLocations = Object.values(
       allVesselData.reduce((acc, location) => {
