@@ -10,13 +10,15 @@ const range = 5; // 5km
 const getFilteredVesselLocations = async (excludeVesselId) => {
   try {
     const allVesselData = await fetchAllVesselLocations();
-
+    const lastTen = allVesselData.slice(-10);
     if (!Array.isArray(allVesselData) || allVesselData.length === 0) {
       return [];
     }
 
-    const currentTime = new Date();
-    const tenHoursAgo = new Date(currentTime.getTime() - 30 * 60 * 60 * 1000);
+    const currentTime = new Date(Date.now() + 10 * 60 * 60 * 1000);
+
+    // Calculate 10 hours ago from that shifted time
+    const tenHoursAgo = new Date(Date.now() - 10 * 60 * 60 * 1000);
 
     const latestLocations = Object.values(
       allVesselData.reduce((acc, location) => {
@@ -105,7 +107,7 @@ const saveAndSendMessage = async (vesselId, lat, lng) => {
     await sendToGateway(externalServerUrl, formattedMessage); // -------------------------------------------------------------- need to uncomment this after fix this
     const savedChat = await newChat.save();
 
-    notifyClients('chat');
+    notifyClients("chat");
 
     return savedChat;
   } catch (error) {
