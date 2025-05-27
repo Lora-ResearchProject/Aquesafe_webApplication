@@ -1,6 +1,6 @@
 import axios from "axios";
 import { baseURL } from "../config/config";
-import { fetchVessels } from "./locationService";
+import { fetchLatestVesselLocations, fetchVessels } from "./locationService";
 import { getVesselsByZone } from "./zoneService";
 import { getToken } from "../utils/auth";
 
@@ -71,7 +71,7 @@ export const sendMessageToMultipleVessels = async (
 // Send message to all vessels
 export const sendMessageToAllVessels = async (messageNumber, message) => {
   try {
-    const vessels = await fetchLatestChats();
+    const vessels = await getVesselsByZone("all");
     const vesselIds = vessels.map((vessel) => vessel.vesselId);
     return await sendMessageToMultipleVessels(
       vesselIds,
