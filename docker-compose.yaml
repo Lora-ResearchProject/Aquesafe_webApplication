@@ -5,6 +5,8 @@ services:
     build: ./Backend
     ports:
       - "9001:9001"
+    networks:
+      - aquesafe-net
 
   frontend:
     build: ./Frontend
@@ -12,7 +14,9 @@ services:
       - "9000:9000"
     depends_on:
       - backend
+    networks:
+      - aquesafe-net
 
-volumes:
-  logs:
-  data:
+networks:
+  aquesafe-net:
+    external: true
