@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     port: 9000,
     strictPort: true,
-    allowedHosts: ["app.aquasafe.fish"],
+    allowedHosts: ["159.65.145.114"],
   },
   test: {
     globals: true,
